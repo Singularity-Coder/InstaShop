@@ -1,11 +1,11 @@
-![alt text](https://github.com/Singularity-Coder/FOLK-Database/blob/master/logo192.png)
+![alt text](https://github.com/Singularity-Coder/InstaShop/blob/master/instashop.png)
 # InstaShop
 It's a demo E-Commerce App!
 
 # Screenshots
-![alt text](https://github.com/Singularity-Coder/FOLK-Database/blob/master/s1.jpg)
-![alt text](https://github.com/Singularity-Coder/FOLK-Database/blob/master/s2.jpg)
-![alt text](https://github.com/Singularity-Coder/FOLK-Database/blob/master/s3.jpg)
-![alt text](https://github.com/Singularity-Coder/FOLK-Database/blob/master/s4.jpg)
-![alt text](https://github.com/Singularity-Coder/FOLK-Database/blob/master/s5.jpg)
-![alt text](https://github.com/Singularity-Coder/FOLK-Database/blob/master/s6.jpg)
+![alt text](https://github.com/Singularity-Coder/InstaShop/blob/master/s1.jpg)
+![alt text](https://github.com/Singularity-Coder/InstaShop/blob/master/s2.jpg)
+![alt text](https://github.com/Singularity-Coder/InstaShop/blob/master/s3.jpg)
+![alt text](https://github.com/Singularity-Coder/InstaShop/blob/master/s4.jpg)
+![alt text](https://github.com/Singularity-Coder/InstaShop/blob/master/s5.jpg)
+![alt text](https://github.com/Singularity-Coder/InstaShop/blob/master/s6.jpg)
