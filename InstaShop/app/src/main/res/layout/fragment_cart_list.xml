@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EAEAEA"
+    tools:context=".cart.view.CartListFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <include layout="@layout/content_toolbar" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:clipChildren="true"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="true"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar"
+            app:layout_constraintBottom_toTopOf="@+id/lin_lay_total"
+            tools:listitem="@layout/item_cart" />
+
+        <include layout="@layout/content_nothing" />
+
+        <LinearLayout
+            android:id="@+id/lin_lay_total"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:elevation="10dp"
+            android:orientation="vertical"
+            android:padding="16dp"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <TextView
+                android:id="@+id/tv_total_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Price: "
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textColor="@android:color/holo_green_dark"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_total_qty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Total Quantity: "
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
