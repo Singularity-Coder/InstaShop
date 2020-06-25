@@ -1,4 +1,4 @@
-![alt text](https://github.com/Singularity-Coder/InstaShop/blob/master/instashop.png)
+![alt text](https://github.com/Singularity-Coder/InstaShop/blob/master/logo192.png)
 # InstaShop
 It's a demo E-Commerce App!
 
