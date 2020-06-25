@@ -1,17 +1,19 @@
 package com.singularitycoder.instashop.auth.repository;
 
 import android.app.Activity;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.singularitycoder.instashop.auth.model.AuthUserItem;
+import com.singularitycoder.instashop.helpers.HelperConstants;
+import com.singularitycoder.instashop.helpers.HelperSharedPreference;
 import com.singularitycoder.instashop.helpers.RequestStateMediator;
 import com.singularitycoder.instashop.helpers.UiState;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class AuthRepository {
 
@@ -20,6 +22,12 @@ public class AuthRepository {
 
     @NonNull
     private static AuthRepository _instance;
+
+    @NonNull
+    private final MutableLiveData<RequestStateMediator> liveDataSignUp = new MutableLiveData<>();
+
+    @NonNull
+    private final RequestStateMediator requestStateMediator = new RequestStateMediator();
 
     public AuthRepository() {
     }
@@ -68,35 +76,71 @@ public class AuthRepository {
             @NonNull final String epochTime,
             @NonNull final String date) {
 
-        final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
-        final RequestStateMediator requestStateMediator = new RequestStateMediator();
-
         requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
-        liveData.postValue(requestStateMediator);
+        liveDataSignUp.postValue(requestStateMediator);
 
         FirebaseAuth
                 .getInstance()
                 .createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(activity, task -> {
                     if (task.isSuccessful()) {
-                        Map<String, String> map = new HashMap<>();
-                        map.put("MEMBER_TYPE", memberType);
-                        map.put("NAME", name);
-                        map.put("EMAIL", email);
-                        map.put("PASSWORD", password);
-                        map.put("EPOCH_TIME", epochTime);
-                        map.put("DATE", date);
-
-                        requestStateMediator.set(map, UiState.SUCCESS, "Got Data!", "SIGNUP");
-                        liveData.postValue(requestStateMediator);
+                        createUserFirestore(activity, memberType, name, email, password, epochTime, date);
+                        requestStateMediator.set(null, UiState.SUCCESS, "Got Data!", "SIGNUP");
+                        liveDataSignUp.postValue(requestStateMediator);
                     }
                 })
                 .addOnFailureListener(e -> {
                     requestStateMediator.set(null, UiState.ERROR, e.getMessage(), null);
-                    liveData.postValue(requestStateMediator);
+                    liveDataSignUp.postValue(requestStateMediator);
                 });
 
-        return liveData;
+        return liveDataSignUp;
+    }
+
+    private void createUserFirestore(
+            @NonNull final Activity activity,
+            @NonNull final String memberType,
+            @NonNull final String name,
+            @NonNull final String email,
+            @NonNull final String password,
+            @NonNull final String epochTime,
+            @NonNull final String date) {
+
+        requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
+        liveDataSignUp.postValue(requestStateMediator);
+
+        // AuthUserItem obj
+        AuthUserItem authUserItem = new AuthUserItem();
+        authUserItem.setMemberType(memberType);
+        authUserItem.setName(name);
+        authUserItem.setEmail(email);
+        authUserItem.setPassword(password);
+        authUserItem.setEpochTime(epochTime);
+        authUserItem.setDate(date);
+
+        // Shared Pref
+        HelperSharedPreference helperSharedPreference = HelperSharedPreference.getInstance(activity);
+        helperSharedPreference.setMemberType(memberType);
+        helperSharedPreference.setName(name);
+        helperSharedPreference.setEmail(email);
+
+        // Save AuthUserItem obj to Firestore - Add a new document with a generated ID
+        FirebaseFirestore
+                .getInstance()
+                .collection(HelperConstants.COLL_AUTH_USERS)
+                .add(authUserItem)
+                .addOnSuccessListener(documentReference -> {
+                    Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
+                    authUserItem.setDocId(documentReference.getId());
+                    helperSharedPreference.setUserDocId(documentReference.getId());
+
+                    requestStateMediator.set(null, UiState.SUCCESS, "Firestore User Created!", "CREATE_FIRESTORE_USER");
+                    liveDataSignUp.postValue(requestStateMediator);
+                })
+                .addOnFailureListener(e -> {
+                    requestStateMediator.set(null, UiState.ERROR, e.getMessage(), null);
+                    liveDataSignUp.postValue(requestStateMediator);
+                });
     }
 
 }

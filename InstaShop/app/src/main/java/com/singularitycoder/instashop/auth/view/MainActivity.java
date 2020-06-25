@@ -295,46 +295,6 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
         return true;
     }
 
-    private void createUserFirestore(String memberType, String name, String email, String password, String epochTime, String date) {
-
-        runOnUiThread(() -> progressDialog.show());
-
-        // AuthUserItem obj
-        AuthUserItem authUserItem = new AuthUserItem();
-        authUserItem.setMemberType(memberType);
-        authUserItem.setName(name);
-        authUserItem.setEmail(email);
-        authUserItem.setPassword(password);
-        authUserItem.setEpochTime(epochTime);
-        authUserItem.setDate(date);
-
-        // Shared Pref
-        HelperSharedPreference helperSharedPreference = HelperSharedPreference.getInstance(this);
-        helperSharedPreference.setMemberType(memberType);
-        helperSharedPreference.setName(name);
-        helperSharedPreference.setEmail(email);
-
-        // Save AuthUserItem obj to Firestore - Add a new document with a generated ID
-        FirebaseFirestore
-                .getInstance()
-                .collection(HelperConstants.COLL_AUTH_USERS)
-                .add(authUserItem)
-                .addOnSuccessListener(documentReference -> {
-                    Log.d(TAG, "DocumentSnapshot added with ID: " + documentReference.getId());
-                    Toast.makeText(MainActivity.this, "AuthUserItem Created", Toast.LENGTH_SHORT).show();
-                    runOnUiThread(() -> progressDialog.dismiss());
-                    authUserItem.setDocId(documentReference.getId());
-                    helperSharedPreference.setUserDocId(documentReference.getId());
-                    btnAuthenticate.setEnabled(false);
-                    goToDashboardActivity();
-                })
-                .addOnFailureListener(e -> {
-                    Log.w(TAG, "Error adding document", e);
-                    Toast.makeText(MainActivity.this, "Failed to create AuthUserItem", Toast.LENGTH_SHORT).show();
-                    runOnUiThread(() -> progressDialog.dismiss());
-                });
-    }
-
     private void resetPassword(DialogFragment dialog, String email) {
         runOnUiThread(() -> progressDialog.show());
         FirebaseAuth
@@ -377,24 +337,25 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
 
             if (UiState.SUCCESS == requestStateMediator.getStatus()) {
 
-                if (("SIGNUP").equals(requestStateMediator.getKey())) {
-                    runOnUiThread(() -> {
-                        Map<String, String> map = (HashMap<String, String>) requestStateMediator.getData();
-                        createUserFirestore(map.get("MEMBER_TYPE"),
-                                map.get("NAME"),
-                                map.get("EMAIL"),
-                                map.get("PASSWORD"),
-                                map.get("EPOCH_TIME"),
-                                map.get("DATE"));
-                    });
-                }
-
                 if (("SIGNIN").equals(requestStateMediator.getKey())) {
                     runOnUiThread(() -> {
                         String email = (String) requestStateMediator.getData();
                         // Shared Pref
                         HelperSharedPreference helperSharedPreference = HelperSharedPreference.getInstance(this);
                         helperSharedPreference.setEmail(email);
+                        goToDashboardActivity();
+                    });
+                }
+
+                if (("SIGNUP").equals(requestStateMediator.getKey())) {
+                    runOnUiThread(() -> {
+
+                    });
+                }
+
+                if (("CREATE_FIRESTORE_USER").equals(requestStateMediator.getKey())) {
+                    runOnUiThread(() -> {
+                        btnAuthenticate.setEnabled(false);
                         goToDashboardActivity();
                     });
                 }
