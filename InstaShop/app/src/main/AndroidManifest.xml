@@ -9,9 +9,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_instashop"
+        android:icon="@drawable/ic_instashop"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_instashop_round"
+        android:roundIcon="@drawable/ic_instashop_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
