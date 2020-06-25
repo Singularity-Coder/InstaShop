@@ -233,7 +233,7 @@ public class ProductDetailFragment extends Fragment {
                                         qty += 1;
                                         tvQuantity.setText(valueOf(qty));
                                     } else {
-                                        Toast.makeText(helperObject, "You have reached the maximum!", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "You have reached the maximum!", Toast.LENGTH_SHORT).show();
                                     }
                                 },
                                 throwable -> Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show()
@@ -245,11 +245,11 @@ public class ProductDetailFragment extends Fragment {
                         .map(o -> btnSubtractQty)
                         .subscribe(
                                 button -> {
-                                    if (qty > 2) {
+                                    if (qty > 1) {
                                         qty -= 1;
                                         tvQuantity.setText(valueOf(qty));
                                     } else {
-                                        Toast.makeText(helperObject, "You have reached the minimum!", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(getContext(), "You have reached the minimum!", Toast.LENGTH_SHORT).show();
                                     }
                                 },
                                 throwable -> Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show()
