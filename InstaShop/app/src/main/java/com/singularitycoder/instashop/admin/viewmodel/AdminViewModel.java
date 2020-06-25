@@ -13,7 +13,7 @@ public class AdminViewModel extends ViewModel {
     @NonNull
     private final AdminRepository adminRepository = AdminRepository.getInstance();
 
-    public LiveData<RequestStateMediator> uploadImageFromRepository(@NonNull final ProductItem productItem) throws IllegalArgumentException {
+    public LiveData<RequestStateMediator> uploadProductFromRepository(@NonNull final ProductItem productItem) throws IllegalArgumentException {
         return adminRepository.uploadImage(productItem);
     }
 

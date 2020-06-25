@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,14 +26,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FirebaseStorage;
 import com.jakewharton.rxbinding3.view.RxView;
 import com.singularitycoder.instashop.R;
 import com.singularitycoder.instashop.admin.viewmodel.AdminViewModel;
-import com.singularitycoder.instashop.auth.viewmodel.AuthViewModel;
 import com.singularitycoder.instashop.helpers.CustomDialogFragment;
-import com.singularitycoder.instashop.helpers.HelperConstants;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
 import com.singularitycoder.instashop.helpers.RequestStateMediator;
 import com.singularitycoder.instashop.helpers.UiState;
@@ -223,7 +218,7 @@ public class AddProductsFragment extends Fragment implements CustomDialogFragmen
                 productItem.setProductName(valueOf(etProductName.getText()));
                 productItem.setProductPrice(valueOf(etProductPrice.getText()));
 
-                adminViewModel.uploadImageFromRepository(productItem).observe(getViewLifecycleOwner(), liveDataObserver());
+                adminViewModel.uploadProductFromRepository(productItem).observe(getViewLifecycleOwner(), liveDataObserver());
             }
         } else {
             Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
@@ -276,71 +271,6 @@ public class AddProductsFragment extends Fragment implements CustomDialogFragmen
         alertBuilder.show();
     }
 
-    // GET URI FROM FIREBASE STORAGE
-    private void getUriFromFirebaseStorage(String fileDirectory, ProductItem productItem) {
-        FirebaseStorage
-                .getInstance()
-                .getReference()
-                .child(fileDirectory)
-                .child(productItem.getProductImageName())
-                .getDownloadUrl()
-                .addOnCompleteListener(task1 -> {
-                    if (task1.isSuccessful()) {
-                        String storageImageUrl = valueOf(task1.getResult());
-                        Log.d(TAG, "getUriFromFirebaseStorage: url: " + storageImageUrl);
-                        Log.d(TAG, "getUriFromFirebaseStorage: uri: " + task1.getResult().toString());
-                        addFileItemToFirestore(storageImageUrl, productItem);
-                    } else {
-                        deleteFromFirebaseStorage(fileDirectory, productItem);
-                        getActivity().runOnUiThread(() -> {
-                            if (null != progressDialog && progressDialog.isShowing())
-                                progressDialog.dismiss();
-                            Toast.makeText(getContext(), "Couldn't get Uri ", Toast.LENGTH_SHORT).show();
-                        });
-                    }
-                })
-                .addOnFailureListener(e -> getActivity().runOnUiThread(() -> {
-                    if (null != progressDialog && progressDialog.isShowing())
-                        progressDialog.dismiss();
-                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                }));
-    }
-
-    // DELETE FROM FIREBASE STORAGE
-    private void deleteFromFirebaseStorage(String fileDirectory, ProductItem productItem) {
-        FirebaseStorage
-                .getInstance()
-                .getReference()
-                .child(fileDirectory)
-                .child(productItem.getProductImageName())
-                .delete();
-    }
-
-    // CREATE FROM FIRESTORE
-    private void addFileItemToFirestore(String storageImageUrl, ProductItem productItem) {
-        getActivity().runOnUiThread(() -> {
-            if (null != progressDialog && !progressDialog.isShowing()) progressDialog.show();
-        });
-
-        productItem.setProductImageUrl(storageImageUrl);
-
-        FirebaseFirestore
-                .getInstance()
-                .collection(HelperConstants.COLL_PRODUCTS)
-                .add(productItem)
-                .addOnSuccessListener(documentReference -> {
-                    if (null != progressDialog && progressDialog.isShowing())
-                        progressDialog.dismiss();
-                    getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Item Added", Toast.LENGTH_SHORT).show());
-                    dumpFields();
-                })
-                .addOnFailureListener(e -> getActivity().runOnUiThread(() -> {
-                    if (null != progressDialog && progressDialog.isShowing())
-                        progressDialog.dismiss();
-                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                }));
-    }
-
     private void dumpFields() {
         ivProduct.setImageURI(null);
         tvCategory.setText("");
@@ -363,16 +293,28 @@ public class AddProductsFragment extends Fragment implements CustomDialogFragmen
 
             if (UiState.SUCCESS == requestStateMediator.getStatus()) {
 
-                if (("UPLOAD IMAGE").equals(requestStateMediator.getKey())) {
+                if (("UPLOAD_IMAGE").equals(requestStateMediator.getKey())) {
                     getActivity().runOnUiThread(() -> {
-                        ProductItem productItem = (ProductItem) requestStateMediator.getData();
-                        getUriFromFirebaseStorage(HelperConstants.DIR_PRODUCT_IMAGES_PATH, productItem);
+                        if (null != progressDialog && progressDialog.isShowing())
+                            progressDialog.dismiss();
+                        Toast.makeText(getContext(), valueOf(requestStateMediator.getMessage()), Toast.LENGTH_SHORT).show();
                     });
                 }
 
-                if (("XXX").equals(requestStateMediator.getKey())) {
+                if (("GET_STORAGE_URI").equals(requestStateMediator.getKey())) {
                     getActivity().runOnUiThread(() -> {
+                        if (null != progressDialog && progressDialog.isShowing())
+                            progressDialog.dismiss();
+                        Toast.makeText(getContext(), valueOf(requestStateMediator.getMessage()), Toast.LENGTH_SHORT).show();
+                    });
+                }
 
+                if (("ADD_TO_FIRESTORE").equals(requestStateMediator.getKey())) {
+                    getActivity().runOnUiThread(() -> {
+                        if (null != progressDialog && progressDialog.isShowing())
+                            progressDialog.dismiss();
+                        Toast.makeText(getContext(), valueOf(requestStateMediator.getMessage()), Toast.LENGTH_SHORT).show();
+                        dumpFields();
                     });
                 }
 
