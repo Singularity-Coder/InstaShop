@@ -23,24 +23,24 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.appbar.CollapsingToolbarLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.singularitycoder.instashop.R;
 import com.singularitycoder.instashop.admin.view.AddProductsFragment;
-import com.singularitycoder.instashop.auth.model.AuthUserItem;
 import com.singularitycoder.instashop.auth.view.MainActivity;
 import com.singularitycoder.instashop.cart.view.CartListFragment;
 import com.singularitycoder.instashop.dashboard.adapter.DashboardAdapter;
 import com.singularitycoder.instashop.dashboard.model.DashboardItem;
-import com.singularitycoder.instashop.helpers.HelperConstants;
+import com.singularitycoder.instashop.dashboard.viewmodel.DashboardViewModel;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
 import com.singularitycoder.instashop.helpers.HelperSharedPreference;
+import com.singularitycoder.instashop.helpers.RequestStateMediator;
+import com.singularitycoder.instashop.helpers.UiState;
 import com.singularitycoder.instashop.products.view.ProductListFragment;
 import com.singularitycoder.instashop.products.viewmodel.ProductViewModel;
 
@@ -100,9 +100,8 @@ public class DashboardActivity extends AppCompatActivity {
     @Nullable
     private ProductViewModel productViewModel;
 
-    // todo MAX REUSABILITY - xml n java
-    // todo fab in every category to add product
-    // todo all dialogs into dialog fragments
+    @Nullable
+    private DashboardViewModel dashboardViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +112,7 @@ public class DashboardActivity extends AppCompatActivity {
         setUpToolBar();
         setUpCollapsingToolbar();
         checkIfUserExists();
-        readAuthUserData();
+        dashboardViewModel.getAuthUserDataFromRepository(this, helperSharedPreference.getEmail()).observe(this, liveDataObserver());
     }
 
     private void initialisations() {
@@ -124,6 +123,7 @@ public class DashboardActivity extends AppCompatActivity {
         progressDialog.setMessage("Loading...");
         helperObject.glideImageWithErrHandle(this, IMAGE_BANNER, ivBanner, null);
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+        dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
     }
 
     private void setUpToolBar() {
@@ -189,64 +189,6 @@ public class DashboardActivity extends AppCompatActivity {
                 .replace(R.id.con_lay_dashboard, fragment)
                 .addToBackStack(null)
                 .commit();
-    }
-
-    private void readAuthUserData() {
-
-        runOnUiThread(() -> progressDialog.show());
-
-        FirebaseFirestore.getInstance()
-                .collection(HelperConstants.COLL_AUTH_USERS)
-                .whereEqualTo("email", helperSharedPreference.getEmail())
-                .get()
-                .addOnSuccessListener(queryDocumentSnapshots -> {
-
-                    if (!queryDocumentSnapshots.isEmpty()) {
-                        List<DocumentSnapshot> docList = queryDocumentSnapshots.getDocuments();
-                        Log.d(TAG, "docList: " + docList);
-
-                        for (DocumentSnapshot docSnap : docList) {
-                            AuthUserItem authUserItem = docSnap.toObject(AuthUserItem.class);
-                            if (authUserItem != null) {
-                                Log.d(TAG, "AuthItem: " + authUserItem);
-
-                                if (!("").equals(valueOf(docSnap.getString("memberType")))) {
-                                    authUserItem.setMemberType(valueOf(docSnap.getString("memberType")));
-                                    helperSharedPreference.setMemberType(valueOf(docSnap.getString("memberType")));
-                                }
-
-                                if (!("").equals(valueOf(docSnap.getString("name")))) {
-                                    authUserItem.setName(valueOf(docSnap.getString("name")));
-                                    helperSharedPreference.setName(valueOf(docSnap.getString("name")));
-                                }
-
-                                if (!("").equals(valueOf(docSnap.getString("email")))) {
-                                    authUserItem.setEmail(valueOf(docSnap.getString("email")));
-                                    helperSharedPreference.setEmail(valueOf(docSnap.getString("email")));
-                                }
-
-                                authUserItem.setDocId(docSnap.getId());
-
-                                MenuItem addItem = dashMenu.findItem(R.id.action_add_products);
-                                if (("Admin").equals(helperSharedPreference.getMemberType())) {
-                                    addItem.setVisible(true);
-                                } else {
-                                    addItem.setVisible(false);
-                                }
-                            }
-                            Log.d(TAG, "firedoc id: " + docSnap.getId());
-                        }
-                        Toast.makeText(DashboardActivity.this, "Got Data", Toast.LENGTH_SHORT).show();
-                        runOnUiThread(() -> {
-                            progressDialog.dismiss();
-                            setUpRecyclerView();
-                        });
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(DashboardActivity.this, "Couldn't get data!", Toast.LENGTH_SHORT).show();
-                    runOnUiThread(() -> progressDialog.dismiss());
-                });
     }
 
     private void btnUpdateEmail() {
@@ -420,6 +362,74 @@ public class DashboardActivity extends AppCompatActivity {
                 .replace(R.id.con_lay_dashboard, fragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    private Observer liveDataObserver() {
+        Observer<RequestStateMediator> observer = null;
+        observer = requestStateMediator -> {
+            if (UiState.LOADING == requestStateMediator.getStatus()) {
+                runOnUiThread(() -> {
+                    progressDialog.setMessage(valueOf(requestStateMediator.getMessage()));
+                    progressDialog.setCanceledOnTouchOutside(false);
+                    if (null != progressDialog && !progressDialog.isShowing())
+                        progressDialog.show();
+                });
+            }
+
+            if (UiState.SUCCESS == requestStateMediator.getStatus()) {
+
+                if (("AUTH_USER_DATA").equals(requestStateMediator.getKey())) {
+                    runOnUiThread(() -> {
+
+                        // Hide add products menu if shopper
+                        MenuItem addItem = dashMenu.findItem(R.id.action_add_products);
+                        if (("Admin").equals(helperSharedPreference.getMemberType())) {
+                            addItem.setVisible(true);
+                        } else {
+                            addItem.setVisible(false);
+                        }
+
+                        setUpRecyclerView();
+                    });
+                }
+
+                if (("XXXX").equals(requestStateMediator.getKey())) {
+                    runOnUiThread(() -> {
+
+                    });
+                }
+
+                if (("XXXX").equals(requestStateMediator.getKey())) {
+                    runOnUiThread(() -> {
+
+                    });
+                }
+
+                runOnUiThread(() -> {
+                    if (null != progressDialog && progressDialog.isShowing())
+                        progressDialog.dismiss();
+                    Toast.makeText(DashboardActivity.this, valueOf(requestStateMediator.getMessage()), Toast.LENGTH_SHORT).show();
+                });
+            }
+
+            if (UiState.EMPTY == requestStateMediator.getStatus()) {
+                runOnUiThread(() -> {
+                    if (null != progressDialog && progressDialog.isShowing())
+                        progressDialog.dismiss();
+                    Toast.makeText(DashboardActivity.this, valueOf(requestStateMediator.getMessage()), Toast.LENGTH_SHORT).show();
+                });
+            }
+
+            if (UiState.ERROR == requestStateMediator.getStatus()) {
+                runOnUiThread(() -> {
+                    if (null != progressDialog && progressDialog.isShowing())
+                        progressDialog.dismiss();
+                    Toast.makeText(DashboardActivity.this, valueOf(requestStateMediator.getMessage()), Toast.LENGTH_SHORT).show();
+                });
+            }
+        };
+
+        return observer;
     }
 
     @Override

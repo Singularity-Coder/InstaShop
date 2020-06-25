@@ -14,6 +14,14 @@ public class AuthViewModel extends ViewModel {
     @NonNull
     private AuthRepository authRepository = AuthRepository.getInstance();
 
+    public LiveData<RequestStateMediator> signInFromRepository(
+            @NonNull final Activity activity,
+            @NonNull final String email,
+            @NonNull final String password
+    ) throws IllegalArgumentException {
+        return authRepository.signIn(activity, email, password);
+    }
+
     public LiveData<RequestStateMediator> signUpFromRepository(
             @NonNull final Activity activity,
             @NonNull final String memberType,
@@ -24,13 +32,5 @@ public class AuthViewModel extends ViewModel {
             @NonNull final String date
     ) throws IllegalArgumentException {
         return authRepository.signUp(activity, memberType, name, email, password, epochTime, date);
-    }
-
-    public LiveData<RequestStateMediator> signInFromRepository(
-            @NonNull final Activity activity,
-            @NonNull final String email,
-            @NonNull final String password
-    ) throws IllegalArgumentException {
-        return authRepository.signIn(activity, email, password);
     }
 }

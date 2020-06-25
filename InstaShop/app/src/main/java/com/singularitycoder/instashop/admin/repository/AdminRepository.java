@@ -17,7 +17,7 @@ import static java.lang.String.valueOf;
 public class AdminRepository {
 
     @NonNull
-    private static final String TAG = "AuthRepository";
+    private static final String TAG = "AdminRepository";
 
     @NonNull
     private static AdminRepository _instance;

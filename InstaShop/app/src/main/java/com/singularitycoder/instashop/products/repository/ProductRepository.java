@@ -91,7 +91,7 @@ public class ProductRepository {
                 .orderBy(HelperConstants.KEY_PRODUCT_CREATED_EPOCH_TIME)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    requestStateMediator.set(queryDocumentSnapshots, UiState.SUCCESS, "Got Data!", "PRODUCT LIST");
+                    requestStateMediator.set(queryDocumentSnapshots, UiState.SUCCESS, "Got Data!", "PRODUCT_LIST");
                     liveData.postValue(requestStateMediator);
                 })
                 .addOnFailureListener(e -> {
@@ -153,7 +153,7 @@ public class ProductRepository {
                                 productItem.setProductImageUrl("Empty");
                             }
 
-                            requestStateMediator.set(productItem, UiState.SUCCESS, "Got Basic Info!", "PRODUCT INFO");
+                            requestStateMediator.set(productItem, UiState.SUCCESS, "Got Basic Info!", "PRODUCT_INFO");
                             liveData.postValue(requestStateMediator);
                         }
                         Log.d(TAG, "firedoc id: " + documentSnapshot.getId());

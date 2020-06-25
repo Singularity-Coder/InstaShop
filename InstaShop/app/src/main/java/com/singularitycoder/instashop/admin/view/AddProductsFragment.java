@@ -295,25 +295,18 @@ public class AddProductsFragment extends Fragment implements CustomDialogFragmen
 
                 if (("UPLOAD_IMAGE").equals(requestStateMediator.getKey())) {
                     getActivity().runOnUiThread(() -> {
-                        if (null != progressDialog && progressDialog.isShowing())
-                            progressDialog.dismiss();
-                        Toast.makeText(getContext(), valueOf(requestStateMediator.getMessage()), Toast.LENGTH_SHORT).show();
+
                     });
                 }
 
                 if (("GET_STORAGE_URI").equals(requestStateMediator.getKey())) {
                     getActivity().runOnUiThread(() -> {
-                        if (null != progressDialog && progressDialog.isShowing())
-                            progressDialog.dismiss();
-                        Toast.makeText(getContext(), valueOf(requestStateMediator.getMessage()), Toast.LENGTH_SHORT).show();
+
                     });
                 }
 
                 if (("ADD_TO_FIRESTORE").equals(requestStateMediator.getKey())) {
                     getActivity().runOnUiThread(() -> {
-                        if (null != progressDialog && progressDialog.isShowing())
-                            progressDialog.dismiss();
-                        Toast.makeText(getContext(), valueOf(requestStateMediator.getMessage()), Toast.LENGTH_SHORT).show();
                         dumpFields();
                     });
                 }

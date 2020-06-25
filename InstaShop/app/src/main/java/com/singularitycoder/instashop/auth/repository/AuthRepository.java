@@ -32,6 +32,33 @@ public class AuthRepository {
         return _instance;
     }
 
+    public LiveData<RequestStateMediator> signIn(
+            @NonNull final Activity activity,
+            @NonNull final String email,
+            @NonNull final String password) {
+
+        final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
+        final RequestStateMediator requestStateMediator = new RequestStateMediator();
+
+        requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
+        liveData.postValue(requestStateMediator);
+
+        FirebaseAuth
+                .getInstance()
+                .signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(activity, task -> {
+                    if (task.isSuccessful()) {
+                        requestStateMediator.set(email, UiState.SUCCESS, "Got Data!", "SIGNIN");
+                        liveData.postValue(requestStateMediator);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    requestStateMediator.set(null, UiState.ERROR, e.getMessage(), null);
+                    liveData.postValue(requestStateMediator);
+                });
+        return liveData;
+    }
+
     public LiveData<RequestStateMediator> signUp(
             @NonNull final Activity activity,
             @NonNull final String memberType,
@@ -69,33 +96,6 @@ public class AuthRepository {
                     liveData.postValue(requestStateMediator);
                 });
 
-        return liveData;
-    }
-
-    public LiveData<RequestStateMediator> signIn(
-            @NonNull final Activity activity,
-            @NonNull final String email,
-            @NonNull final String password) {
-
-        final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
-        final RequestStateMediator requestStateMediator = new RequestStateMediator();
-
-        requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
-        liveData.postValue(requestStateMediator);
-
-        FirebaseAuth
-                .getInstance()
-                .signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(activity, task -> {
-                    if (task.isSuccessful()) {
-                        requestStateMediator.set(email, UiState.SUCCESS, "Got Data!", "SIGNIN");
-                        liveData.postValue(requestStateMediator);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    requestStateMediator.set(null, UiState.ERROR, e.getMessage(), null);
-                    liveData.postValue(requestStateMediator);
-                });
         return liveData;
     }
 
