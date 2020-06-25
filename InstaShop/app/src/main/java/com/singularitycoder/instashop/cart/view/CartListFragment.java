@@ -5,13 +5,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -25,6 +28,7 @@ import com.singularitycoder.instashop.cart.adapter.CartListAdapter;
 import com.singularitycoder.instashop.cart.model.ProductCartItem;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
 import com.singularitycoder.instashop.helpers.HelperSharedPreference;
+import com.singularitycoder.instashop.products.model.ProductItem;
 import com.singularitycoder.instashop.products.viewmodel.ProductViewModel;
 
 import java.util.ArrayList;
@@ -181,13 +185,56 @@ public class CartListFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_cart, menu);
+
         menu.findItem(R.id.action_add_products).setVisible(false);
         menu.findItem(R.id.action_change_password).setVisible(false);
         menu.findItem(R.id.action_delete_account).setVisible(false);
         menu.findItem(R.id.action_show_cart).setVisible(false);
         menu.findItem(R.id.action_update_email).setVisible(false);
         menu.findItem(R.id.action_sign_out).setVisible(false);
+
+        MenuItem searchItem = menu.findItem(R.id.action_product_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+        searchView.setQueryHint("Search Cart");
+        searchView.setIconifiedByDefault(true);
+//        searchView.setQueryHint(Html.fromHtml("<font color = #ffffff>" + getResources().getString(R.string.string_search_hint) + "</font>"));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchUsers(newText);
+                return false;
+            }
+        });
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_product_search:
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    private void searchUsers(String text) {
+        List<ProductCartItem> filteredUsers = new ArrayList<>();
+        for (ProductCartItem productCartItem : productCartList) {
+            if (productCartItem.getProductName().toLowerCase().trim().contains(text.toLowerCase())) {
+                filteredUsers.add(productCartItem);
+            }
+        }
+        cartListAdapter.filterList(filteredUsers);
+        cartListAdapter.notifyDataSetChanged();
     }
 
     @Override

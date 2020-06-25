@@ -71,6 +71,11 @@ public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return position;
     }
 
+    public void filterList(List<ProductItem> list) {
+        this.productList = list;
+        notifyDataSetChanged();
+    }
+
     public interface ProductViewListener {
         void onProductClickedListener(int position);
     }

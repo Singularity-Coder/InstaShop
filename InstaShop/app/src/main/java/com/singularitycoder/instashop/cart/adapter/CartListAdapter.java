@@ -91,6 +91,11 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return position;
     }
 
+    public void filterList(List<ProductCartItem> list) {
+        this.productCartList = list;
+        notifyDataSetChanged();
+    }
+
     public interface ProductViewListener {
         void onProductClickedListener(int position);
 

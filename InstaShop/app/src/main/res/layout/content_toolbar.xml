@@ -13,6 +13,7 @@
         android:theme="@style/AppTheme.ToolbarTheme"
         app:layout_constraintTop_toTopOf="parent"
         app:titleTextColor="@android:color/white"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
