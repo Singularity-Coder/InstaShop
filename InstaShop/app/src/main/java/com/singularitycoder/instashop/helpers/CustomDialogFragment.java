@@ -2,8 +2,6 @@ package com.singularitycoder.instashop.helpers;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -13,13 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
-import com.singularitycoder.instashop.auth.view.MainActivity;
-
-import static android.widget.Toast.makeText;
 import static java.lang.String.valueOf;
 
 public class CustomDialogFragment extends DialogFragment {
@@ -27,8 +23,13 @@ public class CustomDialogFragment extends DialogFragment {
     @NonNull
     private final HelperGeneral helperGeneral = new HelperGeneral();
 
+    @Nullable
     private SimpleAlertDialogListener simpleAlertDialogListener;
+
+    @Nullable
     private ListDialogListener listDialogListener;
+
+    @Nullable
     private ResetPasswordListener resetPasswordListener;
 
     public CustomDialogFragment() {
@@ -100,10 +101,10 @@ public class CustomDialogFragment extends DialogFragment {
                 .setPositiveButton("OK", (dialog1, id) -> {
                     simpleAlertDialogListener.onDialogPositiveClick("SIMPLE ALERT", CustomDialogFragment.this);
                 })
-                .setNegativeButton("Cancel", (dialog12, id) -> {
+                .setNegativeButton("CANCEL", (dialog12, id) -> {
                     simpleAlertDialogListener.onDialogNegativeClick("SIMPLE ALERT", CustomDialogFragment.this);
                 })
-                .setNeutralButton("Later", (dialogInterface, id) -> {
+                .setNeutralButton("LATER", (dialogInterface, id) -> {
                     simpleAlertDialogListener.onDialogNeutralClick("SIMPLE ALERT", CustomDialogFragment.this);
                 });
     }

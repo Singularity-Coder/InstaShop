@@ -3,6 +3,7 @@ package com.singularitycoder.instashop.auth.viewmodel;
 import android.app.Activity;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -32,5 +33,10 @@ public class AuthViewModel extends ViewModel {
             @NonNull final String date
     ) throws IllegalArgumentException {
         return authRepository.signUp(activity, memberType, name, email, password, epochTime, date);
+    }
+
+    public LiveData<RequestStateMediator> resetPasswordFromRepository(
+            @NonNull final String email, @NonNull final DialogFragment dialog) throws IllegalArgumentException {
+        return authRepository.resetPassword(email, dialog);
     }
 }

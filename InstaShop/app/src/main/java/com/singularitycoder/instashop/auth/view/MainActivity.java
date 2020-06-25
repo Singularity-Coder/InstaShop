@@ -1,12 +1,8 @@
 package com.singularitycoder.instashop.auth.view;
 
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,23 +21,15 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.jakewharton.rxbinding3.view.RxView;
 import com.singularitycoder.instashop.R;
-import com.singularitycoder.instashop.auth.model.AuthUserItem;
 import com.singularitycoder.instashop.auth.viewmodel.AuthViewModel;
 import com.singularitycoder.instashop.dashboard.view.DashboardActivity;
 import com.singularitycoder.instashop.helpers.CustomDialogFragment;
-import com.singularitycoder.instashop.helpers.HelperConstants;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
 import com.singularitycoder.instashop.helpers.HelperSharedPreference;
 import com.singularitycoder.instashop.helpers.RequestStateMediator;
 import com.singularitycoder.instashop.helpers.UiState;
-import com.singularitycoder.instashop.products.model.ProductItem;
-import com.singularitycoder.instashop.products.viewmodel.ProductViewModel;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -295,29 +283,6 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
         return true;
     }
 
-    private void resetPassword(DialogFragment dialog, String email) {
-        runOnUiThread(() -> progressDialog.show());
-        FirebaseAuth
-                .getInstance()
-                .sendPasswordResetEmail(email)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        runOnUiThread(() -> {
-                            progressDialog.dismiss();
-                            dialog.dismiss();
-                            Toast.makeText(MainActivity.this, "We have sent instructions to your email to reset your password. Please check!", Toast.LENGTH_LONG).show();
-                        });
-                    } else {
-                        runOnUiThread(() -> {
-                            progressDialog.dismiss();
-                            dialog.dismiss();
-                            Toast.makeText(MainActivity.this, "Failed to send 'reset password' email. Try again or restart Internet connection!", Toast.LENGTH_SHORT).show();
-                        });
-                    }
-                })
-                .addOnFailureListener(e -> Log.d(TAG, "resetPassword: trace: " + e.getMessage()));
-    }
-
     private void goToDashboardActivity() {
         MainActivity.this.startActivity(new Intent(MainActivity.this, DashboardActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
         MainActivity.this.finish();
@@ -357,6 +322,12 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
                     runOnUiThread(() -> {
                         btnAuthenticate.setEnabled(false);
                         goToDashboardActivity();
+                    });
+                }
+
+                if (("RESET_PASSWORD").equals(requestStateMediator.getKey())) {
+                    runOnUiThread(() -> {
+
                     });
                 }
 
@@ -402,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
     @Override
     public void onResetClicked(String dialogType, DialogFragment dialog, String email) {
         if (("RESET PASSWORD").equals(dialogType)) {
-            AsyncTask.execute(() -> resetPassword(dialog, email));
+            authViewModel.resetPasswordFromRepository(email, dialog).observe(MainActivity.this, liveDataObserver());
         }
     }
 

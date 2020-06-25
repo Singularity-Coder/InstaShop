@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -84,7 +85,7 @@ public class AuthRepository {
                 .createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(activity, task -> {
                     if (task.isSuccessful()) {
-                        createUserFirestore(activity, memberType, name, email, password, epochTime, date);
+                        createFirestoreUser(activity, memberType, name, email, password, epochTime, date);
                         requestStateMediator.set(null, UiState.SUCCESS, "Got Data!", "SIGNUP");
                         liveDataSignUp.postValue(requestStateMediator);
                     }
@@ -97,7 +98,7 @@ public class AuthRepository {
         return liveDataSignUp;
     }
 
-    private void createUserFirestore(
+    private void createFirestoreUser(
             @NonNull final Activity activity,
             @NonNull final String memberType,
             @NonNull final String name,
@@ -141,6 +142,30 @@ public class AuthRepository {
                     requestStateMediator.set(null, UiState.ERROR, e.getMessage(), null);
                     liveDataSignUp.postValue(requestStateMediator);
                 });
+    }
+
+    public MutableLiveData<RequestStateMediator> resetPassword(@NonNull final String email, @NonNull final DialogFragment dialog) {
+
+        final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
+        final RequestStateMediator requestStateMediator = new RequestStateMediator();
+
+        requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
+        liveData.postValue(requestStateMediator);
+
+        FirebaseAuth
+                .getInstance()
+                .sendPasswordResetEmail(email)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        requestStateMediator.set(null, UiState.SUCCESS, "We have sent instructions to your email to reset your password. Please check!", "RESET_PASSWORD");
+                        liveData.postValue(requestStateMediator);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    requestStateMediator.set(null, UiState.ERROR, e.getMessage(), null);
+                    liveDataSignUp.postValue(requestStateMediator);
+                });
+        return liveData;
     }
 
 }
