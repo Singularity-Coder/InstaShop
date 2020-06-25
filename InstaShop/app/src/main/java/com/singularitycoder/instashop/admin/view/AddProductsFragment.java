@@ -1,4 +1,4 @@
-package com.singularitycoder.instashop.admin;
+package com.singularitycoder.instashop.admin.view;
 
 import android.Manifest;
 import android.app.ProgressDialog;
@@ -24,14 +24,20 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.jakewharton.rxbinding3.view.RxView;
 import com.singularitycoder.instashop.R;
+import com.singularitycoder.instashop.admin.viewmodel.AdminViewModel;
+import com.singularitycoder.instashop.auth.viewmodel.AuthViewModel;
 import com.singularitycoder.instashop.helpers.CustomDialogFragment;
 import com.singularitycoder.instashop.helpers.HelperConstants;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
+import com.singularitycoder.instashop.helpers.RequestStateMediator;
+import com.singularitycoder.instashop.helpers.UiState;
 import com.singularitycoder.instashop.products.model.ProductItem;
 
 import butterknife.BindView;
@@ -88,6 +94,9 @@ public class AddProductsFragment extends Fragment implements CustomDialogFragmen
     @Nullable
     private Uri imageUri;
 
+    @Nullable
+    private AdminViewModel adminViewModel;
+
     public AddProductsFragment() {
     }
 
@@ -112,6 +121,7 @@ public class AddProductsFragment extends Fragment implements CustomDialogFragmen
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
+        adminViewModel = new ViewModelProvider(this).get(AdminViewModel.class);
     }
 
     private void setUpToolBar() {
@@ -130,7 +140,7 @@ public class AddProductsFragment extends Fragment implements CustomDialogFragmen
                         .map(o -> ivProduct)
                         .subscribe(
                                 button -> helperObject.checkPermissions(getActivity(), () -> selectImage(), Manifest.permission.READ_EXTERNAL_STORAGE),
-                                throwable -> Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show()
+                                throwable -> Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show()
                         )
         );
 
@@ -139,7 +149,7 @@ public class AddProductsFragment extends Fragment implements CustomDialogFragmen
                         .map(o -> tvCategory)
                         .subscribe(
                                 button -> btnShowCategoriesDialog(),
-                                throwable -> Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show()
+                                throwable -> Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show()
                         )
         );
 
@@ -148,7 +158,7 @@ public class AddProductsFragment extends Fragment implements CustomDialogFragmen
                         .map(o -> btnAddProduct)
                         .subscribe(
                                 button -> btnUploadProduct(fragView),
-                                throwable -> Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_SHORT).show()
+                                throwable -> Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show()
                         )
         );
     }
@@ -201,18 +211,22 @@ public class AddProductsFragment extends Fragment implements CustomDialogFragmen
         helperObject.hideFragmentKeyboard(getContext(), view);
         view.clearFocus();
 
-        if (hasValidInput(imageUri, tvCategory, etProductName, etProductPrice, etProductDescription)) {
-            ProductItem productItem = new ProductItem();
-            productItem.setProductCategory(valueOf(tvCategory.getText()));
-            productItem.setProductImageUri(imageUri);
-            productItem.setProductImageName("Image_" + helperObject.getCurrentEpochTime() + "." + helperObject.getFileExtension(imageUri, getContext()));
-            productItem.setProductCreationDate(helperObject.currentDateTime());
-            productItem.setProductCreationEpochTime(valueOf(helperObject.getCurrentEpochTime()));
-            productItem.setProductDescription(valueOf(etProductDescription.getText()));
-            productItem.setProductName(valueOf(etProductName.getText()));
-            productItem.setProductPrice(valueOf(etProductPrice.getText()));
+        if (helperObject.hasInternet(getContext())) {
+            if (hasValidInput(imageUri, tvCategory, etProductName, etProductPrice, etProductDescription)) {
+                ProductItem productItem = new ProductItem();
+                productItem.setProductCategory(valueOf(tvCategory.getText()));
+                productItem.setProductImageUri(imageUri);
+                productItem.setProductImageName("Image_" + helperObject.getCurrentEpochTime() + "." + helperObject.getFileExtension(imageUri, getContext()));
+                productItem.setProductCreationDate(helperObject.currentDateTime());
+                productItem.setProductCreationEpochTime(valueOf(helperObject.getCurrentEpochTime()));
+                productItem.setProductDescription(valueOf(etProductDescription.getText()));
+                productItem.setProductName(valueOf(etProductName.getText()));
+                productItem.setProductPrice(valueOf(etProductPrice.getText()));
 
-            uploadImage(productItem);
+                adminViewModel.uploadImageFromRepository(productItem).observe(getViewLifecycleOwner(), liveDataObserver());
+            }
+        } else {
+            Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -224,6 +238,8 @@ public class AddProductsFragment extends Fragment implements CustomDialogFragmen
 
     @UiThread
     private void btnShowCategoriesDialog() {
+        // todo context problems
+
 //        Bundle bundle = new Bundle();
 //        bundle.putString("DIALOG_TYPE", "list");
 //        bundle.putString("KEY_TITLE", "Categories");
@@ -258,37 +274,6 @@ public class AddProductsFragment extends Fragment implements CustomDialogFragmen
         });
 
         alertBuilder.show();
-    }
-
-    // UPLOAD TO FIREBASE STORAGE
-    private void uploadImage(ProductItem productItem) {
-        getActivity().runOnUiThread(() -> {
-            if (null != progressDialog && !progressDialog.isShowing()) progressDialog.show();
-        });
-        FirebaseStorage
-                .getInstance()
-                .getReference()
-                .child(HelperConstants.DIR_PRODUCT_IMAGES_PATH)
-                .child(productItem.getProductImageName())
-                .putFile(productItem.getProductImageUri())
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Uri uri = task.getResult().getUploadSessionUri();
-                        Log.d(TAG, "uploadImages: uri: " + uri);
-                        getUriFromFirebaseStorage(HelperConstants.DIR_PRODUCT_IMAGES_PATH, productItem);
-                    } else {
-                        getActivity().runOnUiThread(() -> {
-                            if (null != progressDialog && progressDialog.isShowing())
-                                progressDialog.dismiss();
-                            Toast.makeText(getContext(), "Couldn't upload Image", Toast.LENGTH_SHORT).show();
-                        });
-                    }
-                })
-                .addOnFailureListener(e -> getActivity().runOnUiThread(() -> {
-                    if (null != progressDialog && progressDialog.isShowing())
-                        progressDialog.dismiss();
-                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                }));
     }
 
     // GET URI FROM FIREBASE STORAGE
@@ -362,6 +347,60 @@ public class AddProductsFragment extends Fragment implements CustomDialogFragmen
         etProductName.setText("");
         etProductDescription.setText("");
         etProductPrice.setText("");
+    }
+
+    private Observer liveDataObserver() {
+        Observer<RequestStateMediator> observer = null;
+        observer = requestStateMediator -> {
+            if (UiState.LOADING == requestStateMediator.getStatus()) {
+                getActivity().runOnUiThread(() -> {
+                    progressDialog.setMessage(valueOf(requestStateMediator.getMessage()));
+                    progressDialog.setCanceledOnTouchOutside(false);
+                    if (null != progressDialog && !progressDialog.isShowing())
+                        progressDialog.show();
+                });
+            }
+
+            if (UiState.SUCCESS == requestStateMediator.getStatus()) {
+
+                if (("UPLOAD IMAGE").equals(requestStateMediator.getKey())) {
+                    getActivity().runOnUiThread(() -> {
+                        ProductItem productItem = (ProductItem) requestStateMediator.getData();
+                        getUriFromFirebaseStorage(HelperConstants.DIR_PRODUCT_IMAGES_PATH, productItem);
+                    });
+                }
+
+                if (("XXX").equals(requestStateMediator.getKey())) {
+                    getActivity().runOnUiThread(() -> {
+
+                    });
+                }
+
+                getActivity().runOnUiThread(() -> {
+                    if (null != progressDialog && progressDialog.isShowing())
+                        progressDialog.dismiss();
+                    Toast.makeText(getContext(), valueOf(requestStateMediator.getMessage()), Toast.LENGTH_SHORT).show();
+                });
+            }
+
+            if (UiState.EMPTY == requestStateMediator.getStatus()) {
+                getActivity().runOnUiThread(() -> {
+                    if (null != progressDialog && progressDialog.isShowing())
+                        progressDialog.dismiss();
+                    Toast.makeText(getContext(), valueOf(requestStateMediator.getMessage()), Toast.LENGTH_SHORT).show();
+                });
+            }
+
+            if (UiState.ERROR == requestStateMediator.getStatus()) {
+                getActivity().runOnUiThread(() -> {
+                    if (null != progressDialog && progressDialog.isShowing())
+                        progressDialog.dismiss();
+                    Toast.makeText(getContext(), valueOf(requestStateMediator.getMessage()), Toast.LENGTH_SHORT).show();
+                });
+            }
+        };
+
+        return observer;
     }
 
     @Override

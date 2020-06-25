@@ -9,8 +9,8 @@
 
     <ImageView
         android:id="@+id/iv_cart_product_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
@@ -25,7 +25,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="10dp"
         android:maxLines="2"
         android:text="Product Name"
         android:textColor="@android:color/black"
@@ -62,15 +61,17 @@
         app:layout_constraintStart_toEndOf="@+id/iv_cart_product_image"
         app:layout_constraintTop_toBottomOf="@+id/tv_cart_product_price" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btn_cart_add_item"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:background="@null"
+        android:src="@drawable/ic_add_black_24dp"
         android:text="+"
         android:textSize="25sp"
         android:textStyle="bold"
+        android:tint="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -86,15 +87,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_cart_add_item" />
 
-    <Button
+    <ImageButton
         android:id="@+id/btn_cart_subtract_item"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:background="@null"
+        android:src="@drawable/ic_remove_black_24dp"
         android:text="-"
         android:textSize="30sp"
         android:textStyle="bold"
+        android:tint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_cart_quantity" />

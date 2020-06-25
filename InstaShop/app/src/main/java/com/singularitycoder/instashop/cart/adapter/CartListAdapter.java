@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,12 +71,16 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (qty < 10) {
                     qty += 1;
                     productListViewHolder.tvProductCartQty.setText(valueOf(qty));
+                    productCartItem.setProductQty(valueOf(Integer.valueOf(productCartItem.getProductQty()) + qty));
+//                    productViewListener.onQuantityIncreased(position);
                 }
             });
             productListViewHolder.btnSubtractCartProduct.setOnClickListener(view -> {
                 if (qty > 1) {
                     qty -= 1;
                     productListViewHolder.tvProductCartQty.setText(valueOf(qty));
+                    productCartItem.setProductQty(valueOf(Integer.valueOf(productCartItem.getProductQty()) - qty));
+//                    productViewListener.onQuantityDecreased(position);
                 }
             });
         }
@@ -100,6 +105,10 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onProductClickedListener(int position);
 
         void onRemoveProduct(int position);
+
+        void onQuantityIncreased(int position);
+
+        void onQuantityDecreased(int position);
     }
 
     public void setProductViewListener(ProductViewListener productViewListener) {
@@ -125,10 +134,10 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         TextView tvProductCartQty;
         @Nullable
         @BindView(R.id.btn_cart_add_item)
-        Button btnAddCartProduct;
+        ImageButton btnAddCartProduct;
         @Nullable
         @BindView(R.id.btn_cart_subtract_item)
-        Button btnSubtractCartProduct;
+        ImageButton btnSubtractCartProduct;
 
         @NonNull
         private final CompositeDisposable compositeDisposable = new CompositeDisposable();

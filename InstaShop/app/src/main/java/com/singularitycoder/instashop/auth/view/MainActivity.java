@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
 
     private void btnAuthenticate() {
         if (("signup").equals(valueOf(btnAuthenticate.getText()).toLowerCase().trim())) {
-            if (hasInternet(MainActivity.this)) {
+            if (helperObject.hasInternet(MainActivity.this)) {
                 if (hasValidInput("signup", tvMemberType, etEmail, etPassword)) {
                     authViewModel.signUpFromRepository(
                             MainActivity.this,
@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
                 Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();
             }
         } else {
-            if (hasInternet(MainActivity.this)) {
+            if (helperObject.hasInternet(MainActivity.this)) {
                 if (hasValidInput("login", null, etEmail, etPassword)) {
                     authViewModel.signInFromRepository(
                             MainActivity.this,
@@ -253,12 +253,6 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
         }
         fragmentTransaction.addToBackStack(null);
         dialogFragment.show(fragmentTransaction, "TAG_CustomDialogFragment");
-    }
-
-    private boolean hasInternet(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        assert cm != null;
-        return cm.getActiveNetworkInfo() != null;
     }
 
     private boolean hasValidInput(String key, TextView tvMemberType, EditText etEmail, EditText etPassword) {
@@ -405,8 +399,10 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
                     });
                 }
 
-                if (null != progressDialog && progressDialog.isShowing()) progressDialog.dismiss();
-                Toast.makeText(MainActivity.this, valueOf(requestStateMediator.getMessage()), Toast.LENGTH_SHORT).show();
+                runOnUiThread(() -> {
+                    if (null != progressDialog && progressDialog.isShowing()) progressDialog.dismiss();
+                    Toast.makeText(MainActivity.this, valueOf(requestStateMediator.getMessage()), Toast.LENGTH_SHORT).show();
+                });
 
             }
 

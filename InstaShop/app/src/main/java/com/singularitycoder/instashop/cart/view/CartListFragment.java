@@ -169,10 +169,23 @@ public class CartListFragment extends Fragment {
                 productCartItem.setId(productCartList.get(position).getId());
                 productViewModel.delete(productCartItem);
             }
+
+            @Override
+            public void onQuantityIncreased(int position) {
+//                calculateTotals();
+            }
+
+            @Override
+            public void onQuantityDecreased(int position) {
+//                calculateTotals();
+            }
         });
     }
 
     private void calculateTotals() {
+        totalQty = 0;
+        totalPrice = 0;
+
         for (int i = 0; i < productCartList.size(); i++) {
             totalQty += Integer.parseInt(productCartList.get(i).getProductQty());
             int singlePrice = Integer.parseInt(productCartList.get(i).getProductPrice()) * Integer.parseInt(productCartList.get(i).getProductQty());
