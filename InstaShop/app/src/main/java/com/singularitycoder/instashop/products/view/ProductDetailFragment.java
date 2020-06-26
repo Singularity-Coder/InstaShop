@@ -274,12 +274,6 @@ public class ProductDetailFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        menu.findItem(R.id.action_add_products).setVisible(false);
-        menu.findItem(R.id.action_change_password).setVisible(false);
-        menu.findItem(R.id.action_delete_account).setVisible(false);
-        menu.findItem(R.id.action_show_cart).setVisible(false);
-        menu.findItem(R.id.action_update_email).setVisible(false);
-        menu.findItem(R.id.action_sign_out).setVisible(false);
         super.onCreateOptionsMenu(menu, inflater);
     }
 

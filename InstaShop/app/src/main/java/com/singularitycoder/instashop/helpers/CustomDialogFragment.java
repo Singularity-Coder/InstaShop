@@ -2,7 +2,6 @@ package com.singularitycoder.instashop.helpers;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -16,8 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-
-import com.singularitycoder.instashop.dashboard.view.DashboardActivity;
 
 import java.util.HashMap;
 import java.util.Map;
