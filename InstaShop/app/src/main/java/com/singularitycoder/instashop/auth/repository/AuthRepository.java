@@ -10,6 +10,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.singularitycoder.instashop.auth.model.AuthUserItem;
 import com.singularitycoder.instashop.helpers.HelperConstants;
 import com.singularitycoder.instashop.helpers.HelperSharedPreference;
@@ -160,6 +162,54 @@ public class AuthRepository {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         requestStateMediator.set(null, UiState.SUCCESS, "We have sent instructions to your email to reset your password. Please check!", "RESET_PASSWORD");
+                        liveData.postValue(requestStateMediator);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    requestStateMediator.set(null, UiState.ERROR, e.getMessage(), null);
+                    liveDataSignUp.postValue(requestStateMediator);
+                });
+        return liveData;
+    }
+
+    public MutableLiveData<RequestStateMediator> getFcmDeviceToken() {
+
+        final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
+        final RequestStateMediator requestStateMediator = new RequestStateMediator();
+
+        requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
+        liveData.postValue(requestStateMediator);
+
+        FirebaseInstanceId
+                .getInstance()
+                .getInstanceId()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        String token = task.getResult().getToken();
+                        requestStateMediator.set(token, UiState.SUCCESS, "Registered Token ID: " + token, "FCM_DEVICE_TOKEN");
+                        liveData.postValue(requestStateMediator);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    requestStateMediator.set(null, UiState.ERROR, e.getMessage(), null);
+                    liveDataSignUp.postValue(requestStateMediator);
+                });
+        return liveData;
+    }
+
+    public MutableLiveData<RequestStateMediator> subscribeFcmToTopic(@NonNull final String topic) {
+
+        final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
+        final RequestStateMediator requestStateMediator = new RequestStateMediator();
+
+        requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
+
+        FirebaseMessaging
+                .getInstance()
+                .subscribeToTopic(topic)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        requestStateMediator.set(null, UiState.SUCCESS, "Successfully subscribed!", "FCM_SUBSCRIBE_TOPIC");
                         liveData.postValue(requestStateMediator);
                     }
                 })

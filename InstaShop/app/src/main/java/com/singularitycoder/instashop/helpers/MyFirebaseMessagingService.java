@@ -26,6 +26,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Nullable
     HelperSharedPreference helperSharedPreference;
 
+    // todo send image message to show ads in home viewpager
+    // todo firebase phone auth
+    // todo firebase email auth
+
     @Override
     public void onNewToken(String newToken) {
         super.onNewToken(newToken);

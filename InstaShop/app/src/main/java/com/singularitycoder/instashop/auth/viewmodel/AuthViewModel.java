@@ -39,4 +39,12 @@ public class AuthViewModel extends ViewModel {
             @NonNull final String email, @NonNull final DialogFragment dialog) throws IllegalArgumentException {
         return authRepository.resetPassword(email, dialog);
     }
+
+    public LiveData<RequestStateMediator> getFcmTokenFromRepository() throws IllegalArgumentException {
+        return authRepository.getFcmDeviceToken();
+    }
+
+    public LiveData<RequestStateMediator> subscribeToFcmTopicFromRepository(@NonNull final String topic) throws IllegalArgumentException {
+        return authRepository.subscribeFcmToTopic(topic);
+    }
 }

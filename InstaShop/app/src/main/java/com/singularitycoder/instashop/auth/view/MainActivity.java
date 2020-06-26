@@ -22,8 +22,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.jakewharton.rxbinding3.view.RxView;
 import com.singularitycoder.instashop.R;
 import com.singularitycoder.instashop.auth.viewmodel.AuthViewModel;
@@ -94,10 +92,11 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
     @Nullable
     private AuthViewModel authViewModel;
 
-    // todo null checks for progress dialog
     // todo active network listener
-    // todo use snackbar instead of toast
-    // todo work manager service to sync remote n local db cart list
+
+    // todo on add to cart pressed - send item to server cart - if offline store in local db n if offline show local db list else show remote list
+    // todo work manager service to sync remote n local db cart list when user added items to cart in offline mode to local db - so active listen to internet n on network sync local to remote
+    // todo change dashboard to another fragment on the dashboard activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
         initialisations();
         checkIfUserExists();
         setClickListeners();
-        getDeviceToken();
+        authViewModel.getFcmTokenFromRepository().observe(MainActivity.this, liveDataObserver());
     }
 
     private void initialisations() {
@@ -337,6 +336,24 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
                     });
                 }
 
+                if (("FCM_DEVICE_TOKEN").equals(requestStateMediator.getKey())) {
+                    runOnUiThread(() -> {
+                        String token = (String) requestStateMediator.getData();
+                        if (!("").equals(token)) {
+                            Toast.makeText(MainActivity.this, valueOf(requestStateMediator.getMessage()), Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "getDeviceToken: " + token);
+                        } else {
+                            Toast.makeText(MainActivity.this, "Didn't receive Firebase token!" + token, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+                if (("FCM_SUBSCRIBE_TOPIC").equals(requestStateMediator.getKey())) {
+                    runOnUiThread(() -> {
+
+                    });
+                }
+
                 runOnUiThread(() -> {
                     if (null != progressDialog && progressDialog.isShowing())
                         progressDialog.dismiss();
@@ -363,41 +380,6 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
         };
 
         return observer;
-    }
-
-    private void getDeviceToken() {
-        FirebaseInstanceId
-                .getInstance()
-                .getInstanceId()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        String token = task.getResult().getToken();
-                        if (!("").equals(token)) {
-                            Toast.makeText(MainActivity.this, "Registered Token ID: " + token, Toast.LENGTH_SHORT).show();
-                            Log.d(TAG, "getDeviceToken: " + token);
-                        } else {
-                            Toast.makeText(MainActivity.this, "Didn't receive Firebase token!" + token, Toast.LENGTH_SHORT).show();
-                        }
-                        Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(MainActivity.this, valueOf(task.getException()), Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
-    }
-
-    private void subscribeToTopic() {
-        FirebaseMessaging
-                .getInstance()
-                .subscribeToTopic("weather")
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        Toast.makeText(MainActivity.this, "Successfully subscribed!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(MainActivity.this, valueOf(task.getException()), Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 
     @Override
