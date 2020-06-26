@@ -3,6 +3,7 @@ package com.singularitycoder.instashop.dashboard.viewmodel;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -22,5 +23,19 @@ public class DashboardViewModel extends ViewModel {
 
     public LiveData<RequestStateMediator> deleteAccountFromRepository() throws IllegalArgumentException {
         return dashboardRepository.deleteAccount();
+    }
+
+    public LiveData<RequestStateMediator> updateEmailFromRepository(
+            @NonNull final DialogFragment dialog, @NonNull final String newEmail) throws IllegalArgumentException {
+        return dashboardRepository.updateEmail(dialog, newEmail);
+    }
+
+    public LiveData<RequestStateMediator> changePasswordFromRepository(
+            @NonNull final DialogFragment dialog, @NonNull final String password) throws IllegalArgumentException {
+        return dashboardRepository.changePassword(dialog, password);
+    }
+
+    public LiveData<RequestStateMediator> signOurFromRepository() throws IllegalArgumentException {
+        return dashboardRepository.signOut();
     }
 }

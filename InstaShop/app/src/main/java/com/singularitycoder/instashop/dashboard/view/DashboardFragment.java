@@ -2,9 +2,7 @@ package com.singularitycoder.instashop.dashboard.view;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -208,57 +206,6 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
         recyclerView.setAdapter(dashboardAdapter);
     }
 
-    private void updateEmail(DialogFragment dialog, String newEmail) {
-        FirebaseAuth
-                .getInstance()
-                .getCurrentUser()
-                .updateEmail(newEmail)
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful()) {
-                        getActivity().runOnUiThread(() -> {
-                            progressDialog.dismiss();
-                            dialog.dismiss();
-                            signOut();
-                        });
-                    }
-                })
-                .addOnFailureListener(e -> Log.d(TAG, "updateEmail: trace: " + e.getMessage()));
-    }
-
-    private void changePassword(DialogFragment dialog, String password) {
-        getActivity().runOnUiThread(() -> progressDialog.show());
-        if (null != FirebaseAuth.getInstance().getCurrentUser()) {
-            FirebaseAuth
-                    .getInstance()
-                    .getCurrentUser()
-                    .updatePassword(password)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            getActivity().runOnUiThread(() -> {
-                                progressDialog.dismiss();
-                                dialog.dismiss();
-                                signOut();
-                            });
-                        }
-                    })
-                    .addOnFailureListener(e -> Log.d(TAG, "changePassword: trace: " + e.getMessage()));
-        }
-    }
-
-    private void signOut() {
-        AsyncTask.execute(() -> {
-            FirebaseAuth.getInstance().signOut();
-            authListener = firebaseAuth -> {
-                helperSharedPreference.setUserDocId("");
-                helperSharedPreference.setMemberType("");
-                helperSharedPreference.setName("");
-                helperSharedPreference.setEmail("");
-                productViewModel.deleteAll();
-                if (null == firebaseAuth.getCurrentUser()) goToMainActivity();
-            };
-        });
-    }
-
     private void goToMainActivity() {
         getActivity().startActivity(new Intent(getContext(), MainActivity.class));
         getActivity().finish();
@@ -278,7 +225,7 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
 
             if (UiState.SUCCESS == requestStateMediator.getStatus()) {
 
-                if (("AUTH_USER_DATA").equals(requestStateMediator.getKey())) {
+                if (("STATE_AUTH_USER_DATA").equals(requestStateMediator.getKey())) {
                     getActivity().runOnUiThread(() -> {
 
                         // Hide add products menu if shopper
@@ -294,15 +241,34 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
                     });
                 }
 
-                if (("DELETE_ACCOUNT").equals(requestStateMediator.getKey())) {
+                if (("STATE_DELETE_ACCOUNT").equals(requestStateMediator.getKey())) {
                     getActivity().runOnUiThread(() -> {
                         goToMainActivity();
                     });
                 }
 
-                if (("XXXX").equals(requestStateMediator.getKey())) {
+                if (("STATE_UPDATE_EMAIL").equals(requestStateMediator.getKey())) {
                     getActivity().runOnUiThread(() -> {
 
+                    });
+                }
+
+                if (("STATE_CHANGE_PASSWORD").equals(requestStateMediator.getKey())) {
+                    getActivity().runOnUiThread(() -> {
+
+                    });
+                }
+
+                if (("STATE_SIGN_OUT").equals(requestStateMediator.getKey())) {
+                    getActivity().runOnUiThread(() -> {
+                        authListener = firebaseAuth -> {
+                            helperSharedPreference.setUserDocId("");
+                            helperSharedPreference.setMemberType("");
+                            helperSharedPreference.setName("");
+                            helperSharedPreference.setEmail("");
+                            productViewModel.deleteAll();
+                            if (null == firebaseAuth.getCurrentUser()) goToMainActivity();
+                        };
                     });
                 }
 
@@ -399,10 +365,18 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
                 btnChangePassword();
                 return true;
             case R.id.action_delete_account:
-                dashboardViewModel.deleteAccountFromRepository().observe(this, liveDataObserver());
+                if (helperObject.hasInternet(getContext())) {
+                    dashboardViewModel.deleteAccountFromRepository().observe(this, liveDataObserver());
+                } else {
+                    Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
+                }
                 return true;
             case R.id.action_sign_out:
-                signOut();
+                if (helperObject.hasInternet(getContext())) {
+                    dashboardViewModel.signOurFromRepository().observe(getViewLifecycleOwner(), liveDataObserver());
+                } else {
+                    Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
+                }
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -429,11 +403,19 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
     @Override
     public void onDialogPositiveClick(String dialogType, DialogFragment dialog, Map<Object, Object> map) {
         if (("DIALOG_TYPE_UPDATE_EMAIL").equals(dialogType)) {
-            AsyncTask.execute(() -> updateEmail(dialog, (String) map.get("KEY_EMAIL")));
+            if (helperObject.hasInternet(getContext())) {
+                dashboardViewModel.updateEmailFromRepository(dialog, (String) map.get("KEY_EMAIL")).observe(getViewLifecycleOwner(), liveDataObserver());
+            } else {
+                Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
+            }
         }
 
         if (("DIALOG_TYPE_CHANGE_PASSWORD").equals(dialogType)) {
-            changePassword(dialog, (String) map.get("KEY_PASSWORD"));
+            if (helperObject.hasInternet(getContext())) {
+                dashboardViewModel.changePasswordFromRepository(dialog, (String) map.get("KEY_PASSWORD")).observe(getViewLifecycleOwner(), liveDataObserver());
+            } else {
+                Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

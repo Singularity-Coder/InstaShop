@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -87,7 +88,7 @@ public class DashboardRepository {
                             Log.d(TAG, "firedoc id: " + docSnap.getId());
                         }
 
-                        requestStateMediator.set(null, UiState.SUCCESS, "Got Data!", "AUTH_USER_DATA");
+                        requestStateMediator.set(null, UiState.SUCCESS, "Got Data!", "STATE_AUTH_USER_DATA");
                         liveData.postValue(requestStateMediator);
                     }
                 })
@@ -113,7 +114,7 @@ public class DashboardRepository {
                     .delete()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            requestStateMediator.set(null, UiState.SUCCESS, "Got Data!", "DELETE_ACCOUNT");
+                            requestStateMediator.set(null, UiState.SUCCESS, "Got Data!", "STATE_DELETE_ACCOUNT");
                             liveData.postValue(requestStateMediator);
                         }
                     })
@@ -122,6 +123,78 @@ public class DashboardRepository {
                         liveData.postValue(requestStateMediator);
                     });
         }
+        return liveData;
+    }
+
+    public MutableLiveData<RequestStateMediator> updateEmail(
+            @NonNull final DialogFragment dialog, @NonNull final String newEmail) {
+
+        final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
+        final RequestStateMediator requestStateMediator = new RequestStateMediator();
+
+        requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
+        liveData.postValue(requestStateMediator);
+
+        FirebaseAuth
+                .getInstance()
+                .getCurrentUser()
+                .updateEmail(newEmail)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        requestStateMediator.set(null, UiState.SUCCESS, "Got Data!", "STATE_UPDATE_EMAIL");
+                        liveData.postValue(requestStateMediator);
+                        if (dialog.isVisible()) dialog.dismiss();
+                        signOut();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    requestStateMediator.set(null, UiState.ERROR, e.getMessage(), null);
+                    liveData.postValue(requestStateMediator);
+                });
+        return liveData;
+    }
+
+    public MutableLiveData<RequestStateMediator> changePassword(DialogFragment dialog, String password) {
+
+        final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
+        final RequestStateMediator requestStateMediator = new RequestStateMediator();
+
+        requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
+        liveData.postValue(requestStateMediator);
+
+        if (null != FirebaseAuth.getInstance().getCurrentUser()) {
+            FirebaseAuth
+                    .getInstance()
+                    .getCurrentUser()
+                    .updatePassword(password)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            requestStateMediator.set(null, UiState.SUCCESS, "Got Data!", "STATE_CHANGE_PASSWORD");
+                            liveData.postValue(requestStateMediator);
+                            if (dialog.isVisible()) dialog.dismiss();
+                            signOut();
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        requestStateMediator.set(null, UiState.ERROR, e.getMessage(), null);
+                        liveData.postValue(requestStateMediator);
+                    });
+        }
+        return liveData;
+    }
+
+    public MutableLiveData<RequestStateMediator> signOut() {
+
+        final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
+        final RequestStateMediator requestStateMediator = new RequestStateMediator();
+
+        FirebaseAuth
+                .getInstance()
+                .signOut();
+
+        requestStateMediator.set(null, UiState.SUCCESS, "Signed Out!", "STATE_SIGN_OUT");
+        liveData.postValue(requestStateMediator);
+
         return liveData;
     }
 
