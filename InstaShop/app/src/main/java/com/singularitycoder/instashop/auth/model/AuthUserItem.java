@@ -11,6 +11,7 @@ public class AuthUserItem {
     private String password;
     private String epochTime;
     private String date;
+    private String fcmToken;
 
     @Exclude
     public String getDocId() {
@@ -67,5 +68,13 @@ public class AuthUserItem {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 }

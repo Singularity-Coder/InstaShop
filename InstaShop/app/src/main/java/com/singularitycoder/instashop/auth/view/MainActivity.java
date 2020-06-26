@@ -3,6 +3,7 @@ package com.singularitycoder.instashop.auth.view;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,6 +22,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.jakewharton.rxbinding3.view.RxView;
 import com.singularitycoder.instashop.R;
 import com.singularitycoder.instashop.auth.viewmodel.AuthViewModel;
@@ -31,6 +34,8 @@ import com.singularitycoder.instashop.helpers.HelperSharedPreference;
 import com.singularitycoder.instashop.helpers.RequestStateMediator;
 import com.singularitycoder.instashop.helpers.UiState;
 
+import java.util.Map;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -38,7 +43,7 @@ import io.reactivex.disposables.CompositeDisposable;
 
 import static java.lang.String.valueOf;
 
-public class MainActivity extends AppCompatActivity implements CustomDialogFragment.ListDialogListener, CustomDialogFragment.ResetPasswordListener {
+public class MainActivity extends AppCompatActivity implements CustomDialogFragment.ListDialogListener, CustomDialogFragment.SimpleAlertDialogListener {
 
     @Nullable
     @BindView(R.id.iv_background)
@@ -102,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
         initialisations();
         checkIfUserExists();
         setClickListeners();
+        getDeviceToken();
     }
 
     private void initialisations() {
@@ -332,7 +338,8 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
                 }
 
                 runOnUiThread(() -> {
-                    if (null != progressDialog && progressDialog.isShowing()) progressDialog.dismiss();
+                    if (null != progressDialog && progressDialog.isShowing())
+                        progressDialog.dismiss();
                     Toast.makeText(MainActivity.this, valueOf(requestStateMediator.getMessage()), Toast.LENGTH_SHORT).show();
                 });
 
@@ -358,6 +365,41 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
         return observer;
     }
 
+    private void getDeviceToken() {
+        FirebaseInstanceId
+                .getInstance()
+                .getInstanceId()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        String token = task.getResult().getToken();
+                        if (!("").equals(token)) {
+                            Toast.makeText(MainActivity.this, "Registered Token ID: " + token, Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "getDeviceToken: " + token);
+                        } else {
+                            Toast.makeText(MainActivity.this, "Didn't receive Firebase token!" + token, Toast.LENGTH_SHORT).show();
+                        }
+                        Toast.makeText(MainActivity.this, token, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, valueOf(task.getException()), Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
+    private void subscribeToTopic() {
+        FirebaseMessaging
+                .getInstance()
+                .subscribeToTopic("weather")
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(MainActivity.this, "Successfully subscribed!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, valueOf(task.getException()), Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(e -> Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -371,16 +413,20 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
     }
 
     @Override
-    public void onResetClicked(String dialogType, DialogFragment dialog, String email) {
-        if (("RESET PASSWORD").equals(dialogType)) {
-            authViewModel.resetPasswordFromRepository(email, dialog).observe(MainActivity.this, liveDataObserver());
+    public void onDialogPositiveClick(String dialogType, DialogFragment dialog, Map<Object, Object> map) {
+        if (("DIALOG_TYPE_RESET_PASSWORD").equals(dialogType)) {
+            Log.d(TAG, "onDialogPositiveClick: email: " + (String) map.get("KEY_EMAIL"));
+            authViewModel.resetPasswordFromRepository((String) map.get("KEY_EMAIL"), dialog).observe(MainActivity.this, liveDataObserver());
         }
     }
 
     @Override
-    public void onCancelClicked(String dialogType, DialogFragment dialog) {
-        if (("RESET PASSWORD").equals(dialogType)) {
-            dialog.dismiss();
-        }
+    public void onDialogNegativeClick(String dialogType, DialogFragment dialog) {
+        dialog.dismiss();
+    }
+
+    @Override
+    public void onDialogNeutralClick(String dialogType, DialogFragment dialog) {
+
     }
 }

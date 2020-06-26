@@ -2,6 +2,7 @@ package com.singularitycoder.instashop.helpers;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
@@ -16,6 +17,11 @@ import androidx.annotation.UiThread;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
+import com.singularitycoder.instashop.dashboard.view.DashboardActivity;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import static java.lang.String.valueOf;
 
 public class CustomDialogFragment extends DialogFragment {
@@ -28,9 +34,6 @@ public class CustomDialogFragment extends DialogFragment {
 
     @Nullable
     private ListDialogListener listDialogListener;
-
-    @Nullable
-    private ResetPasswordListener resetPasswordListener;
 
     public CustomDialogFragment() {
     }
@@ -45,14 +48,6 @@ public class CustomDialogFragment extends DialogFragment {
                     simpleAlertDialogListener = (SimpleAlertDialogListener) context;
                 } catch (ClassCastException e) {
                     throw new ClassCastException(getActivity().toString() + " must implement SimpleAlertDialogListener");
-                }
-            }
-
-            if (("resetPasswordDialog").equals(getArguments().getString("DIALOG_TYPE"))) {
-                try {
-                    resetPasswordListener = (ResetPasswordListener) context;
-                } catch (ClassCastException e) {
-                    throw new ClassCastException(getActivity().toString() + " must implement ResetPasswordListener");
                 }
             }
 
@@ -79,6 +74,14 @@ public class CustomDialogFragment extends DialogFragment {
                 resetPasswordDialog(builder);
             }
 
+            if (("updateEmailDialog").equals(getArguments().getString("DIALOG_TYPE"))) {
+                updateEmail(builder);
+            }
+
+            if (("changePasswordDialog").equals(getArguments().getString("DIALOG_TYPE"))) {
+                changePassword(builder);
+            }
+
             if (("list").equals(getArguments().getString("DIALOG_TYPE"))) {
                 if (null != getArguments().getStringArray("KEY_LIST") && null != getArguments().getString("KEY_TITLE")) {
                     String[] list = getArguments().getStringArray("KEY_LIST");
@@ -99,13 +102,13 @@ public class CustomDialogFragment extends DialogFragment {
         builder.setCancelable(true);
         builder
                 .setPositiveButton("OK", (dialog1, id) -> {
-                    simpleAlertDialogListener.onDialogPositiveClick("SIMPLE ALERT", CustomDialogFragment.this);
+                    simpleAlertDialogListener.onDialogPositiveClick("DIALOG_TYPE_SIMPLE_ALERT", CustomDialogFragment.this, null);
                 })
                 .setNegativeButton("CANCEL", (dialog12, id) -> {
-                    simpleAlertDialogListener.onDialogNegativeClick("SIMPLE ALERT", CustomDialogFragment.this);
+                    simpleAlertDialogListener.onDialogNegativeClick("DIALOG_TYPE_SIMPLE_ALERT", CustomDialogFragment.this);
                 })
                 .setNeutralButton("LATER", (dialogInterface, id) -> {
-                    simpleAlertDialogListener.onDialogNeutralClick("SIMPLE ALERT", CustomDialogFragment.this);
+                    simpleAlertDialogListener.onDialogNeutralClick("DIALOG_TYPE_SIMPLE_ALERT", CustomDialogFragment.this);
                 });
     }
 
@@ -133,7 +136,9 @@ public class CustomDialogFragment extends DialogFragment {
         builder.setPositiveButton("RESET", (dialog1, id) -> {
             if (helperGeneral.hasInternet(getContext())) {
                 if (!TextUtils.isEmpty(valueOf(etSendToEmail.getText()))) {
-                    resetPasswordListener.onResetClicked("RESET PASSWORD", CustomDialogFragment.this, valueOf(etSendToEmail.getText()));
+                    Map<Object, Object> map = new HashMap<>();
+                    map.put("KEY_EMAIL", valueOf(etSendToEmail.getText()));
+                    simpleAlertDialogListener.onDialogPositiveClick("DIALOG_TYPE_RESET_PASSWORD", CustomDialogFragment.this, map);
                 } else {
                     Toast.makeText(getContext(), "Email is Required!", Toast.LENGTH_SHORT).show();
                 }
@@ -141,7 +146,79 @@ public class CustomDialogFragment extends DialogFragment {
                 Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
             }
         });
-        builder.setNegativeButton("CANCEL", (dialog12, id) -> resetPasswordListener.onCancelClicked("RESET PASSWORD", CustomDialogFragment.this));
+        builder.setNegativeButton("CANCEL", (dialog12, id) -> simpleAlertDialogListener.onDialogNegativeClick("DIALOG_TYPE_RESET_PASSWORD", CustomDialogFragment.this));
+    }
+
+    @UiThread
+    private void updateEmail(AlertDialog.Builder builder) {
+        final LinearLayout linearLayout = new LinearLayout(getContext());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        linearLayout.setLayoutParams(linearParams);
+
+        final EditText etUpdateEmail = new EditText(getContext());
+        etUpdateEmail.setHint("Type New Email");
+        etUpdateEmail.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        LinearLayout.LayoutParams etUpdateEmailParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        etUpdateEmailParams.setMargins(48, 16, 48, 0);
+        etUpdateEmail.setLayoutParams(etUpdateEmailParams);
+
+        linearLayout.addView(etUpdateEmail);
+
+        builder.setTitle("Update Email");
+        builder.setMessage("Enter new Email ID!");
+        builder.setView(linearLayout);
+        builder.setCancelable(false);
+        builder.setPositiveButton("UPDATE", (dialog1, id) -> {
+            if (helperGeneral.hasInternet(getContext())) {
+                if (!TextUtils.isEmpty(valueOf(etUpdateEmail.getText()))) {
+                    Map<Object, Object> map = new HashMap<>();
+                    map.put("KEY_EMAIL", valueOf(etUpdateEmail.getText()));
+                    simpleAlertDialogListener.onDialogPositiveClick("DIALOG_TYPE_UPDATE_EMAIL", CustomDialogFragment.this, map);
+                } else {
+                    Toast.makeText(getContext(), "Email is Required!", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton("CANCEL", (dialog12, id) -> simpleAlertDialogListener.onDialogNegativeClick("DIALOG_TYPE_UPDATE_EMAIL", CustomDialogFragment.this));
+    }
+
+    @UiThread
+    private void changePassword(AlertDialog.Builder builder) {
+        final LinearLayout linearLayout = new LinearLayout(getContext());
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        linearLayout.setLayoutParams(linearParams);
+
+        final EditText etNewPassword = new EditText(getContext());
+        etNewPassword.setHint("Type New Password");
+        etNewPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+        LinearLayout.LayoutParams etNewPasswordParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        etNewPasswordParams.setMargins(48, 16, 48, 0);
+        etNewPassword.setLayoutParams(etNewPasswordParams);
+
+        linearLayout.addView(etNewPassword);
+
+        builder.setTitle("Change Password");
+        builder.setMessage("Type new password.");
+        builder.setView(linearLayout);
+        builder.setCancelable(false);
+        builder.setPositiveButton("CHANGE", (dialog1, id) -> {
+            if (helperGeneral.hasInternet(getContext())) {
+                if (!TextUtils.isEmpty(valueOf(etNewPassword.getText()))) {
+                    Map<Object, Object> map = new HashMap<>();
+                    map.put("KEY_PASSWORD", valueOf(etNewPassword.getText()));
+                    simpleAlertDialogListener.onDialogPositiveClick("DIALOG_TYPE_CHANGE_PASSWORD", CustomDialogFragment.this, map);
+                } else {
+                    Toast.makeText(getContext(), "Password is Required!", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
+            }
+        });
+        builder.setNegativeButton("CANCEL", (dialog12, id) -> simpleAlertDialogListener.onDialogNegativeClick("DIALOG_TYPE_UPDATE_EMAIL", CustomDialogFragment.this));
     }
 
     @UiThread
@@ -161,17 +238,11 @@ public class CustomDialogFragment extends DialogFragment {
     }
 
     public interface SimpleAlertDialogListener {
-        void onDialogPositiveClick(String dialogType, DialogFragment dialog);
+        void onDialogPositiveClick(String dialogType, DialogFragment dialog, Map<Object, Object> map);
 
         void onDialogNegativeClick(String dialogType, DialogFragment dialog);
 
         void onDialogNeutralClick(String dialogType, DialogFragment dialog);
-    }
-
-    public interface ResetPasswordListener {
-        void onResetClicked(String dialogType, DialogFragment dialog, String email);
-
-        void onCancelClicked(String dialogType, DialogFragment dialog);
     }
 
     public interface ListDialogListener {

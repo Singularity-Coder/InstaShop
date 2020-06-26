@@ -1,28 +1,23 @@
 package com.singularitycoder.instashop.dashboard.view;
 
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.InputType;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -37,6 +32,7 @@ import com.singularitycoder.instashop.cart.view.CartListFragment;
 import com.singularitycoder.instashop.dashboard.adapter.DashboardAdapter;
 import com.singularitycoder.instashop.dashboard.model.DashboardItem;
 import com.singularitycoder.instashop.dashboard.viewmodel.DashboardViewModel;
+import com.singularitycoder.instashop.helpers.CustomDialogFragment;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
 import com.singularitycoder.instashop.helpers.HelperSharedPreference;
 import com.singularitycoder.instashop.helpers.RequestStateMediator;
@@ -46,6 +42,7 @@ import com.singularitycoder.instashop.products.viewmodel.ProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,7 +50,7 @@ import butterknife.Unbinder;
 
 import static java.lang.String.valueOf;
 
-public class DashboardActivity extends AppCompatActivity {
+public class DashboardActivity extends AppCompatActivity implements CustomDialogFragment.SimpleAlertDialogListener {
 
     @Nullable
     @BindView(R.id.iv_banner)
@@ -165,69 +162,35 @@ public class DashboardActivity extends AppCompatActivity {
         DashboardAdapter dashboardAdapter = new DashboardAdapter(dashboardList, this);
         dashboardAdapter.setHasStableIds(true);
         dashboardAdapter.setDashView((position) -> {
-            if (position == 0) showFragment("CATEGORY", "Movies", new ProductListFragment());
 
-            if (position == 1) showFragment("CATEGORY", "Music", new ProductListFragment());
+            Bundle movieBundle = new Bundle();
+            movieBundle.putString("CATEGORY", "Movies");
+            if (position == 0) showFragment(movieBundle, R.id.con_lay_dashboard, new ProductListFragment());
 
-            if (position == 2) showFragment("CATEGORY", "Cameras", new ProductListFragment());
+            Bundle musicBundle = new Bundle();
+            musicBundle.putString("CATEGORY", "Music");
+            if (position == 1) showFragment(musicBundle, R.id.con_lay_dashboard, new ProductListFragment());
 
-            if (position == 3) showFragment("CATEGORY", "Toys", new ProductListFragment());
+            Bundle cameraBundle = new Bundle();
+            cameraBundle.putString("CATEGORY", "Cameras");
+            if (position == 2) showFragment(cameraBundle, R.id.con_lay_dashboard, new ProductListFragment());
 
-            if (position == 4) showFragment("CATEGORY", "Mobiles", new ProductListFragment());
+            Bundle toyBundle = new Bundle();
+            toyBundle.putString("CATEGORY", "Toys");
+            if (position == 3) showFragment(toyBundle, R.id.con_lay_dashboard, new ProductListFragment());
 
-            if (position == 5) showFragment("CATEGORY", "Computers", new ProductListFragment());
+            Bundle mobileBundle = new Bundle();
+            mobileBundle.putString("CATEGORY", "Mobiles");
+            if (position == 4) showFragment(mobileBundle, R.id.con_lay_dashboard, new ProductListFragment());
+
+            Bundle computerBundle = new Bundle();
+            computerBundle.putString("CATEGORY", "Computers");
+            if (position == 5) showFragment(computerBundle, R.id.con_lay_dashboard, new ProductListFragment());
         });
         recyclerView.setAdapter(dashboardAdapter);
     }
 
-    private void showFragment(String key, String value, Fragment fragment) {
-        Bundle bundle = new Bundle();
-        bundle.putString(key, value);
-        fragment.setArguments(bundle);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.con_lay_dashboard, fragment)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    private void btnUpdateEmail() {
-        final LinearLayout linearLayout = new LinearLayout(this);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        linearLayout.setLayoutParams(linearParams);
-
-        final EditText etUpdateEmail = new EditText(DashboardActivity.this);
-        etUpdateEmail.setHint("Type New Email");
-        etUpdateEmail.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-        LinearLayout.LayoutParams etUpdateEmailParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        etUpdateEmailParams.setMargins(48, 16, 48, 0);
-        etUpdateEmail.setLayoutParams(etUpdateEmailParams);
-
-        linearLayout.addView(etUpdateEmail);
-
-        AlertDialog dialog = new AlertDialog.Builder(DashboardActivity.this)
-                .setTitle("Update Email")
-                .setMessage("Enter new Email ID!")
-                .setView(linearLayout)
-                .setPositiveButton("UPDATE", (dialog1, which) -> {
-                    if (helperObject.hasInternet(this)) {
-                        if (!TextUtils.isEmpty(valueOf(etUpdateEmail.getText()))) {
-                            AsyncTask.execute(() -> updateEmail(dialog1, valueOf(etUpdateEmail.getText())));
-                        } else {
-                            Toast.makeText(this, "Email is Required!", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton("CANCEL", null)
-                .setCancelable(false)
-                .create();
-        dialog.show();
-    }
-
-    private void updateEmail(DialogInterface dialog, String newEmail) {
+    private void updateEmail(DialogFragment dialog, String newEmail) {
         FirebaseAuth
                 .getInstance()
                 .getCurrentUser()
@@ -239,53 +202,12 @@ public class DashboardActivity extends AppCompatActivity {
                             dialog.dismiss();
                             signOut();
                         });
-                    } else {
-                        runOnUiThread(() -> {
-                            progressDialog.dismiss();
-                            Toast.makeText(DashboardActivity.this, "Failed to update Email!", Toast.LENGTH_SHORT).show();
-                        });
                     }
                 })
                 .addOnFailureListener(e -> Log.d(TAG, "updateEmail: trace: " + e.getMessage()));
     }
 
-    private void btnChangePassword() {
-        final LinearLayout linearLayout = new LinearLayout(this);
-        linearLayout.setOrientation(LinearLayout.VERTICAL);
-        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        linearLayout.setLayoutParams(linearParams);
-
-        final EditText etNewPassword = new EditText(DashboardActivity.this);
-        etNewPassword.setHint("Type New Password");
-        etNewPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-        LinearLayout.LayoutParams etNewPasswordParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        etNewPasswordParams.setMargins(48, 16, 48, 0);
-        etNewPassword.setLayoutParams(etNewPasswordParams);
-
-        linearLayout.addView(etNewPassword);
-
-        AlertDialog dialog = new AlertDialog.Builder(DashboardActivity.this)
-                .setTitle("Change Password")
-                .setMessage("Type new password. ")
-                .setView(linearLayout)
-                .setPositiveButton("CHANGE", (dialog1, which) -> {
-                    if (helperObject.hasInternet(DashboardActivity.this)) {
-                        if (!TextUtils.isEmpty(valueOf(etNewPassword.getText()))) {
-                            AsyncTask.execute(() -> changePassword(dialog1, valueOf(etNewPassword.getText())));
-                        } else {
-                            Toast.makeText(this, "Password is Required!", Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(this, "No Internet", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setNegativeButton("CANCEL", null)
-                .setCancelable(false)
-                .create();
-        dialog.show();
-    }
-
-    private void changePassword(DialogInterface dialog, String password) {
+    private void changePassword(DialogFragment dialog, String password) {
         runOnUiThread(() -> progressDialog.show());
         if (null != FirebaseAuth.getInstance().getCurrentUser()) {
             FirebaseAuth
@@ -299,41 +221,10 @@ public class DashboardActivity extends AppCompatActivity {
                                 dialog.dismiss();
                                 signOut();
                             });
-                        } else {
-                            runOnUiThread(() -> {
-                                progressDialog.dismiss();
-                                Toast.makeText(DashboardActivity.this, "Failed to update Password!", Toast.LENGTH_SHORT).show();
-                            });
                         }
                     })
                     .addOnFailureListener(e -> Log.d(TAG, "changePassword: trace: " + e.getMessage()));
         }
-    }
-
-    private void deleteAccount() {
-        AsyncTask.execute(() -> {
-            runOnUiThread(() -> progressDialog.show());
-            if (null != FirebaseAuth.getInstance().getCurrentUser()) {
-                FirebaseAuth
-                        .getInstance()
-                        .getCurrentUser()
-                        .delete()
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                runOnUiThread(() -> {
-                                    goToMainActivity();
-                                    progressDialog.dismiss();
-                                });
-                            } else {
-                                runOnUiThread(() -> {
-                                    Toast.makeText(DashboardActivity.this, "Failed to delete your account!", Toast.LENGTH_SHORT).show();
-                                    progressDialog.dismiss();
-                                });
-                            }
-                        })
-                        .addOnFailureListener(e -> Log.d(TAG, "removeUser: trace: " + e.getMessage()));
-            }
-        });
     }
 
     private void signOut() {
@@ -353,15 +244,6 @@ public class DashboardActivity extends AppCompatActivity {
     private void goToMainActivity() {
         DashboardActivity.this.startActivity(new Intent(DashboardActivity.this, MainActivity.class));
         DashboardActivity.this.finish();
-    }
-
-    private void addProducts() {
-        Fragment fragment = new AddProductsFragment();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.con_lay_dashboard, fragment)
-                .addToBackStack(null)
-                .commit();
     }
 
     private Observer liveDataObserver() {
@@ -393,9 +275,9 @@ public class DashboardActivity extends AppCompatActivity {
                     });
                 }
 
-                if (("XXXX").equals(requestStateMediator.getKey())) {
+                if (("DELETE_ACCOUNT").equals(requestStateMediator.getKey())) {
                     runOnUiThread(() -> {
-
+                        goToMainActivity();
                     });
                 }
 
@@ -432,6 +314,33 @@ public class DashboardActivity extends AppCompatActivity {
         return observer;
     }
 
+    public void showFragment(Bundle bundle, int parentLayout, Fragment fragment) {
+        fragment.setArguments(bundle);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .replace(parentLayout, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    // todo generify this
+    private void btnUpdateEmail() {
+        Bundle bundle = new Bundle();
+        bundle.putString("DIALOG_TYPE", "updateEmailDialog");
+
+        DialogFragment dialogFragment = new CustomDialogFragment();
+        dialogFragment.setArguments(bundle);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        Fragment previousFragment = getSupportFragmentManager().findFragmentByTag("TAG_CustomDialogFragment");
+        if (previousFragment != null) {
+            fragmentTransaction.remove(previousFragment);
+        }
+        fragmentTransaction.addToBackStack(null);
+        dialogFragment.show(fragmentTransaction, "TAG_CustomDialogFragment");
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_dashboard, menu);
@@ -443,10 +352,10 @@ public class DashboardActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_show_cart:
-                showFragment("", "", new CartListFragment());
+                showFragment(new Bundle(), R.id.con_lay_dashboard, new CartListFragment());
                 return true;
             case R.id.action_add_products:
-                addProducts();
+                showFragment(new Bundle(), R.id.con_lay_dashboard, new AddProductsFragment());
                 return true;
             case R.id.action_update_email:
                 btnUpdateEmail();
@@ -455,7 +364,7 @@ public class DashboardActivity extends AppCompatActivity {
                 btnChangePassword();
                 return true;
             case R.id.action_delete_account:
-                deleteAccount();
+                dashboardViewModel.deleteAccountFromRepository().observe(this, liveDataObserver());
                 return true;
             case R.id.action_sign_out:
                 signOut();
@@ -464,6 +373,21 @@ public class DashboardActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void btnChangePassword() {
+        Bundle bundle = new Bundle();
+        bundle.putString("DIALOG_TYPE", "changePasswordDialog");
+
+        DialogFragment dialogFragment = new CustomDialogFragment();
+        dialogFragment.setArguments(bundle);
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        Fragment previousFragment = getSupportFragmentManager().findFragmentByTag("TAG_CustomDialogFragment");
+        if (previousFragment != null) {
+            fragmentTransaction.remove(previousFragment);
+        }
+        fragmentTransaction.addToBackStack(null);
+        dialogFragment.show(fragmentTransaction, "TAG_CustomDialogFragment");
+    }
 
     @Override
     public void onStart() {
@@ -481,5 +405,26 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
+    }
+
+    @Override
+    public void onDialogPositiveClick(String dialogType, DialogFragment dialog, Map<Object, Object> map) {
+        if (("DIALOG_TYPE_UPDATE_EMAIL").equals(dialogType)) {
+            AsyncTask.execute(() -> updateEmail(dialog, (String) map.get("KEY_EMAIL")));
+        }
+
+        if (("DIALOG_TYPE_CHANGE_PASSWORD").equals(dialogType)) {
+            changePassword(dialog, (String) map.get("KEY_PASSWORD"));
+        }
+    }
+
+    @Override
+    public void onDialogNegativeClick(String dialogType, DialogFragment dialog) {
+
+    }
+
+    @Override
+    public void onDialogNeutralClick(String dialogType, DialogFragment dialog) {
+
     }
 }

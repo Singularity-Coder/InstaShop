@@ -30,6 +30,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -74,6 +75,15 @@ public class HelperGeneral extends AppCompatActivity {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         assert cm != null;
         return cm.getActiveNetworkInfo() != null;
+    }
+
+    public void showFragment(Bundle bundle, int parentLayout, Fragment fragment) {
+        fragment.setArguments(bundle);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(parentLayout, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     public void hideActivityKeyboard(Activity activity) {

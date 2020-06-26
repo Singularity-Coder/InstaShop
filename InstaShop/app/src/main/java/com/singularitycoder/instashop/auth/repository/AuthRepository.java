@@ -146,6 +146,8 @@ public class AuthRepository {
 
     public MutableLiveData<RequestStateMediator> resetPassword(@NonNull final String email, @NonNull final DialogFragment dialog) {
 
+        // todo wrong email error message is not working - possible firebase issue
+
         final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
         final RequestStateMediator requestStateMediator = new RequestStateMediator();
 

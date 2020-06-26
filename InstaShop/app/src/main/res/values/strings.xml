@@ -1,11 +1,10 @@
 <resources>
     <string name="app_name">InstaShop</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="menu_add_product">Add Product</string>
-    <string name="menu_update_email">Update Email</string>
-    <string name="menu_change_password">Change Password</string>
-    <string name="menu_delete_account">Delete Account</string>
-    <string name="menu_sign_out">Sign Out</string>
+    <string name="menu_add_product" translatable="true">Add Product</string>
+    <string name="menu_update_email" translatable="true">Update Email</string>
+    <string name="menu_change_password" translatable="true">Change Password</string>
+    <string name="menu_delete_account" translatable="true">Delete Account</string>
+    <string name="menu_sign_out" translatable="true">Sign Out</string>
+    <string name="default_notification_channel_id" translatable="false">fcm_default_channel</string>
 </resources>

@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.singularitycoder.instashop.auth.model.AuthUserItem;
@@ -94,6 +95,33 @@ public class DashboardRepository {
                     requestStateMediator.set(null, UiState.ERROR, e.getMessage(), null);
                     liveData.postValue(requestStateMediator);
                 });
+        return liveData;
+    }
+
+    public MutableLiveData<RequestStateMediator> deleteAccount() {
+        final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
+        final RequestStateMediator requestStateMediator = new RequestStateMediator();
+
+        if (null != FirebaseAuth.getInstance().getCurrentUser()) {
+
+            requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
+            liveData.postValue(requestStateMediator);
+
+            FirebaseAuth
+                    .getInstance()
+                    .getCurrentUser()
+                    .delete()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            requestStateMediator.set(null, UiState.SUCCESS, "Got Data!", "DELETE_ACCOUNT");
+                            liveData.postValue(requestStateMediator);
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        requestStateMediator.set(null, UiState.ERROR, e.getMessage(), null);
+                        liveData.postValue(requestStateMediator);
+                    });
+        }
         return liveData;
     }
 

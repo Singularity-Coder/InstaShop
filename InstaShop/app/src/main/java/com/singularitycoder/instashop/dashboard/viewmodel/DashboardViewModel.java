@@ -19,4 +19,8 @@ public class DashboardViewModel extends ViewModel {
             @NonNull final String email) throws IllegalArgumentException {
         return dashboardRepository.readAuthUserData(context, email);
     }
+
+    public LiveData<RequestStateMediator> deleteAccountFromRepository() throws IllegalArgumentException {
+        return dashboardRepository.deleteAccount();
+    }
 }
