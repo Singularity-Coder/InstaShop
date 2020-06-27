@@ -92,11 +92,6 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
     @Nullable
     private AuthViewModel authViewModel;
 
-    // todo active network listener
-    // todo on add to cart pressed - send item to server cart - if offline store in local db n if offline show local db list else show remote list
-    // todo work manager service to sync remote n local db cart list when user added items to cart in offline mode to local db - so active listen to internet n on network sync local to remote
-    // todo change dashboard to another fragment on the dashboard activity
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

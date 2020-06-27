@@ -6,6 +6,9 @@ public class HelperConstants {
     public static final String COLL_AUTH_USERS = "InstaShopUsers";
     public static final String COLL_PRODUCTS = "InstaShopProducts";
 
+    // Firebase Firestore Sub-Collection
+    public static final String SUB_COLL_CART = "Cart";
+
     // Firebase Storage
     public static final String DIR_PRODUCT_IMAGES_PATH = "ProductImages/";
 

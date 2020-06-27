@@ -67,7 +67,7 @@ public class AdminRepository {
     }
 
     // GET URI FROM FIREBASE STORAGE
-    private void getUriFromFirebaseStorage(String fileDirectory, ProductItem productItem) {
+    private void getUriFromFirebaseStorage(@NonNull final String fileDirectory, @NonNull final ProductItem productItem) {
 
         requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
         liveData.postValue(requestStateMediator);
@@ -97,7 +97,7 @@ public class AdminRepository {
     }
 
     // DELETE FROM FIREBASE STORAGE
-    private void deleteFromFirebaseStorage(String fileDirectory, ProductItem productItem) {
+    private void deleteFromFirebaseStorage(@NonNull final String fileDirectory, @NonNull final ProductItem productItem) {
         FirebaseStorage
                 .getInstance()
                 .getReference()
@@ -107,7 +107,7 @@ public class AdminRepository {
     }
 
     // CREATE FROM FIRESTORE
-    private void addFileItemToFirestore(String storageImageUrl, ProductItem productItem) {
+    private void addFileItemToFirestore(@NonNull final String storageImageUrl, @NonNull final ProductItem productItem) {
         requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
         liveData.postValue(requestStateMediator);
 

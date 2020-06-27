@@ -83,9 +83,10 @@ public class DashboardRepository {
                                     helperSharedPreference.setEmail(valueOf(docSnap.getString("email")));
                                 }
 
+                                Log.d(TAG, "firedoc id: " + docSnap.getId());
                                 authUserItem.setDocId(docSnap.getId());
+                                helperSharedPreference.setUserDocId(docSnap.getId());
                             }
-                            Log.d(TAG, "firedoc id: " + docSnap.getId());
                         }
 
                         requestStateMediator.set(null, UiState.SUCCESS, "Got Data!", "STATE_AUTH_USER_DATA");

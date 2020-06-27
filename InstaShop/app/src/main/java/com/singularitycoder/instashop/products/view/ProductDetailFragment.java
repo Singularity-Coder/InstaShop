@@ -22,11 +22,12 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.jakewharton.rxbinding3.view.RxView;
 import com.singularitycoder.instashop.R;
+import com.singularitycoder.instashop.cart.model.ProductCartItem;
+import com.singularitycoder.instashop.cart.viewmodel.ProductCartViewModel;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
 import com.singularitycoder.instashop.helpers.HelperSharedPreference;
 import com.singularitycoder.instashop.helpers.RequestStateMediator;
 import com.singularitycoder.instashop.helpers.UiState;
-import com.singularitycoder.instashop.cart.model.ProductCartItem;
 import com.singularitycoder.instashop.products.model.ProductItem;
 import com.singularitycoder.instashop.products.viewmodel.ProductViewModel;
 
@@ -42,6 +43,9 @@ public class ProductDetailFragment extends Fragment {
     @Nullable
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @Nullable
+    @BindView(R.id.tv_no_internet)
+    TextView tvNoInternet;
     @Nullable
     @BindView(R.id.iv_product_header)
     ImageView ivProductImage;
@@ -103,10 +107,18 @@ public class ProductDetailFragment extends Fragment {
     @Nullable
     private ProductViewModel productViewModel;
 
+    @Nullable
+    private ProductCartViewModel productCartViewModel;
+
     private int qty = 1;
 
     public ProductDetailFragment() {
     }
+
+    // todo active network listener
+    // todo on add to cart pressed - send item to server cart - if offline, store in local db else store in sub coll of user n if offline show local db list else show remote list
+    // todo work manager service to sync remote n local db cart list when user added items to cart in offline mode to local db - so active listen to internet n on network sync local to remote
+    // todo change dashboard to another fragment on the dashboard activity
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -120,7 +132,7 @@ public class ProductDetailFragment extends Fragment {
         getBundleData();
         initialisations(view);
         setUpToolBar();
-        getProductInfo();
+        getProductDetails();
         setClickListeners(view);
         return view;
     }
@@ -141,6 +153,7 @@ public class ProductDetailFragment extends Fragment {
         progressDialog = new ProgressDialog(getContext());
         progressDialog = new ProgressDialog(getContext());
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+        productCartViewModel = new ViewModelProvider(this).get(ProductCartViewModel.class);
     }
 
     private void setUpToolBar() {
@@ -153,7 +166,7 @@ public class ProductDetailFragment extends Fragment {
         toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
     }
 
-    private void getProductInfo() {
+    private void getProductDetails() {
         if (helperObject.hasInternet(getContext())) {
             productViewModel.getProductFromRepository(docId).observe(getViewLifecycleOwner(), liveDataObserver());
         } else {
@@ -175,31 +188,42 @@ public class ProductDetailFragment extends Fragment {
             }
 
             if (UiState.SUCCESS == requestStateMediator.getStatus()) {
+
+                if (("STATE_PRODUCT_DETAIL").equals(requestStateMediator.getKey())) {
+                    getActivity().runOnUiThread(() -> {
+                        String productImage = ((ProductItem) requestStateMediator.getData()).getProductImageUrl();
+                        String productCategory = ((ProductItem) requestStateMediator.getData()).getProductCategory();
+                        String productName = ((ProductItem) requestStateMediator.getData()).getProductName();
+                        String productPrice = ((ProductItem) requestStateMediator.getData()).getProductPrice();
+                        String productDateCreated = ((ProductItem) requestStateMediator.getData()).getProductCreationDate();
+                        String productDesc = ((ProductItem) requestStateMediator.getData()).getProductDescription();
+
+                        helperObject.glideImage(getContext(), productImage, ivProductImage);
+                        tvProductName.setText(productName);
+                        tvProductPrice.setText("$" + productPrice);
+                        tvProductPriceDesc.setText("Price: " + productPrice);
+                        tvProductCategoryDesc.setText("Category: " + productCategory);
+                        tvProductDateDesc.setText("Date: " + productDateCreated);
+                        tvProductDescription.setText("Description: " + productDesc);
+
+                        // Prepare Cart Item
+                        productCartItem.setProductCategory(productCategory);
+                        productCartItem.setProductName(productName);
+                        productCartItem.setProductImageUrl(productImage);
+                        productCartItem.setProductPrice(productPrice);
+                    });
+                }
+
+                if (("STATE_ADD_CART_FIRESTORE").equals(requestStateMediator.getKey())) {
+                    getActivity().runOnUiThread(() -> {
+
+                    });
+                }
+
                 getActivity().runOnUiThread(() -> {
                     if (null != progressDialog && progressDialog.isShowing())
                         progressDialog.dismiss();
                     Toast.makeText(getContext(), valueOf(requestStateMediator.getMessage()), Toast.LENGTH_SHORT).show();
-
-                    String productImage = ((ProductItem) requestStateMediator.getData()).getProductImageUrl();
-                    String productCategory = ((ProductItem) requestStateMediator.getData()).getProductCategory();
-                    String productName = ((ProductItem) requestStateMediator.getData()).getProductName();
-                    String productPrice = ((ProductItem) requestStateMediator.getData()).getProductPrice();
-                    String productDateCreated = ((ProductItem) requestStateMediator.getData()).getProductCreationDate();
-                    String productDesc = ((ProductItem) requestStateMediator.getData()).getProductDescription();
-
-                    helperObject.glideImage(getContext(), productImage, ivProductImage);
-                    tvProductName.setText(productName);
-                    tvProductPrice.setText("$" + productPrice);
-                    tvProductPriceDesc.setText("Price: " + productPrice);
-                    tvProductCategoryDesc.setText("Category: " + productCategory);
-                    tvProductDateDesc.setText("Date: " + productDateCreated);
-                    tvProductDescription.setText("Description: " + productDesc);
-
-                    // Prepare Cart Item
-                    productCartItem.setProductCategory(productCategory);
-                    productCartItem.setProductName(productName);
-                    productCartItem.setProductImageUrl(productImage);
-                    productCartItem.setProductPrice(productPrice);
                 });
             }
 
@@ -267,9 +291,20 @@ public class ProductDetailFragment extends Fragment {
     }
 
     private void addToCart(View fragView) {
-        productCartItem.setProductQty(valueOf(tvQuantity.getText()));
-        productViewModel.insert(productCartItem);
-        helperObject.showSnack(fragView, "Added To Cart", getResources().getColor(android.R.color.white), "OK", null);
+        if (helperObject.hasInternet(getContext())) {
+            // add to sub coll of user
+            tvNoInternet.setVisibility(View.GONE);
+            productCartItem.setProductQty(valueOf(tvQuantity.getText()));
+            productCartViewModel.addCartProductToFirestoreFromRepository(getContext(), productCartItem).observe(getViewLifecycleOwner(), liveDataObserver());
+            helperObject.showSnack(fragView, "Added To Cart", getResources().getColor(android.R.color.white), "OK", null);
+        } else {
+            // add to local db when no network
+            tvNoInternet.setVisibility(View.VISIBLE);
+            Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
+            productCartItem.setProductQty(valueOf(tvQuantity.getText()));
+            productCartViewModel.insertIntoRoomDbFromRepository(productCartItem);
+            helperObject.showSnack(fragView, "Added To Cart", getResources().getColor(android.R.color.white), "OK", null);
+        }
     }
 
     @Override

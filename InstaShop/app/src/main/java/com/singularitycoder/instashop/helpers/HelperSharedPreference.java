@@ -13,7 +13,10 @@ public class HelperSharedPreference {
     private static final String KEY_NAME = "name";
 
     @NonNull
-    private static final String KEY_DOC_ID = "docId";
+    private static final String KEY_USER_DOC_ID = "userDocId";
+
+    @NonNull
+    private static final String KEY_PRODUCT_DOC_ID = "productDocId";
 
     @NonNull
     private static final String KEY_EMAIL = "email";
@@ -76,12 +79,21 @@ public class HelperSharedPreference {
     }
 
     public void setUserDocId(String docId) {
-        sharedPrefEditor.putString(KEY_DOC_ID, docId);
+        sharedPrefEditor.putString(KEY_USER_DOC_ID, docId);
         sharedPrefEditor.commit();
     }
 
     public String getUserDocId() {
-        return sharedPref.getString(KEY_DOC_ID, "");
+        return sharedPref.getString(KEY_USER_DOC_ID, "");
+    }
+
+    public void setProductDocId(String docId) {
+        sharedPrefEditor.putString(KEY_PRODUCT_DOC_ID, docId);
+        sharedPrefEditor.commit();
+    }
+
+    public String getProductDocId() {
+        return sharedPref.getString(KEY_PRODUCT_DOC_ID, "");
     }
 
     public void setFcmToken(String firebaseToken) {

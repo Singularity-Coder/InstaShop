@@ -30,6 +30,7 @@ import com.singularitycoder.instashop.R;
 import com.singularitycoder.instashop.admin.view.AddProductsFragment;
 import com.singularitycoder.instashop.auth.view.MainActivity;
 import com.singularitycoder.instashop.cart.view.CartListFragment;
+import com.singularitycoder.instashop.cart.viewmodel.ProductCartViewModel;
 import com.singularitycoder.instashop.dashboard.adapter.DashboardAdapter;
 import com.singularitycoder.instashop.dashboard.model.DashboardItem;
 import com.singularitycoder.instashop.dashboard.viewmodel.DashboardViewModel;
@@ -39,7 +40,6 @@ import com.singularitycoder.instashop.helpers.HelperSharedPreference;
 import com.singularitycoder.instashop.helpers.RequestStateMediator;
 import com.singularitycoder.instashop.helpers.UiState;
 import com.singularitycoder.instashop.products.view.ProductListFragment;
-import com.singularitycoder.instashop.products.viewmodel.ProductViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +96,7 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
     private ProgressDialog progressDialog;
 
     @Nullable
-    private ProductViewModel productViewModel;
+    private ProductCartViewModel productCartViewModel;
 
     @Nullable
     private DashboardViewModel dashboardViewModel;
@@ -128,7 +128,7 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading...");
         helperObject.glideImageWithErrHandle(getContext(), IMAGE_BANNER, ivBanner, null);
-        productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
+        productCartViewModel = new ViewModelProvider(this).get(ProductCartViewModel.class);
         dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
     }
 
@@ -266,7 +266,7 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
                             helperSharedPreference.setMemberType("");
                             helperSharedPreference.setName("");
                             helperSharedPreference.setEmail("");
-                            productViewModel.deleteAll();
+                            productCartViewModel.deleteAllFromRoomDbFromRepository();
                             if (null == firebaseAuth.getCurrentUser()) goToMainActivity();
                         };
                     });

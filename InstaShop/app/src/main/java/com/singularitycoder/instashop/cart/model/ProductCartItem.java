@@ -5,6 +5,8 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.google.firebase.firestore.Exclude;
+
 @Entity(tableName = "product_cart_table")
 public class ProductCartItem {
 
@@ -28,9 +30,12 @@ public class ProductCartItem {
     @ColumnInfo(name = "ProductQty")
     private String productQty;
 
+    private String productDocId;
+
     public ProductCartItem() {
     }
 
+    @Exclude
     public int getId() {
         return id;
     }
@@ -38,7 +43,6 @@ public class ProductCartItem {
     public void setId(int id) {
         this.id = id;
     }
-
 
     public String getProductName() {
         return productName;
@@ -78,5 +82,14 @@ public class ProductCartItem {
 
     public void setProductQty(String productQty) {
         this.productQty = productQty;
+    }
+
+    @Exclude
+    public String getProductDocId() {
+        return productDocId;
+    }
+
+    public void setProductDocId(String productDocId) {
+        this.productDocId = productDocId;
     }
 }
