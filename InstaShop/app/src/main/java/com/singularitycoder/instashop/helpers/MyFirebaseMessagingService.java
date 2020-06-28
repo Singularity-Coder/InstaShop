@@ -34,19 +34,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void onNewToken(String newToken) {
         super.onNewToken(newToken);
 
+        // You get this device reg token when the app installs for the first time. Dont flush it on signout from Shared Prefs. The token is app specific n not account specific.
+        // use token to target
         Log.d(TAG, "onNewToken: " + newToken);
         helperSharedPreference = HelperSharedPreference.getInstance(this);
         helperSharedPreference.setFcmToken(newToken);
 
         // On initial startup of your app, the FCM SDK generates a registration token for the client app instance. If you want to target single devices, or create device groups, you'll need to access this token.
         // Get updated InstanceID token.
-        String refreshedToken = null;
-        try {
-            refreshedToken = FirebaseInstanceId.getInstance().getToken("", "");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Log.d(TAG, "Refreshed token: " + refreshedToken);
+
 
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
@@ -61,32 +57,27 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
+        // Check if message contains a data payload.
+        if (remoteMessage.getData().size() > 0) {
+            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-            // todo Handle FCM messages here.
-            // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
-            Log.d(TAG, "From: " + remoteMessage.getFrom());
-
-            // Check if message contains a data payload.
-            if (remoteMessage.getData().size() > 0) {
-                Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-
-                if (/* Check if data needs to be processed by long running job */ true) {
-                    // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
+            if (/* Check if data needs to be processed by long running job */ true) {
+                // For long-running tasks (10 seconds or more) use Firebase Job Dispatcher.
 //                    scheduleJob();
-                } else {
-                    // Handle message within 10 seconds
+            } else {
+                // Handle message within 10 seconds
 //                    handleNow();
-                }
-
             }
 
-            // Check if message contains a notification payload.
-            if (remoteMessage.getNotification() != null) {
-                Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-            }
+        }
 
-            // Also if you intend on generating your own notifications as a result of a received FCM
-            // message, here is where that should be initiated. See sendNotification method below.
+        // Check if message contains a notification payload.
+        if (remoteMessage.getNotification() != null) {
+            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+        }
+
+        // Also if you intend on generating your own notifications as a result of a received FCM
+        // message, here is where that should be initiated. See sendNotification method below.
 
         checkNotificationInMessage(remoteMessage);
     }

@@ -211,7 +211,8 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
         getActivity().finish();
     }
 
-    private Observer liveDataObserver() {
+    @NonNull
+    private Observer<RequestStateMediator> liveDataObserver() {
         Observer<RequestStateMediator> observer = null;
         observer = requestStateMediator -> {
             if (UiState.LOADING == requestStateMediator.getStatus()) {

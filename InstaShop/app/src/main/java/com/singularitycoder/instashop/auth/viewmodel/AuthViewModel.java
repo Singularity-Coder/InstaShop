@@ -45,6 +45,6 @@ public class AuthViewModel extends ViewModel {
     }
 
     public LiveData<RequestStateMediator> subscribeToFcmTopicFromRepository(@NonNull final String topic) throws IllegalArgumentException {
-        return authRepository.subscribeFcmToTopic(topic);
+        return authRepository.subscribeToFcmTopic(topic);
     }
 }

@@ -146,7 +146,8 @@ public class AuthRepository {
                 });
     }
 
-    public MutableLiveData<RequestStateMediator> resetPassword(@NonNull final String email, @NonNull final DialogFragment dialog) {
+    public MutableLiveData<RequestStateMediator> resetPassword(
+            @NonNull final String email, @NonNull final DialogFragment dialog) {
 
         // todo wrong email error message is not working - possible firebase issue
 
@@ -197,7 +198,7 @@ public class AuthRepository {
         return liveData;
     }
 
-    public MutableLiveData<RequestStateMediator> subscribeFcmToTopic(@NonNull final String topic) {
+    public MutableLiveData<RequestStateMediator> subscribeToFcmTopic(@NonNull final String topic) {
 
         final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
         final RequestStateMediator requestStateMediator = new RequestStateMediator();

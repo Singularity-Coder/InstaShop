@@ -32,6 +32,7 @@ import com.singularitycoder.instashop.helpers.HelperSharedPreference;
 import com.singularitycoder.instashop.helpers.RequestStateMediator;
 import com.singularitycoder.instashop.helpers.UiState;
 
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -287,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
         MainActivity.this.finish();
     }
 
-    private Observer liveDataObserver() {
+    private Observer<RequestStateMediator> liveDataObserver() {
         Observer<RequestStateMediator> observer = null;
         observer = requestStateMediator -> {
             if (UiState.LOADING == requestStateMediator.getStatus()) {

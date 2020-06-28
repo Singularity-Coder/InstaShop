@@ -8,6 +8,43 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:27303614742:android:b6dfaa50077df3214f5837",
+        "android_client_info": {
+          "package_name": "com.google.firebase.quickstart.fcm"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "27303614742-ntonb9l81s7tb2oppnr69qn90bl3s9d6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.google.firebase.quickstart.fcm",
+            "certificate_hash": "7103a7bcaec4b678c15693a01fd6fd2046957a0e"
+          }
+        },
+        {
+          "client_id": "27303614742-k16ohv6o6i102k3kvu4f6engdabp3lqp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDANFa4K5hy_iDTw4OdX4MiibABRwwm_ts"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "27303614742-k16ohv6o6i102k3kvu4f6engdabp3lqp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:27303614742:android:4250122bea251b4b4f5837",
         "android_client_info": {
           "package_name": "com.singularitycoder.folkdatabase"
@@ -43,6 +80,14 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "27303614742-2nuiqg6ndd3thd6eonc5pvp50p9vcqdu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.singularitycoder.instashop",
+            "certificate_hash": "7103a7bcaec4b678c15693a01fd6fd2046957a0e"
+          }
+        },
         {
           "client_id": "27303614742-k16ohv6o6i102k3kvu4f6engdabp3lqp.apps.googleusercontent.com",
           "client_type": 3
