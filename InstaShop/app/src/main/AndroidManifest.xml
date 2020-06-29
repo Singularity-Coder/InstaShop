@@ -40,7 +40,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".home.view.HomeActivity"
+            android:name=".base.BaseActivity"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />

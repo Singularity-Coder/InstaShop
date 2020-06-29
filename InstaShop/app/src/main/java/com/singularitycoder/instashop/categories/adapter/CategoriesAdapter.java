@@ -1,4 +1,4 @@
-package com.singularitycoder.instashop.dashboard.adapter;
+package com.singularitycoder.instashop.categories.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jakewharton.rxbinding3.view.RxView;
 import com.singularitycoder.instashop.R;
-import com.singularitycoder.instashop.dashboard.model.DashboardItem;
+import com.singularitycoder.instashop.categories.model.CategoriesItem;
 
 import java.util.Collections;
 import java.util.List;
@@ -23,10 +23,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.disposables.CompositeDisposable;
 
-public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class CategoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @NonNull
-    private List<DashboardItem> dashboardList = Collections.EMPTY_LIST;
+    private List<CategoriesItem> dashboardList = Collections.EMPTY_LIST;
 
     @Nullable
     private Context context;
@@ -34,7 +34,7 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Nullable
     private DashView dashView;
 
-    public DashboardAdapter(List<DashboardItem> dashboardList, Context context) {
+    public CategoriesAdapter(List<CategoriesItem> dashboardList, Context context) {
         this.dashboardList = dashboardList;
         this.context = context;
     }
@@ -49,12 +49,12 @@ public class DashboardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        DashboardItem dashboardItem = dashboardList.get(position);
+        CategoriesItem categoriesItem = dashboardList.get(position);
         if (holder instanceof DashboardViewHolder && null != holder) {
             DashboardViewHolder dashboardViewHolder = (DashboardViewHolder) holder;
 
-            dashboardViewHolder.homeImage.setImageResource(dashboardItem.getIntHomeImage());
-            dashboardViewHolder.homeTitle.setText(dashboardItem.getStrHomeTitle());
+            dashboardViewHolder.homeImage.setImageResource(categoriesItem.getIntHomeImage());
+            dashboardViewHolder.homeTitle.setText(categoriesItem.getStrHomeTitle());
         }
     }
 

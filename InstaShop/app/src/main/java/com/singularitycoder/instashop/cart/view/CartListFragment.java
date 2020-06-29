@@ -139,7 +139,7 @@ public class CartListFragment extends Fragment {
         if (null != activity) {
             activity.setSupportActionBar(toolbar);
             activity.setTitle("Cart");
-            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
     }

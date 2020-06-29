@@ -1,4 +1,4 @@
-package com.singularitycoder.instashop.dashboard.repository;
+package com.singularitycoder.instashop.categories.repository;
 
 import android.content.Context;
 import android.util.Log;
@@ -20,25 +20,25 @@ import java.util.List;
 
 import static java.lang.String.valueOf;
 
-public class DashboardRepository {
+public class CategoriesRepository {
 
     @NonNull
     private static final String TAG = "DashboardRepository";
 
     @NonNull
-    private static DashboardRepository _instance;
+    private static CategoriesRepository _instance;
 
     @NonNull
     private HelperSharedPreference helperSharedPreference;
 
 
-    public DashboardRepository() {
+    public CategoriesRepository() {
     }
 
     @NonNull
-    public static synchronized DashboardRepository getInstance() {
+    public static synchronized CategoriesRepository getInstance() {
         if (null == _instance) {
-            _instance = new DashboardRepository();
+            _instance = new CategoriesRepository();
         }
         return _instance;
     }

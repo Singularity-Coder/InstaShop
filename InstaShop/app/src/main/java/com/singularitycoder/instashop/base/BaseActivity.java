@@ -1,18 +1,16 @@
-package com.singularitycoder.instashop.home.view;
+package com.singularitycoder.instashop.base;
 
 import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.singularitycoder.instashop.R;
-import com.singularitycoder.instashop.dashboard.view.DashboardFragment;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
+import com.singularitycoder.instashop.home.view.HomeFragment;
 
-public class HomeActivity extends AppCompatActivity {
+public class BaseActivity extends AppCompatActivity {
 
     @NonNull
     private final HelperGeneral helperObject = new HelperGeneral();
@@ -28,7 +26,16 @@ public class HomeActivity extends AppCompatActivity {
     private void showDashboardFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.con_lay_dashboard, new HomeFragment())
+                .replace(R.id.con_lay_dashboard, new BaseFragment())
                 .commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        if (fragmentManager.getBackStackEntryCount() > 0) {
+            fragmentManager.popBackStack(); //Pops one of the added fragments
+        }
     }
 }

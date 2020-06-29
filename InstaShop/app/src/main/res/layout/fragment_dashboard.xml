@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:fitsSystemWindows="true"
-    tools:context=".dashboard.view.DashboardFragment">
+    tools:context=".categories.view.CategoriesFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"

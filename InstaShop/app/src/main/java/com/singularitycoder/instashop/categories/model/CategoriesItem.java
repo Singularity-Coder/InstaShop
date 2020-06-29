@@ -1,6 +1,6 @@
-package com.singularitycoder.instashop.dashboard.model;
+package com.singularitycoder.instashop.categories.model;
 
-public class DashboardItem {
+public class CategoriesItem {
 
     private int intHomeImage;
     private String strHomeTitle;
@@ -9,12 +9,12 @@ public class DashboardItem {
     private String strUserName;
 
     // Header
-    public DashboardItem(String strImageUrl, String strUserName) {
+    public CategoriesItem(String strImageUrl, String strUserName) {
         this.strImageUrl = strImageUrl;
         this.strUserName = strUserName;
     }
 
-    public DashboardItem(int intHomeImage, String strHomeTitle) {
+    public CategoriesItem(int intHomeImage, String strHomeTitle) {
         this.intHomeImage = intHomeImage;
         this.strHomeTitle = strHomeTitle;
     }

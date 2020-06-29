@@ -25,7 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.jakewharton.rxbinding3.view.RxView;
 import com.singularitycoder.instashop.R;
 import com.singularitycoder.instashop.auth.viewmodel.AuthViewModel;
-import com.singularitycoder.instashop.home.view.HomeActivity;
+import com.singularitycoder.instashop.base.BaseActivity;
 import com.singularitycoder.instashop.helpers.CustomDialogFragment;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
 import com.singularitycoder.instashop.helpers.HelperSharedPreference;
@@ -283,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
     }
 
     private void goToDashboardActivity() {
-        MainActivity.this.startActivity(new Intent(MainActivity.this, HomeActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        MainActivity.this.startActivity(new Intent(MainActivity.this, BaseActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
         MainActivity.this.finish();
     }
 

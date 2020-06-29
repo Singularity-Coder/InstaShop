@@ -1,4 +1,4 @@
-package com.singularitycoder.instashop.dashboard.view;
+package com.singularitycoder.instashop.categories.view;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -31,9 +31,9 @@ import com.singularitycoder.instashop.admin.view.AddProductsFragment;
 import com.singularitycoder.instashop.auth.view.MainActivity;
 import com.singularitycoder.instashop.cart.view.CartListFragment;
 import com.singularitycoder.instashop.cart.viewmodel.ProductCartViewModel;
-import com.singularitycoder.instashop.dashboard.adapter.DashboardAdapter;
-import com.singularitycoder.instashop.dashboard.model.DashboardItem;
-import com.singularitycoder.instashop.dashboard.viewmodel.DashboardViewModel;
+import com.singularitycoder.instashop.categories.adapter.CategoriesAdapter;
+import com.singularitycoder.instashop.categories.model.CategoriesItem;
+import com.singularitycoder.instashop.categories.viewmodel.CategoriesViewModel;
 import com.singularitycoder.instashop.helpers.CustomDialogFragment;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
 import com.singularitycoder.instashop.helpers.HelperSharedPreference;
@@ -51,7 +51,7 @@ import butterknife.Unbinder;
 
 import static java.lang.String.valueOf;
 
-public class DashboardFragment extends Fragment implements CustomDialogFragment.SimpleAlertDialogListener {
+public class CategoriesFragment extends Fragment implements CustomDialogFragment.SimpleAlertDialogListener {
 
     @Nullable
     @BindView(R.id.iv_banner)
@@ -67,7 +67,7 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
     RecyclerView recyclerView;
 
     @NonNull
-    private final List<DashboardItem> dashboardList = new ArrayList<>();
+    private final List<CategoriesItem> dashboardList = new ArrayList<>();
 
     @NonNull
     private final HelperGeneral helperObject = new HelperGeneral();
@@ -99,9 +99,9 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
     private ProductCartViewModel productCartViewModel;
 
     @Nullable
-    private DashboardViewModel dashboardViewModel;
+    private CategoriesViewModel categoriesViewModel;
 
-    public DashboardFragment() {
+    public CategoriesFragment() {
     }
 
     @Override
@@ -117,7 +117,7 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
         setUpToolBar();
         setUpCollapsingToolbar();
         checkIfUserExists();
-        dashboardViewModel.getAuthUserDataFromRepository(getContext(), helperSharedPreference.getEmail()).observe(getViewLifecycleOwner(), liveDataObserver());
+        categoriesViewModel.getAuthUserDataFromRepository(getContext(), helperSharedPreference.getEmail()).observe(getViewLifecycleOwner(), liveDataObserver());
         return view;
     }
 
@@ -129,21 +129,21 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
         progressDialog.setMessage("Loading...");
         helperObject.glideImageWithErrHandle(getContext(), IMAGE_BANNER, ivBanner, null);
         productCartViewModel = new ViewModelProvider(this).get(ProductCartViewModel.class);
-        dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
+        categoriesViewModel = new ViewModelProvider(this).get(CategoriesViewModel.class);
     }
 
     private void setUpToolBar() {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         if (null != activity) {
             activity.setSupportActionBar(toolbar);
-            activity.setTitle("InstaShop");
+//            activity.setTitle("Categories");
         }
         toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
 //        toolbar.setOverflowIcon(getResources().getDrawable(android.R.drawable.ic_menu_more));
     }
 
     private void setUpCollapsingToolbar() {
-        collapsingToolbarLayout.setTitle(getString(R.string.app_name));
+        collapsingToolbarLayout.setTitle("Categories");
         collapsingToolbarLayout.setCollapsedTitleTextColor(getResources().getColor(android.R.color.white));
         collapsingToolbarLayout.setExpandedTitleColor(getResources().getColor(android.R.color.white));
     }
@@ -155,23 +155,23 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
     }
 
     private void setUpRecyclerView() {
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(20);
         recyclerView.setDrawingCacheEnabled(true);
         recyclerView.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH);
 
-        dashboardList.add(new DashboardItem(R.drawable.ic_local_movies_black_24dp, "Movies"));
-        dashboardList.add(new DashboardItem(R.drawable.ic_music_note_black_24dp, "Music"));
-        dashboardList.add(new DashboardItem(R.drawable.ic_camera_alt_black_24dp, "Cameras"));
-        dashboardList.add(new DashboardItem(R.drawable.ic_toys_black_24dp, "Toys"));
-        dashboardList.add(new DashboardItem(R.drawable.ic_phone_iphone_black_24dp, "Mobiles"));
-        dashboardList.add(new DashboardItem(R.drawable.ic_computer_black_24dp, "Computers"));
+        dashboardList.add(new CategoriesItem(R.drawable.ic_local_movies_black_24dp, "Movies"));
+        dashboardList.add(new CategoriesItem(R.drawable.ic_music_note_black_24dp, "Music"));
+        dashboardList.add(new CategoriesItem(R.drawable.ic_camera_alt_black_24dp, "Cameras"));
+        dashboardList.add(new CategoriesItem(R.drawable.ic_toys_black_24dp, "Toys"));
+        dashboardList.add(new CategoriesItem(R.drawable.ic_phone_iphone_black_24dp, "Mobiles"));
+        dashboardList.add(new CategoriesItem(R.drawable.ic_computer_black_24dp, "Computers"));
 
-        DashboardAdapter dashboardAdapter = new DashboardAdapter(dashboardList, getContext());
-        dashboardAdapter.setHasStableIds(true);
-        dashboardAdapter.setDashView((position) -> {
+        CategoriesAdapter categoriesAdapter = new CategoriesAdapter(dashboardList, getContext());
+        categoriesAdapter.setHasStableIds(true);
+        categoriesAdapter.setDashView((position) -> {
 
             Bundle movieBundle = new Bundle();
             movieBundle.putString("CATEGORY", "Movies");
@@ -203,7 +203,7 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
             if (position == 5)
                 showFragment(computerBundle, R.id.con_lay_dashboard, new ProductListFragment());
         });
-        recyclerView.setAdapter(dashboardAdapter);
+        recyclerView.setAdapter(categoriesAdapter);
     }
 
     private void goToMainActivity() {
@@ -345,7 +345,7 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_dashboard, menu);
+        inflater.inflate(R.menu.menu_categories, menu);
         dashMenu = menu;
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -353,9 +353,6 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_show_cart:
-                showFragment(new Bundle(), R.id.con_lay_dashboard, new CartListFragment());
-                return true;
             case R.id.action_add_products:
                 showFragment(new Bundle(), R.id.con_lay_dashboard, new AddProductsFragment());
                 return true;
@@ -367,14 +364,14 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
                 return true;
             case R.id.action_delete_account:
                 if (helperObject.hasInternet(getContext())) {
-                    dashboardViewModel.deleteAccountFromRepository().observe(this, liveDataObserver());
+                    categoriesViewModel.deleteAccountFromRepository().observe(this, liveDataObserver());
                 } else {
                     Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
                 }
                 return true;
             case R.id.action_sign_out:
                 if (helperObject.hasInternet(getContext())) {
-                    dashboardViewModel.signOurFromRepository().observe(getViewLifecycleOwner(), liveDataObserver());
+                    categoriesViewModel.signOurFromRepository().observe(getViewLifecycleOwner(), liveDataObserver());
                 } else {
                     Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
                 }
@@ -405,7 +402,7 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
     public void onDialogPositiveClick(String dialogType, DialogFragment dialog, Map<Object, Object> map) {
         if (("DIALOG_TYPE_UPDATE_EMAIL").equals(dialogType)) {
             if (helperObject.hasInternet(getContext())) {
-                dashboardViewModel.updateEmailFromRepository(dialog, (String) map.get("KEY_EMAIL")).observe(getViewLifecycleOwner(), liveDataObserver());
+                categoriesViewModel.updateEmailFromRepository(dialog, (String) map.get("KEY_EMAIL")).observe(getViewLifecycleOwner(), liveDataObserver());
             } else {
                 Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
             }
@@ -413,7 +410,7 @@ public class DashboardFragment extends Fragment implements CustomDialogFragment.
 
         if (("DIALOG_TYPE_CHANGE_PASSWORD").equals(dialogType)) {
             if (helperObject.hasInternet(getContext())) {
-                dashboardViewModel.changePasswordFromRepository(dialog, (String) map.get("KEY_PASSWORD")).observe(getViewLifecycleOwner(), liveDataObserver());
+                categoriesViewModel.changePasswordFromRepository(dialog, (String) map.get("KEY_PASSWORD")).observe(getViewLifecycleOwner(), liveDataObserver());
             } else {
                 Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
             }
