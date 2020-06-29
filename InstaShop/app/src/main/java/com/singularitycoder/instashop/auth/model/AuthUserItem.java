@@ -2,7 +2,7 @@ package com.singularitycoder.instashop.auth.model;
 
 import com.google.firebase.firestore.Exclude;
 
-public class AuthUserItem {
+public final class AuthUserItem {
 
     private String docId;
     private String memberType;
@@ -14,67 +14,67 @@ public class AuthUserItem {
     private String fcmToken;
 
     @Exclude
-    public String getDocId() {
+    public final String getDocId() {
         return docId;
     }
 
-    public void setDocId(String docId) {
+    public final void setDocId(String docId) {
         this.docId = docId;
     }
 
-    public String getMemberType() {
+    public final String getMemberType() {
         return memberType;
     }
 
-    public void setMemberType(String memberType) {
+    public final void setMemberType(String memberType) {
         this.memberType = memberType;
     }
 
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public final void setName(String name) {
         this.name = name;
     }
 
-    public String getEmail() {
+    public final String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
+    public final void setEmail(String email) {
         this.email = email;
     }
 
-    public String getPassword() {
+    public final String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
+    public final void setPassword(String password) {
         this.password = password;
     }
 
-    public String getEpochTime() {
+    public final String getEpochTime() {
         return epochTime;
     }
 
-    public void setEpochTime(String epochTime) {
+    public final void setEpochTime(String epochTime) {
         this.epochTime = epochTime;
     }
 
-    public String getDate() {
+    public final String getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public final void setDate(String date) {
         this.date = date;
     }
 
-    public String getFcmToken() {
+    public final String getFcmToken() {
         return fcmToken;
     }
 
-    public void setFcmToken(String fcmToken) {
+    public final void setFcmToken(String fcmToken) {
         this.fcmToken = fcmToken;
     }
 }

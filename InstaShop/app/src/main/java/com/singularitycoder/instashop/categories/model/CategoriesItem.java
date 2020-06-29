@@ -1,6 +1,6 @@
 package com.singularitycoder.instashop.categories.model;
 
-public class CategoriesItem {
+public final class CategoriesItem {
 
     private int intHomeImage;
     private String strHomeTitle;
@@ -19,19 +19,19 @@ public class CategoriesItem {
         this.strHomeTitle = strHomeTitle;
     }
 
-    public int getIntHomeImage() {
+    public final int getIntHomeImage() {
         return intHomeImage;
     }
 
-    public String getStrHomeTitle() {
+    public final String getStrHomeTitle() {
         return strHomeTitle;
     }
 
-    public String getStrImageUrl() {
+    public final String getStrImageUrl() {
         return strImageUrl;
     }
 
-    public String getStrUserName() {
+    public final String getStrUserName() {
         return strUserName;
     }
 }

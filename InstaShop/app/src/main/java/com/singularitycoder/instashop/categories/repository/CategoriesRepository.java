@@ -20,7 +20,7 @@ import java.util.List;
 
 import static java.lang.String.valueOf;
 
-public class CategoriesRepository {
+public final class CategoriesRepository {
 
     @NonNull
     private static final String TAG = "DashboardRepository";
@@ -43,7 +43,7 @@ public class CategoriesRepository {
         return _instance;
     }
 
-    public MutableLiveData<RequestStateMediator> readAuthUserData(
+    public final MutableLiveData<RequestStateMediator> readAuthUserData(
             @NonNull final Context context, @NonNull final String email) {
 
         helperSharedPreference = HelperSharedPreference.getInstance(context);
@@ -100,7 +100,7 @@ public class CategoriesRepository {
         return liveData;
     }
 
-    public MutableLiveData<RequestStateMediator> deleteAccount() {
+    public final MutableLiveData<RequestStateMediator> deleteAccount() {
         final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
         final RequestStateMediator requestStateMediator = new RequestStateMediator();
 
@@ -127,7 +127,7 @@ public class CategoriesRepository {
         return liveData;
     }
 
-    public MutableLiveData<RequestStateMediator> updateEmail(
+    public final MutableLiveData<RequestStateMediator> updateEmail(
             @NonNull final DialogFragment dialog, @NonNull final String newEmail) {
 
         final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
@@ -155,7 +155,7 @@ public class CategoriesRepository {
         return liveData;
     }
 
-    public MutableLiveData<RequestStateMediator> changePassword(DialogFragment dialog, String password) {
+    public final MutableLiveData<RequestStateMediator> changePassword(DialogFragment dialog, String password) {
 
         final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
         final RequestStateMediator requestStateMediator = new RequestStateMediator();
@@ -184,7 +184,7 @@ public class CategoriesRepository {
         return liveData;
     }
 
-    public MutableLiveData<RequestStateMediator> signOut() {
+    public final MutableLiveData<RequestStateMediator> signOut() {
 
         final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
         final RequestStateMediator requestStateMediator = new RequestStateMediator();

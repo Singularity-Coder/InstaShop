@@ -20,7 +20,7 @@ import com.singularitycoder.instashop.products.dao.ProductCartDao;
 
 import java.util.List;
 
-public class ProductCartRepository {
+public final class ProductCartRepository {
 
     @NonNull
     private static final String TAG = "ProductCartRepository";
@@ -53,29 +53,29 @@ public class ProductCartRepository {
 
     // ROOM START______________________________________________________________
 
-    public void insertIntoRoomDb(ProductCartItem productCartItem) {
+    public final void insertIntoRoomDb(ProductCartItem productCartItem) {
         AsyncTask.SERIAL_EXECUTOR.execute(() -> productCartDao.insertProduct(productCartItem));
     }
 
-    public void updateInRoomDb(ProductCartItem productCartItem) {
+    public final void updateInRoomDb(ProductCartItem productCartItem) {
         AsyncTask.SERIAL_EXECUTOR.execute(() -> productCartDao.updateProduct(productCartItem));
     }
 
-    public void deleteFromRoomDb(ProductCartItem productCartItem) {
+    public final void deleteFromRoomDb(ProductCartItem productCartItem) {
         AsyncTask.SERIAL_EXECUTOR.execute(() -> productCartDao.deleteProduct(productCartItem));
     }
 
-    public void deleteAllFromRoomDb() {
+    public final void deleteAllFromRoomDb() {
         AsyncTask.THREAD_POOL_EXECUTOR.execute(() -> productCartDao.deleteAllProducts());
     }
 
-    public LiveData<List<ProductCartItem>> getAllFromRoomDb() {
+    public final LiveData<List<ProductCartItem>> getAllFromRoomDb() {
         return cartProductList;
     }
 
     // ROOM END______________________________________________________________
 
-    public MutableLiveData<RequestStateMediator> getCartItemsFromFirestore(@NonNull final Context context) {
+    public final MutableLiveData<RequestStateMediator> getCartItemsFromFirestore(@NonNull final Context context) {
 
         final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
         final RequestStateMediator requestStateMediator = new RequestStateMediator();
@@ -103,7 +103,7 @@ public class ProductCartRepository {
     }
 
     // UI is in Product Detail frag. So loading happens there.
-    public MutableLiveData<RequestStateMediator> addCartItemsToFirestore(
+    public final MutableLiveData<RequestStateMediator> addCartItemsToFirestore(
             @NonNull final Context context, @NonNull final ProductCartItem productCartItem) {
 
         final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();

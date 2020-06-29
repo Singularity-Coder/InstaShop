@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class HelperSharedPreference {
+public final class HelperSharedPreference {
 
     @NonNull
     private static final String KEY_NAME = "name";
@@ -51,57 +51,57 @@ public class HelperSharedPreference {
         sharedPrefEditor.apply();
     }
 
-    public void setMemberType(String memberType) {
+    public final void setMemberType(String memberType) {
         sharedPrefEditor.putString(KEY_MEMBER_TYPE, memberType);
         sharedPrefEditor.commit();
     }
 
-    public String getMemberType() {
+    public final String getMemberType() {
         return sharedPref.getString(KEY_MEMBER_TYPE, "");
     }
 
-    public void setName(String name) {
+    public final void setName(String name) {
         sharedPrefEditor.putString(KEY_NAME, name);
         sharedPrefEditor.commit();
     }
 
-    public String getName() {
+    public final String getName() {
         return sharedPref.getString(KEY_NAME, "");
     }
 
-    public void setEmail(String email) {
+    public final void setEmail(String email) {
         sharedPrefEditor.putString(KEY_EMAIL, email);
         sharedPrefEditor.commit();
     }
 
-    public String getEmail() {
+    public final String getEmail() {
         return sharedPref.getString(KEY_EMAIL, "");
     }
 
-    public void setUserDocId(String docId) {
+    public final void setUserDocId(String docId) {
         sharedPrefEditor.putString(KEY_USER_DOC_ID, docId);
         sharedPrefEditor.commit();
     }
 
-    public String getUserDocId() {
+    public final String getUserDocId() {
         return sharedPref.getString(KEY_USER_DOC_ID, "");
     }
 
-    public void setProductDocId(String docId) {
+    public final void setProductDocId(String docId) {
         sharedPrefEditor.putString(KEY_PRODUCT_DOC_ID, docId);
         sharedPrefEditor.commit();
     }
 
-    public String getProductDocId() {
+    public final String getProductDocId() {
         return sharedPref.getString(KEY_PRODUCT_DOC_ID, "");
     }
 
-    public void setFcmToken(String firebaseToken) {
+    public final void setFcmToken(String firebaseToken) {
         sharedPrefEditor.putString(KEY_FCM_TOKEN, firebaseToken);
         sharedPrefEditor.commit();
     }
 
-    public String getFcmToken() {
+    public final String getFcmToken() {
         return sharedPref.getString(KEY_FCM_TOKEN, "");
     }
 }

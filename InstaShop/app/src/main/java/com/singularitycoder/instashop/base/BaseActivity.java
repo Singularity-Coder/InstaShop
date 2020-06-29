@@ -10,7 +10,7 @@ import com.singularitycoder.instashop.R;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
 import com.singularitycoder.instashop.home.view.HomeFragment;
 
-public class BaseActivity extends AppCompatActivity {
+public final class BaseActivity extends AppCompatActivity {
 
     @NonNull
     private final HelperGeneral helperObject = new HelperGeneral();

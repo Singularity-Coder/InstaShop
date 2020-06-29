@@ -23,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.disposables.CompositeDisposable;
 
-public class CategoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public final class CategoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @NonNull
     private List<CategoriesItem> dashboardList = Collections.EMPTY_LIST;
@@ -72,11 +72,11 @@ public class CategoriesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         void onDashItemClicked(int position);
     }
 
-    public void setDashView(DashView dashView) {
+    public final void setDashView(DashView dashView) {
         this.dashView = dashView;
     }
 
-    public class DashboardViewHolder extends RecyclerView.ViewHolder {
+    public final class DashboardViewHolder extends RecyclerView.ViewHolder {
 
         @Nullable
         @BindView(R.id.img_dash_stat_icon)

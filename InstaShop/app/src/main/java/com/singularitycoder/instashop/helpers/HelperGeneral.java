@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -62,8 +63,9 @@ import java.util.regex.Pattern;
 
 import static com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade;
 
-public class HelperGeneral extends AppCompatActivity {
+public final class HelperGeneral extends AppCompatActivity {
 
+    @NonNull
     private final String TAG = "HelperGeneral";
 
     @Override
@@ -71,13 +73,13 @@ public class HelperGeneral extends AppCompatActivity {
         super.onCreate(savedInstanceState);
     }
 
-    public boolean hasInternet(Context context) {
+    public final boolean hasInternet(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         assert cm != null;
         return cm.getActiveNetworkInfo() != null;
     }
 
-    public void showFragment(Bundle bundle, int parentLayout, Fragment fragment) {
+    public final void showFragment(Bundle bundle, int parentLayout, Fragment fragment) {
         fragment.setArguments(bundle);
         getSupportFragmentManager()
                 .beginTransaction()
@@ -86,7 +88,7 @@ public class HelperGeneral extends AppCompatActivity {
                 .commit();
     }
 
-    public void hideActivityKeyboard(Activity activity) {
+    public final void hideActivityKeyboard(Activity activity) {
         InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
         View view = activity.getCurrentFocus();
         if (view == null) {
@@ -95,18 +97,18 @@ public class HelperGeneral extends AppCompatActivity {
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    public void hideFragmentKeyboard(Context context, View view) {
+    public final void hideFragmentKeyboard(Context context, View view) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    public String getFileExtension(Uri uri, Context context) {
+    public final String getFileExtension(Uri uri, Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         MimeTypeMap mimeType = MimeTypeMap.getSingleton();
         return mimeType.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
-    public void showSnack(View view, String message, int snackTextColor, String actionBtnText, Callable<Void> voidFunction) {
+    public final void showSnack(View view, String message, int snackTextColor, String actionBtnText, Callable<Void> voidFunction) {
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE);
         View snackbarView = snackbar.getView();
         TextView textView = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
@@ -121,7 +123,7 @@ public class HelperGeneral extends AppCompatActivity {
         snackbar.show();
     }
 
-    public void showSnackBar(View view, String message, int snackTextColor, String actionBtnText, View.OnClickListener actionClickListener){
+    public final void showSnackBar(View view, String message, int snackTextColor, String actionBtnText, View.OnClickListener actionClickListener){
         Snackbar snackbar = Snackbar.make(view, message, Snackbar.LENGTH_INDEFINITE);
         View snackbarView = snackbar.getView();
         TextView textView = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
@@ -131,7 +133,7 @@ public class HelperGeneral extends AppCompatActivity {
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
-    public void setStatusBarColor(Activity activity, int statusBarColor) {
+    public final void setStatusBarColor(Activity activity, int statusBarColor) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = activity.getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -143,7 +145,7 @@ public class HelperGeneral extends AppCompatActivity {
         }
     }
 
-    public void checkPermissions(Activity activity, Callable<Void> permissionsGrantedFunction, String... permissionsArray) {
+    public final void checkPermissions(Activity activity, Callable<Void> permissionsGrantedFunction, String... permissionsArray) {
         Dexter.withActivity(activity)
                 .withPermissions(permissionsArray)
                 .withListener(new MultiplePermissionsListener() {
@@ -168,7 +170,7 @@ public class HelperGeneral extends AppCompatActivity {
                 }).check();
     }
 
-    public void showSettingsDialog(Context context) {
+    public final void showSettingsDialog(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("Give Permissions!");
         builder.setMessage("We need you to grant the permissions for the camera feature to work!");
@@ -181,7 +183,7 @@ public class HelperGeneral extends AppCompatActivity {
     }
 
     // Open device app settings to allow user to enable permissions
-    public void openSettings(Context context) {
+    public final void openSettings(Context context) {
         Intent intent = new Intent();
         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.setData(Uri.fromParts("package", context.getPackageName(), null));
@@ -189,13 +191,13 @@ public class HelperGeneral extends AppCompatActivity {
         context.startActivity(intent);
     }
 
-    public void checkFunctionExecutionTimings() {
+    public final void checkFunctionExecutionTimings() {
         TimingLogger timingLogger = new TimingLogger(TAG, "hasValidInput");
         timingLogger.addSplit("");
         timingLogger.dumpToLog();
     }
 
-    public void dialogActionMessage(Activity activity, String title, String message, String positiveActionWord, String negativeActionWord, Callable<Void> positiveAction, Callable<Void> negativeAction, boolean cancelableDialog) {
+    public final void dialogActionMessage(Activity activity, String title, String message, String positiveActionWord, String negativeActionWord, Callable<Void> positiveAction, Callable<Void> negativeAction, boolean cancelableDialog) {
         new AlertDialog.Builder(activity)
                 .setTitle(title)
                 .setMessage(message)
@@ -217,7 +219,7 @@ public class HelperGeneral extends AppCompatActivity {
                 .show();
     }
 
-    private Uri getLocalBitmapUri(Activity activity, ImageView imageView) {
+    public final Uri getLocalBitmapUri(Activity activity, ImageView imageView) {
         // Extract Bitmap from ImageView drawable
         Drawable drawable = imageView.getDrawable();
         Bitmap bmp;
@@ -243,13 +245,13 @@ public class HelperGeneral extends AppCompatActivity {
         return bmpUri;
     }
 
-    public long getCurrentEpochTime() {
+    public final long getCurrentEpochTime() {
         long time = System.currentTimeMillis();
         return time;
     }
 
     @SuppressLint("SimpleDateFormat")
-    public String currentDateTime() {
+    public final String currentDateTime() {
         String dateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
 
         // split date and time for event created date
@@ -279,7 +281,7 @@ public class HelperGeneral extends AppCompatActivity {
         return outputDate + " at " + outputTime;
     }
 
-    public boolean hasValidPassword(final String password) {
+    public final boolean hasValidPassword(final String password) {
         Pattern pattern;
         Matcher matcher;
         final String PASSWORD_PATTERN = "^(?=.*[a-z])(?=.*[A-Z]).{8,}$";
@@ -290,7 +292,7 @@ public class HelperGeneral extends AppCompatActivity {
         return matcher.matches();
     }
 
-    public boolean hasValidEmail(final String email) {
+    public final boolean hasValidEmail(final String email) {
         Pattern pattern;
         Matcher matcher;
         final String EMAIL_PATTERN = "^[\\w-\\+]+(\\.[\\w]+)*@[\\w-]+(\\.[\\w]+)*(\\.[a-z]{2,})$";
@@ -301,7 +303,7 @@ public class HelperGeneral extends AppCompatActivity {
         return matcher.matches();
     }
 
-    public void glideImage(Context context, String imgUrl, ImageView imageView) {
+    public final void glideImage(Context context, String imgUrl, ImageView imageView) {
         RequestOptions requestOptions = new RequestOptions()
                 .placeholder(R.color.colorAccent)
                 .error(R.mipmap.ic_launcher)
@@ -313,7 +315,7 @@ public class HelperGeneral extends AppCompatActivity {
                 .into(imageView);
     }
 
-    public void glideImageWithErrHandle(Context context, String imgUrl, ImageView imageView, String empty1) {
+    public final void glideImageWithErrHandle(Context context, String imgUrl, ImageView imageView, String empty1) {
         Glide.with(context)
                 .load(imgUrl)
                 .apply(

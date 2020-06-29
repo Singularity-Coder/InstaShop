@@ -19,7 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class HomeFragment extends Fragment {
+public final class HomeFragment extends Fragment {
 
     @Nullable
     @BindView(R.id.con_lay_home_frag_root)

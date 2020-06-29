@@ -38,7 +38,7 @@ import io.reactivex.disposables.CompositeDisposable;
 
 import static java.lang.String.valueOf;
 
-public class ProductDetailFragment extends Fragment {
+public final class ProductDetailFragment extends Fragment {
 
     @Nullable
     @BindView(R.id.toolbar)
@@ -175,7 +175,7 @@ public class ProductDetailFragment extends Fragment {
         }
     }
 
-    private Observer liveDataObserver() {
+    private Observer<RequestStateMediator> liveDataObserver() {
         Observer<RequestStateMediator> observer = null;
         observer = requestStateMediator -> {
             if (UiState.LOADING == requestStateMediator.getStatus()) {

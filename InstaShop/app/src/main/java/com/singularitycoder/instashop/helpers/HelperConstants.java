@@ -1,6 +1,10 @@
 package com.singularitycoder.instashop.helpers;
 
-public class HelperConstants {
+public final class HelperConstants {
+
+    // Disable instantiation using private constructor
+    private HelperConstants() {
+    }
 
     // Firebase Firestore Auth Collection
     public static final String COLL_AUTH_USERS = "InstaShopUsers";

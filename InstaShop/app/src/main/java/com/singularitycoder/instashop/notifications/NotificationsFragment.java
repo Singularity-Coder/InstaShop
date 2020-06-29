@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment;
 
 import com.singularitycoder.instashop.R;
 
-public class NotificationsFragment extends Fragment {
+public final class NotificationsFragment extends Fragment {
 
     public NotificationsFragment() {
     }

@@ -28,7 +28,7 @@ import io.reactivex.disposables.CompositeDisposable;
 
 import static java.lang.String.valueOf;
 
-public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public final class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @NonNull
     private List<ProductCartItem> productCartList = Collections.EMPTY_LIST;
@@ -96,7 +96,7 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return position;
     }
 
-    public void filterList(List<ProductCartItem> list) {
+    public final void filterList(List<ProductCartItem> list) {
         this.productCartList = list;
         notifyDataSetChanged();
     }
@@ -111,11 +111,11 @@ public class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onQuantityDecreased(int position);
     }
 
-    public void setProductViewListener(ProductViewListener productViewListener) {
+    public final void setProductViewListener(ProductViewListener productViewListener) {
         this.productViewListener = productViewListener;
     }
 
-    class ProductListViewHolder extends RecyclerView.ViewHolder {
+    final class ProductListViewHolder extends RecyclerView.ViewHolder {
 
         @Nullable
         @BindView(R.id.iv_cart_product_image)

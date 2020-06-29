@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment;
 
 import com.singularitycoder.instashop.R;
 
-public class MoreFragment extends Fragment {
+public final class MoreFragment extends Fragment {
 
     public MoreFragment() {
     }

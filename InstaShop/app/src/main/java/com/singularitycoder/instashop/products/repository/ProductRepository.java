@@ -13,7 +13,7 @@ import com.singularitycoder.instashop.products.model.ProductItem;
 
 import static java.lang.String.valueOf;
 
-public class ProductRepository {
+public final class ProductRepository {
 
     @NonNull
     private static final String TAG = "ProductRepository";
@@ -32,7 +32,7 @@ public class ProductRepository {
         return _instance;
     }
 
-    public MutableLiveData<RequestStateMediator> getProductsListFromFirestore(@NonNull final String category) {
+    public final MutableLiveData<RequestStateMediator> getProductsListFromFirestore(@NonNull final String category) {
         final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
         final RequestStateMediator requestStateMediator = new RequestStateMediator();
 
@@ -56,7 +56,7 @@ public class ProductRepository {
         return liveData;
     }
 
-    public MutableLiveData<RequestStateMediator> getProductInfo(@NonNull final String docId) {
+    public final MutableLiveData<RequestStateMediator> getProductInfo(@NonNull final String docId) {
         final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
         final RequestStateMediator requestStateMediator = new RequestStateMediator();
 

@@ -29,7 +29,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.singularitycoder.instashop.R;
 import com.singularitycoder.instashop.admin.view.AddProductsFragment;
 import com.singularitycoder.instashop.auth.view.MainActivity;
-import com.singularitycoder.instashop.cart.view.CartListFragment;
 import com.singularitycoder.instashop.cart.viewmodel.ProductCartViewModel;
 import com.singularitycoder.instashop.categories.adapter.CategoriesAdapter;
 import com.singularitycoder.instashop.categories.model.CategoriesItem;
@@ -51,7 +50,7 @@ import butterknife.Unbinder;
 
 import static java.lang.String.valueOf;
 
-public class CategoriesFragment extends Fragment implements CustomDialogFragment.SimpleAlertDialogListener {
+public final class CategoriesFragment extends Fragment implements CustomDialogFragment.SimpleAlertDialogListener {
 
     @Nullable
     @BindView(R.id.iv_banner)
@@ -76,7 +75,7 @@ public class CategoriesFragment extends Fragment implements CustomDialogFragment
     private final String IMAGE_BANNER = "https://cdn.pixabay.com/photo/2017/11/06/13/50/family-2923690_960_720.jpg";
 
     @NonNull
-    private final String TAG = "DashboardActivity";
+    private final String TAG = "CategoriesFragment";
 
     @NonNull
     private Unbinder unbinder;
@@ -300,7 +299,7 @@ public class CategoriesFragment extends Fragment implements CustomDialogFragment
         return observer;
     }
 
-    public void showFragment(Bundle bundle, int parentLayout, Fragment fragment) {
+    private void showFragment(Bundle bundle, int parentLayout, Fragment fragment) {
         fragment.setArguments(bundle);
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
@@ -327,6 +326,7 @@ public class CategoriesFragment extends Fragment implements CustomDialogFragment
         dialogFragment.show(fragmentTransaction, "TAG_CustomDialogFragment");
     }
 
+    // FIXME: 30/06/20
     private void btnChangePassword() {
         Bundle bundle = new Bundle();
         bundle.putString("DIALOG_TYPE", "changePasswordDialog");

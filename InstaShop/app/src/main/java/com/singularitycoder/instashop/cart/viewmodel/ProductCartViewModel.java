@@ -14,7 +14,7 @@ import com.singularitycoder.instashop.helpers.RequestStateMediator;
 
 import java.util.List;
 
-public class ProductCartViewModel extends AndroidViewModel {
+public final class ProductCartViewModel extends AndroidViewModel {
 
     @NonNull
     private ProductCartRepository productCartRepository = ProductCartRepository.getInstance();
@@ -30,33 +30,33 @@ public class ProductCartViewModel extends AndroidViewModel {
 
     // ROOM START______________________________________________________________
 
-    public void insertIntoRoomDbFromRepository(ProductCartItem note) {
+    public final void insertIntoRoomDbFromRepository(ProductCartItem note) {
         productCartRepository.insertIntoRoomDb(note);
     }
 
-    public void updateInRoomDbFromRepository(ProductCartItem note) {
+    public final void updateInRoomDbFromRepository(ProductCartItem note) {
         productCartRepository.updateInRoomDb(note);
     }
 
-    public void deleteFromRoomDbFromRepository(ProductCartItem note) {
+    public final void deleteFromRoomDbFromRepository(ProductCartItem note) {
         productCartRepository.deleteFromRoomDb(note);
     }
 
-    public void deleteAllFromRoomDbFromRepository() {
+    public final void deleteAllFromRoomDbFromRepository() {
         productCartRepository.deleteAllFromRoomDb();
     }
 
-    public LiveData<List<ProductCartItem>> getAllFromRoomDbFromRepository() {
+    public final LiveData<List<ProductCartItem>> getAllFromRoomDbFromRepository() {
         return cartProductList;
     }
 
     // ROOM END______________________________________________________________
 
-    public LiveData<RequestStateMediator> getCartProductsFromFirestoreFromRepository(@NonNull final Context context) throws IllegalArgumentException {
+    public final LiveData<RequestStateMediator> getCartProductsFromFirestoreFromRepository(@NonNull final Context context) throws IllegalArgumentException {
         return productCartRepository.getCartItemsFromFirestore(context);
     }
 
-    public LiveData<RequestStateMediator> addCartProductToFirestoreFromRepository(
+    public final LiveData<RequestStateMediator> addCartProductToFirestoreFromRepository(
             @NonNull final Context context, @NonNull final ProductCartItem productCartItem) throws IllegalArgumentException {
         return productCartRepository.addCartItemsToFirestore(context, productCartItem);
     }

@@ -44,7 +44,7 @@ import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 import static java.lang.String.valueOf;
 
-public class AddProductsFragment extends Fragment implements CustomDialogFragment.ListDialogListener {
+public final class AddProductsFragment extends Fragment implements CustomDialogFragment.ListDialogListener {
 
     @Nullable
     @BindView(R.id.toolbar)
@@ -255,7 +255,7 @@ public class AddProductsFragment extends Fragment implements CustomDialogFragmen
     }
 
     @UiThread
-    public void listDialog() {
+    public final void listDialog() {
         final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
         alertBuilder.setTitle("Categories");
         alertBuilder.setCancelable(false);
@@ -279,7 +279,8 @@ public class AddProductsFragment extends Fragment implements CustomDialogFragmen
         etProductPrice.setText("");
     }
 
-    private Observer liveDataObserver() {
+    @NonNull
+    private Observer<RequestStateMediator> liveDataObserver() {
         Observer<RequestStateMediator> observer = null;
         observer = requestStateMediator -> {
             if (UiState.LOADING == requestStateMediator.getStatus()) {

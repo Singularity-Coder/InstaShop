@@ -50,7 +50,7 @@ import butterknife.Unbinder;
 
 import static java.lang.String.valueOf;
 
-public class ProductListFragment extends Fragment {
+public final class ProductListFragment extends Fragment {
 
     @Nullable
     @BindView(R.id.toolbar)
@@ -157,7 +157,7 @@ public class ProductListFragment extends Fragment {
         }
     }
 
-    private Observer liveDataObserver() {
+    private Observer<RequestStateMediator> liveDataObserver() {
         Observer<RequestStateMediator> observer = null;
         observer = requestStateMediator -> {
             if (UiState.LOADING == requestStateMediator.getStatus()) {
@@ -301,6 +301,17 @@ public class ProductListFragment extends Fragment {
         });
     }
 
+    private void searchUsers(String text) {
+        List<ProductItem> filteredUsers = new ArrayList<>();
+        for (ProductItem productItem : productsList) {
+            if (productItem.getProductName().toLowerCase().trim().contains(text.toLowerCase())) {
+                filteredUsers.add(productItem);
+            }
+        }
+        productListAdapter.filterList(filteredUsers);
+        productListAdapter.notifyDataSetChanged();
+    }
+
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_products, menu);
@@ -333,18 +344,6 @@ public class ProductListFragment extends Fragment {
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-
-    private void searchUsers(String text) {
-        List<ProductItem> filteredUsers = new ArrayList<>();
-        for (ProductItem productItem : productsList) {
-            if (productItem.getProductName().toLowerCase().trim().contains(text.toLowerCase())) {
-                filteredUsers.add(productItem);
-            }
-        }
-        productListAdapter.filterList(filteredUsers);
-        productListAdapter.notifyDataSetChanged();
     }
 
     @Override

@@ -41,7 +41,7 @@ import io.reactivex.disposables.CompositeDisposable;
 
 import static java.lang.String.valueOf;
 
-public class MainActivity extends AppCompatActivity implements CustomDialogFragment.ListDialogListener, CustomDialogFragment.SimpleAlertDialogListener {
+public final class MainActivity extends AppCompatActivity implements CustomDialogFragment.ListDialogListener, CustomDialogFragment.SimpleAlertDialogListener {
 
     @Nullable
     @BindView(R.id.iv_background)

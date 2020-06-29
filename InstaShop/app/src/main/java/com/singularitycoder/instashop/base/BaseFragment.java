@@ -26,7 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public class BaseFragment extends Fragment implements BottomNavigationView.OnNavigationItemSelectedListener {
+public final class BaseFragment extends Fragment implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     @Nullable
     @BindView(R.id.con_lay_base_frag_root)

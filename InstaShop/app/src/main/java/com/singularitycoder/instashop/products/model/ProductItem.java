@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import com.google.firebase.firestore.Exclude;
 
-public class ProductItem {
+public final class ProductItem {
 
     // Exclude from Firestore
     private Uri productImageUri;
@@ -23,84 +23,84 @@ public class ProductItem {
     }
 
     @Exclude
-    public String getProductDocId() {
+    public final String getProductDocId() {
         return productDocId;
     }
 
-    public void setProductDocId(String productDocId) {
+    public final void setProductDocId(String productDocId) {
         this.productDocId = productDocId;
     }
 
     @Exclude
-    public Uri getProductImageUri() {
+    public final Uri getProductImageUri() {
         return productImageUri;
     }
 
-    public void setProductImageUri(Uri productImageUri) {
+    public final void setProductImageUri(Uri productImageUri) {
         this.productImageUri = productImageUri;
     }
 
-    public String getProductName() {
+    public final String getProductName() {
         return productName;
     }
 
-    public void setProductName(String productName) {
+    public final void setProductName(String productName) {
         this.productName = productName;
     }
 
-    public String getProductImageUrl() {
+    public final String getProductImageUrl() {
         return productImageUrl;
     }
 
-    public void setProductImageUrl(String productImageUrl) {
+    public final void setProductImageUrl(String productImageUrl) {
         this.productImageUrl = productImageUrl;
     }
 
-    public String getProductImageName() {
+    public final String getProductImageName() {
         return productImageName;
     }
 
-    public void setProductImageName(String productImageName) {
+    public final void setProductImageName(String productImageName) {
         this.productImageName = productImageName;
     }
 
-    public String getProductPrice() {
+    public final String getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(String productPrice) {
+    public final void setProductPrice(String productPrice) {
         this.productPrice = productPrice;
     }
 
-    public String getProductCategory() {
+    public final String getProductCategory() {
         return productCategory;
     }
 
-    public void setProductCategory(String productCategory) {
+    public final void setProductCategory(String productCategory) {
         this.productCategory = productCategory;
     }
 
-    public String getProductCreationEpochTime() {
+    public final String getProductCreationEpochTime() {
         return productCreationEpochTime;
     }
 
-    public void setProductCreationEpochTime(String productCreationEpochTime) {
+    public final void setProductCreationEpochTime(String productCreationEpochTime) {
         this.productCreationEpochTime = productCreationEpochTime;
     }
 
-    public String getProductCreationDate() {
+    public final String getProductCreationDate() {
         return productCreationDate;
     }
 
-    public void setProductCreationDate(String productCreationDate) {
+    public final void setProductCreationDate(String productCreationDate) {
         this.productCreationDate = productCreationDate;
     }
 
-    public String getProductDescription() {
+    public final String getProductDescription() {
         return productDescription;
     }
 
-    public void setProductDescription(String productDescription) {
+    public final void setProductDescription(String productDescription) {
         this.productDescription = productDescription;
     }
 }

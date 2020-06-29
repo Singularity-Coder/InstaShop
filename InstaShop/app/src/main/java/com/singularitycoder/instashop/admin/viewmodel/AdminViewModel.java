@@ -8,13 +8,12 @@ import com.singularitycoder.instashop.admin.repository.AdminRepository;
 import com.singularitycoder.instashop.helpers.RequestStateMediator;
 import com.singularitycoder.instashop.products.model.ProductItem;
 
-public class AdminViewModel extends ViewModel {
+public final class AdminViewModel extends ViewModel {
 
     @NonNull
     private final AdminRepository adminRepository = AdminRepository.getInstance();
 
-    public LiveData<RequestStateMediator> uploadProductFromRepository(@NonNull final ProductItem productItem) throws IllegalArgumentException {
+    public final LiveData<RequestStateMediator> uploadProductFromRepository(@NonNull final ProductItem productItem) throws IllegalArgumentException {
         return adminRepository.uploadImage(productItem);
     }
-
 }

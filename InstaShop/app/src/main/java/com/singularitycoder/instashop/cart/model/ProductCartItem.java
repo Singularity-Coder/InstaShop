@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey;
 import com.google.firebase.firestore.Exclude;
 
 @Entity(tableName = "product_cart_table")
-public class ProductCartItem {
+public final class ProductCartItem {
 
     @PrimaryKey(autoGenerate = true)
     @NonNull
@@ -36,60 +36,60 @@ public class ProductCartItem {
     }
 
     @Exclude
-    public int getId() {
+    public final int getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public final void setId(int id) {
         this.id = id;
     }
 
-    public String getProductName() {
+    public final String getProductName() {
         return productName;
     }
 
-    public void setProductName(String productName) {
+    public final void setProductName(String productName) {
         this.productName = productName;
     }
 
-    public String getProductImageUrl() {
+    public final String getProductImageUrl() {
         return productImageUrl;
     }
 
-    public void setProductImageUrl(String productImageUrl) {
+    public final void setProductImageUrl(String productImageUrl) {
         this.productImageUrl = productImageUrl;
     }
 
-    public String getProductPrice() {
+    public final String getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(String productPrice) {
+    public final void setProductPrice(String productPrice) {
         this.productPrice = productPrice;
     }
 
-    public String getProductCategory() {
+    public final String getProductCategory() {
         return productCategory;
     }
 
-    public void setProductCategory(String productCategory) {
+    public final void setProductCategory(String productCategory) {
         this.productCategory = productCategory;
     }
 
-    public String getProductQty() {
+    public final String getProductQty() {
         return productQty;
     }
 
-    public void setProductQty(String productQty) {
+    public final void setProductQty(String productQty) {
         this.productQty = productQty;
     }
 
     @Exclude
-    public String getProductDocId() {
+    public final String getProductDocId() {
         return productDocId;
     }
 
-    public void setProductDocId(String productDocId) {
+    public final void setProductDocId(String productDocId) {
         this.productDocId = productDocId;
     }
 }

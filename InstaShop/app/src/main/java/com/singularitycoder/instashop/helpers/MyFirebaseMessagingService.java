@@ -18,7 +18,7 @@ import com.singularitycoder.instashop.R;
 import java.io.IOException;
 import java.util.Map;
 
-public class MyFirebaseMessagingService extends FirebaseMessagingService {
+public final class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @NonNull
     private static final String TAG = "MyFirebaseMessagingServ";

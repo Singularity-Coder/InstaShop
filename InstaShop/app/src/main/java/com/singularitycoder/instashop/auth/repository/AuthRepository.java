@@ -18,7 +18,7 @@ import com.singularitycoder.instashop.helpers.HelperSharedPreference;
 import com.singularitycoder.instashop.helpers.RequestStateMediator;
 import com.singularitycoder.instashop.helpers.UiState;
 
-public class AuthRepository {
+public final class AuthRepository {
 
     @NonNull
     private static final String TAG = "AuthRepository";
@@ -43,7 +43,7 @@ public class AuthRepository {
         return _instance;
     }
 
-    public LiveData<RequestStateMediator> signIn(
+    public final LiveData<RequestStateMediator> signIn(
             @NonNull final Activity activity,
             @NonNull final String email,
             @NonNull final String password) {
@@ -70,7 +70,7 @@ public class AuthRepository {
         return liveData;
     }
 
-    public LiveData<RequestStateMediator> signUp(
+    public final LiveData<RequestStateMediator> signUp(
             @NonNull final Activity activity,
             @NonNull final String memberType,
             @NonNull final String name,
@@ -146,7 +146,7 @@ public class AuthRepository {
                 });
     }
 
-    public MutableLiveData<RequestStateMediator> resetPassword(
+    public final MutableLiveData<RequestStateMediator> resetPassword(
             @NonNull final String email, @NonNull final DialogFragment dialog) {
 
         // todo wrong email error message is not working - possible firebase issue
@@ -173,7 +173,7 @@ public class AuthRepository {
         return liveData;
     }
 
-    public MutableLiveData<RequestStateMediator> getFcmDeviceToken() {
+    public final MutableLiveData<RequestStateMediator> getFcmDeviceToken() {
 
         final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
         final RequestStateMediator requestStateMediator = new RequestStateMediator();
@@ -198,7 +198,7 @@ public class AuthRepository {
         return liveData;
     }
 
-    public MutableLiveData<RequestStateMediator> subscribeToFcmTopic(@NonNull final String topic) {
+    public final MutableLiveData<RequestStateMediator> subscribeToFcmTopic(@NonNull final String topic) {
 
         final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
         final RequestStateMediator requestStateMediator = new RequestStateMediator();

@@ -24,7 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.disposables.CompositeDisposable;
 
-public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public final class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @NonNull
     private List<ProductItem> productList = Collections.EMPTY_LIST;
@@ -71,7 +71,7 @@ public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         return position;
     }
 
-    public void filterList(List<ProductItem> list) {
+    public final void filterList(List<ProductItem> list) {
         this.productList = list;
         notifyDataSetChanged();
     }
@@ -80,11 +80,11 @@ public class ProductListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         void onProductClickedListener(int position);
     }
 
-    public void setProductViewListener(ProductViewListener productViewListener) {
+    public final void setProductViewListener(ProductViewListener productViewListener) {
         this.productViewListener = productViewListener;
     }
 
-    class ProductListViewHolder extends RecyclerView.ViewHolder {
+    final class ProductListViewHolder extends RecyclerView.ViewHolder {
 
         @Nullable
         @BindView(R.id.iv_product_image)

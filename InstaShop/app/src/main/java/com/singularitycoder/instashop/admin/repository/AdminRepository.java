@@ -14,7 +14,7 @@ import com.singularitycoder.instashop.products.model.ProductItem;
 
 import static java.lang.String.valueOf;
 
-public class AdminRepository {
+public final class AdminRepository {
 
     @NonNull
     private static final String TAG = "AdminRepository";
@@ -40,7 +40,7 @@ public class AdminRepository {
     }
 
     // UPLOAD TO FIREBASE STORAGE
-    public MutableLiveData<RequestStateMediator> uploadImage(@NonNull final ProductItem productItem) {
+    public final MutableLiveData<RequestStateMediator> uploadImage(@NonNull final ProductItem productItem) {
 
         requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
         liveData.postValue(requestStateMediator);

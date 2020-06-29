@@ -21,7 +21,7 @@ import java.util.Map;
 
 import static java.lang.String.valueOf;
 
-public class CustomDialogFragment extends DialogFragment {
+public final class CustomDialogFragment extends DialogFragment {
 
     @NonNull
     private final HelperGeneral helperGeneral = new HelperGeneral();
@@ -92,7 +92,7 @@ public class CustomDialogFragment extends DialogFragment {
     }
 
     @UiThread
-    public void simpleAlertDialog(AlertDialog.Builder builder) {
+    public final void simpleAlertDialog(AlertDialog.Builder builder) {
         builder.setTitle("Delete Message");
         builder.setMessage("Are you sure you want to delete getContext() message?");
         builder.setIcon(android.R.drawable.ic_dialog_alert);
@@ -110,7 +110,7 @@ public class CustomDialogFragment extends DialogFragment {
     }
 
     @UiThread
-    public void resetPasswordDialog(AlertDialog.Builder builder) {
+    public final void resetPasswordDialog(AlertDialog.Builder builder) {
 
         final LinearLayout linearLayout = new LinearLayout(getContext());
         linearLayout.setOrientation(LinearLayout.VERTICAL);

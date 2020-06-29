@@ -47,7 +47,7 @@ import butterknife.Unbinder;
 
 import static java.lang.String.valueOf;
 
-public class CartListFragment extends Fragment {
+public final class CartListFragment extends Fragment {
 
     @Nullable
     @BindView(R.id.toolbar)
@@ -182,7 +182,8 @@ public class CartListFragment extends Fragment {
         return observer;
     }
 
-    private Observer liveDataObserver() {
+    @NonNull
+    private Observer<RequestStateMediator> liveDataObserver() {
         Observer<RequestStateMediator> observer = null;
         observer = requestStateMediator -> {
 

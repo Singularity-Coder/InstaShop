@@ -5,12 +5,17 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.squareup.leakcanary.LeakCanary;
 
-public class BaseApplication extends Application {
+public final class BaseApplication extends Application {
 
+    @NonNull
     private static final String TAG = "BaseApplication";
 
+    @NonNull
     private static BaseApplication _instance;
 
     @Override
