@@ -1,4 +1,4 @@
-package com.singularitycoder.instashop.dashboard.view;
+package com.singularitycoder.instashop.home.view;
 
 import android.os.Bundle;
 import android.view.View;
@@ -9,9 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.singularitycoder.instashop.R;
+import com.singularitycoder.instashop.dashboard.view.DashboardFragment;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
 
-public class DashboardActivity extends AppCompatActivity {
+public class HomeActivity extends AppCompatActivity {
 
     @NonNull
     private final HelperGeneral helperObject = new HelperGeneral();
@@ -27,7 +28,7 @@ public class DashboardActivity extends AppCompatActivity {
     private void showDashboardFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.con_lay_dashboard, new DashboardFragment())
+                .replace(R.id.con_lay_dashboard, new HomeFragment())
                 .commit();
     }
 }

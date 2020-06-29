@@ -4,4 +4,4 @@
     android:id="@+id/con_lay_dashboard"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".dashboard.view.DashboardActivity" />
+    tools:context=".home.view.HomeActivity" />

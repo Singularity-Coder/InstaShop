@@ -25,14 +25,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.jakewharton.rxbinding3.view.RxView;
 import com.singularitycoder.instashop.R;
 import com.singularitycoder.instashop.auth.viewmodel.AuthViewModel;
-import com.singularitycoder.instashop.dashboard.view.DashboardActivity;
+import com.singularitycoder.instashop.home.view.HomeActivity;
 import com.singularitycoder.instashop.helpers.CustomDialogFragment;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
 import com.singularitycoder.instashop.helpers.HelperSharedPreference;
 import com.singularitycoder.instashop.helpers.RequestStateMediator;
 import com.singularitycoder.instashop.helpers.UiState;
 
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -284,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements CustomDialogFragm
     }
 
     private void goToDashboardActivity() {
-        MainActivity.this.startActivity(new Intent(MainActivity.this, DashboardActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
+        MainActivity.this.startActivity(new Intent(MainActivity.this, HomeActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
         MainActivity.this.finish();
     }
 
