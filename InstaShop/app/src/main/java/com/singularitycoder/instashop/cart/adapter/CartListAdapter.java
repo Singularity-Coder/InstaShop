@@ -4,7 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jakewharton.rxbinding3.view.RxView;
 import com.singularitycoder.instashop.R;
-import com.singularitycoder.instashop.cart.model.ProductCartItem;
+import com.singularitycoder.instashop.cart.model.CartItem;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
 
 import java.util.Collections;
@@ -31,7 +30,7 @@ import static java.lang.String.valueOf;
 public final class CartListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @NonNull
-    private List<ProductCartItem> productCartList = Collections.EMPTY_LIST;
+    private List<CartItem> productCartList = Collections.EMPTY_LIST;
 
     @Nullable
     private Context context;
@@ -44,7 +43,7 @@ public final class CartListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private int qty = 1;
 
-    public CartListAdapter(Context context, List<ProductCartItem> productCartList) {
+    public CartListAdapter(Context context, List<CartItem> productCartList) {
         this.context = context;
         this.productCartList = productCartList;
     }
@@ -58,20 +57,20 @@ public final class CartListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        ProductCartItem productCartItem = productCartList.get(position);
+        CartItem cartItem = productCartList.get(position);
         if (holder instanceof ProductListViewHolder && null != holder) {
             ProductListViewHolder productListViewHolder = (ProductListViewHolder) holder;
-            productListViewHolder.tvProductCartName.setText(productCartItem.getProductName());
-            productListViewHolder.tvProductCartPrice.setText("$" + productCartItem.getProductPrice());
-            productListViewHolder.tvProductCartQty.setText(productCartItem.getProductQty());
-            helperGeneral.glideImage(context, productCartItem.getProductImageUrl(), productListViewHolder.ivProductCartImage);
+            productListViewHolder.tvProductCartName.setText(cartItem.getProductName());
+            productListViewHolder.tvProductCartPrice.setText("$" + cartItem.getProductPrice());
+            productListViewHolder.tvProductCartQty.setText(cartItem.getProductQty());
+            helperGeneral.glideImage(context, cartItem.getProductImageUrl(), productListViewHolder.ivProductCartImage);
 
-            qty = Integer.valueOf(productCartItem.getProductQty());
+            qty = Integer.valueOf(cartItem.getProductQty());
             productListViewHolder.btnAddCartProduct.setOnClickListener(view -> {
                 if (qty < 10) {
                     qty += 1;
                     productListViewHolder.tvProductCartQty.setText(valueOf(qty));
-                    productCartItem.setProductQty(valueOf(Integer.valueOf(productCartItem.getProductQty()) + qty));
+                    cartItem.setProductQty(valueOf(Integer.valueOf(cartItem.getProductQty()) + qty));
 //                    productViewListener.onQuantityIncreased(position);
                 }
             });
@@ -79,7 +78,7 @@ public final class CartListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 if (qty > 1) {
                     qty -= 1;
                     productListViewHolder.tvProductCartQty.setText(valueOf(qty));
-                    productCartItem.setProductQty(valueOf(Integer.valueOf(productCartItem.getProductQty()) - qty));
+                    cartItem.setProductQty(valueOf(Integer.valueOf(cartItem.getProductQty()) - qty));
 //                    productViewListener.onQuantityDecreased(position);
                 }
             });
@@ -96,7 +95,7 @@ public final class CartListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return position;
     }
 
-    public final void filterList(List<ProductCartItem> list) {
+    public final void filterList(List<CartItem> list) {
         this.productCartList = list;
         notifyDataSetChanged();
     }

@@ -12,6 +12,7 @@ public final class HelperConstants {
 
     // Firebase Firestore Sub-Collection
     public static final String SUB_COLL_CART = "Cart";
+    public static final String SUB_COLL_WISHLIST = "Wishlist";
 
     // Firebase Storage
     public static final String DIR_PRODUCT_IMAGES_PATH = "ProductImages/";

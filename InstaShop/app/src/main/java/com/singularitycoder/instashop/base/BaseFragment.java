@@ -21,6 +21,7 @@ import com.singularitycoder.instashop.helpers.HelperSharedPreference;
 import com.singularitycoder.instashop.home.view.HomeFragment;
 import com.singularitycoder.instashop.more.MoreFragment;
 import com.singularitycoder.instashop.notifications.NotificationsFragment;
+import com.singularitycoder.instashop.payments.PaymentsFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -131,8 +132,8 @@ public final class BaseFragment extends Fragment implements BottomNavigationView
                 conLayBase.setBackgroundColor(getResources().getColor(android.R.color.white));
                 break;
 
-            case R.id.nav_notifications:
-                fragment = new NotificationsFragment();
+            case R.id.nav_payments:
+                fragment = new PaymentsFragment();
                 conLayBase.setBackgroundColor(getResources().getColor(android.R.color.white));
                 break;
 

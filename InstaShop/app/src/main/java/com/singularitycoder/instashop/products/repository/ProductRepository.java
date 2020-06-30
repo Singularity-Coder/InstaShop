@@ -1,5 +1,6 @@
 package com.singularitycoder.instashop.products.repository;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -7,9 +8,11 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.singularitycoder.instashop.helpers.HelperConstants;
+import com.singularitycoder.instashop.helpers.HelperSharedPreference;
 import com.singularitycoder.instashop.helpers.RequestStateMediator;
 import com.singularitycoder.instashop.helpers.UiState;
 import com.singularitycoder.instashop.products.model.ProductItem;
+import com.singularitycoder.instashop.wishlist.model.WishlistItem;
 
 import static java.lang.String.valueOf;
 
@@ -109,6 +112,8 @@ public final class ProductRepository {
                                 productItem.setProductImageUrl("Empty");
                             }
 
+                            productItem.setProductDocId(documentSnapshot.getId());
+
                             requestStateMediator.set(productItem, UiState.SUCCESS, "Got Basic Info!", "STATE_PRODUCT_DETAIL");
                             liveData.postValue(requestStateMediator);
                         }
@@ -117,6 +122,34 @@ public final class ProductRepository {
                         requestStateMediator.set(null, UiState.EMPTY, "Empty!", null);
                         liveData.postValue(requestStateMediator);
                     }
+                })
+                .addOnFailureListener(e -> {
+                    requestStateMediator.set(null, UiState.ERROR, e.getMessage(), null);
+                    liveData.postValue(requestStateMediator);
+                });
+        return liveData;
+    }
+
+    public final MutableLiveData<RequestStateMediator> addWishlistItemsToFirestore(
+            @NonNull final Context context, @NonNull final WishlistItem wishlistItem) {
+
+        final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
+        final RequestStateMediator requestStateMediator = new RequestStateMediator();
+
+        requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
+        liveData.postValue(requestStateMediator);
+
+        HelperSharedPreference helperSharedPreference = HelperSharedPreference.getInstance(context);
+
+        FirebaseFirestore
+                .getInstance()
+                .collection(HelperConstants.COLL_AUTH_USERS)
+                .document(helperSharedPreference.getUserDocId())
+                .collection(HelperConstants.SUB_COLL_WISHLIST)
+                .add(wishlistItem)
+                .addOnSuccessListener(documentReference -> {
+                    requestStateMediator.set(null, UiState.SUCCESS, "Item Added!", "STATE_ADD_WISHLIST_FIRESTORE");
+                    liveData.postValue(requestStateMediator);
                 })
                 .addOnFailureListener(e -> {
                     requestStateMediator.set(null, UiState.ERROR, e.getMessage(), null);

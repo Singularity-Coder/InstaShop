@@ -10,66 +10,66 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.singularitycoder.instashop.cart.model.ProductCartItem;
+import com.singularitycoder.instashop.cart.model.CartItem;
 import com.singularitycoder.instashop.helpers.HelperConstants;
 import com.singularitycoder.instashop.helpers.HelperSharedPreference;
 import com.singularitycoder.instashop.helpers.InstaShopRoomDatabase;
 import com.singularitycoder.instashop.helpers.RequestStateMediator;
 import com.singularitycoder.instashop.helpers.UiState;
-import com.singularitycoder.instashop.products.dao.ProductCartDao;
+import com.singularitycoder.instashop.cart.dao.CartDao;
 
 import java.util.List;
 
-public final class ProductCartRepository {
+public final class CartRepository {
 
     @NonNull
     private static final String TAG = "ProductCartRepository";
 
     @NonNull
-    private static ProductCartRepository _instance;
+    private static CartRepository _instance;
 
     @Nullable
-    private ProductCartDao productCartDao;
+    private CartDao cartDao;
 
     @Nullable
-    private LiveData<List<ProductCartItem>> cartProductList;
+    private LiveData<List<CartItem>> cartProductList;
 
-    public ProductCartRepository() {
+    public CartRepository() {
     }
 
-    public ProductCartRepository(Application application) {
+    public CartRepository(Application application) {
         InstaShopRoomDatabase database = InstaShopRoomDatabase.getInstance(application);
-        productCartDao = database.productCartDao();
-        cartProductList = productCartDao.getAllProducts();
+        cartDao = database.productCartDao();
+        cartProductList = cartDao.getAllProducts();
     }
 
     @NonNull
-    public static ProductCartRepository getInstance() {
+    public static CartRepository getInstance() {
         if (null == _instance) {
-            _instance = new ProductCartRepository();
+            _instance = new CartRepository();
         }
         return _instance;
     }
 
     // ROOM START______________________________________________________________
 
-    public final void insertIntoRoomDb(ProductCartItem productCartItem) {
-        AsyncTask.SERIAL_EXECUTOR.execute(() -> productCartDao.insertProduct(productCartItem));
+    public final void insertIntoRoomDb(CartItem cartItem) {
+        AsyncTask.SERIAL_EXECUTOR.execute(() -> cartDao.insertProduct(cartItem));
     }
 
-    public final void updateInRoomDb(ProductCartItem productCartItem) {
-        AsyncTask.SERIAL_EXECUTOR.execute(() -> productCartDao.updateProduct(productCartItem));
+    public final void updateInRoomDb(CartItem cartItem) {
+        AsyncTask.SERIAL_EXECUTOR.execute(() -> cartDao.updateProduct(cartItem));
     }
 
-    public final void deleteFromRoomDb(ProductCartItem productCartItem) {
-        AsyncTask.SERIAL_EXECUTOR.execute(() -> productCartDao.deleteProduct(productCartItem));
+    public final void deleteFromRoomDb(CartItem cartItem) {
+        AsyncTask.SERIAL_EXECUTOR.execute(() -> cartDao.deleteProduct(cartItem));
     }
 
     public final void deleteAllFromRoomDb() {
-        AsyncTask.THREAD_POOL_EXECUTOR.execute(() -> productCartDao.deleteAllProducts());
+        AsyncTask.THREAD_POOL_EXECUTOR.execute(() -> cartDao.deleteAllProducts());
     }
 
-    public final LiveData<List<ProductCartItem>> getAllFromRoomDb() {
+    public final LiveData<List<CartItem>> getAllFromRoomDb() {
         return cartProductList;
     }
 
@@ -104,7 +104,7 @@ public final class ProductCartRepository {
 
     // UI is in Product Detail frag. So loading happens there.
     public final MutableLiveData<RequestStateMediator> addCartItemsToFirestore(
-            @NonNull final Context context, @NonNull final ProductCartItem productCartItem) {
+            @NonNull final Context context, @NonNull final CartItem cartItem) {
 
         final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
         final RequestStateMediator requestStateMediator = new RequestStateMediator();
@@ -119,7 +119,7 @@ public final class ProductCartRepository {
                 .collection(HelperConstants.COLL_AUTH_USERS)
                 .document(helperSharedPreference.getUserDocId())
                 .collection(HelperConstants.SUB_COLL_CART)
-                .add(productCartItem)
+                .add(cartItem)
                 .addOnSuccessListener(documentReference -> {
                     requestStateMediator.set(null, UiState.SUCCESS, "Item Added!", "STATE_ADD_CART_FIRESTORE");
                     liveData.postValue(requestStateMediator);

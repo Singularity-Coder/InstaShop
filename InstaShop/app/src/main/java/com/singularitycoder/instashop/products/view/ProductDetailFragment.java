@@ -22,14 +22,15 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.jakewharton.rxbinding3.view.RxView;
 import com.singularitycoder.instashop.R;
-import com.singularitycoder.instashop.cart.model.ProductCartItem;
-import com.singularitycoder.instashop.cart.viewmodel.ProductCartViewModel;
+import com.singularitycoder.instashop.cart.model.CartItem;
+import com.singularitycoder.instashop.cart.viewmodel.CartViewModel;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
 import com.singularitycoder.instashop.helpers.HelperSharedPreference;
 import com.singularitycoder.instashop.helpers.RequestStateMediator;
 import com.singularitycoder.instashop.helpers.UiState;
 import com.singularitycoder.instashop.products.model.ProductItem;
 import com.singularitycoder.instashop.products.viewmodel.ProductViewModel;
+import com.singularitycoder.instashop.wishlist.model.WishlistItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,6 +69,9 @@ public final class ProductDetailFragment extends Fragment {
     @BindView(R.id.btn_add_to_cart)
     Button btnAddToCart;
     @Nullable
+    @BindView(R.id.btn_add_to_wishlist)
+    Button btnAddToWishlist;
+    @Nullable
     @BindView(R.id.tv_product_price_desc)
     TextView tvProductPriceDesc;
     @Nullable
@@ -102,13 +106,19 @@ public final class ProductDetailFragment extends Fragment {
     private String docId, title;
 
     @NonNull
-    private final ProductCartItem productCartItem = new ProductCartItem();
+    private final CartItem cartItem = new CartItem();
+
+    @NonNull
+    private ProductItem productItem = new ProductItem();
+
+    @NonNull
+    private final WishlistItem wishlistItem = new WishlistItem();
 
     @Nullable
     private ProductViewModel productViewModel;
 
     @Nullable
-    private ProductCartViewModel productCartViewModel;
+    private CartViewModel cartViewModel;
 
     private int qty = 1;
 
@@ -128,13 +138,13 @@ public final class ProductDetailFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_product_detail, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_product_detail, container, false);
         getBundleData();
-        initialisations(view);
+        initialisations(rootView);
         setUpToolBar();
-        getProductDetails();
-        setClickListeners(view);
-        return view;
+        getProductDetails(rootView);
+        setClickListeners(rootView);
+        return rootView;
     }
 
     private void getBundleData() {
@@ -146,14 +156,14 @@ public final class ProductDetailFragment extends Fragment {
         }
     }
 
-    private void initialisations(View view) {
-        ButterKnife.bind(this, view);
-        unbinder = ButterKnife.bind(this, view);
+    private void initialisations(View rootView) {
+        ButterKnife.bind(this, rootView);
+        unbinder = ButterKnife.bind(this, rootView);
         helperSharedPreference = HelperSharedPreference.getInstance(getContext());
         progressDialog = new ProgressDialog(getContext());
         progressDialog = new ProgressDialog(getContext());
         productViewModel = new ViewModelProvider(this).get(ProductViewModel.class);
-        productCartViewModel = new ViewModelProvider(this).get(ProductCartViewModel.class);
+        cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
     }
 
     private void setUpToolBar() {
@@ -166,16 +176,16 @@ public final class ProductDetailFragment extends Fragment {
         toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
     }
 
-    private void getProductDetails() {
+    private void getProductDetails(View rootView) {
         if (helperObject.hasInternet(getContext())) {
-            productViewModel.getProductFromRepository(docId).observe(getViewLifecycleOwner(), liveDataObserver());
+            productViewModel.getProductFromRepository(docId).observe(getViewLifecycleOwner(), liveDataObserver(rootView));
         } else {
             // todo no internet image
             Toast.makeText(getContext(), "Network Error", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private Observer<RequestStateMediator> liveDataObserver() {
+    private Observer<RequestStateMediator> liveDataObserver(View rootView) {
         Observer<RequestStateMediator> observer = null;
         observer = requestStateMediator -> {
             if (UiState.LOADING == requestStateMediator.getStatus()) {
@@ -191,12 +201,14 @@ public final class ProductDetailFragment extends Fragment {
 
                 if (("STATE_PRODUCT_DETAIL").equals(requestStateMediator.getKey())) {
                     getActivity().runOnUiThread(() -> {
-                        String productImage = ((ProductItem) requestStateMediator.getData()).getProductImageUrl();
-                        String productCategory = ((ProductItem) requestStateMediator.getData()).getProductCategory();
-                        String productName = ((ProductItem) requestStateMediator.getData()).getProductName();
-                        String productPrice = ((ProductItem) requestStateMediator.getData()).getProductPrice();
-                        String productDateCreated = ((ProductItem) requestStateMediator.getData()).getProductCreationDate();
-                        String productDesc = ((ProductItem) requestStateMediator.getData()).getProductDescription();
+                        productItem = ((ProductItem) requestStateMediator.getData());
+                        String productImage = productItem.getProductImageUrl();
+                        String productCategory = productItem.getProductCategory();
+                        String productName = productItem.getProductName();
+                        String productPrice = productItem.getProductPrice();
+                        String productDateCreated = productItem.getProductCreationDate();
+                        String productDesc = productItem.getProductDescription();
+                        String productDocId = productItem.getProductDocId();
 
                         helperObject.glideImage(getContext(), productImage, ivProductImage);
                         tvProductName.setText(productName);
@@ -207,16 +219,32 @@ public final class ProductDetailFragment extends Fragment {
                         tvProductDescription.setText("Description: " + productDesc);
 
                         // Prepare Cart Item
-                        productCartItem.setProductCategory(productCategory);
-                        productCartItem.setProductName(productName);
-                        productCartItem.setProductImageUrl(productImage);
-                        productCartItem.setProductPrice(productPrice);
+                        cartItem.setProductCategory(productCategory);
+                        cartItem.setProductName(productName);
+                        cartItem.setProductImageUrl(productImage);
+                        cartItem.setProductPrice(productPrice);
+                        cartItem.setProductDocId(productDocId);
+                        cartItem.setAddedOnDate(valueOf(helperObject.getCurrentEpochTime()));
+
+                        // Prepare Wishlist Item
+                        wishlistItem.setProductCategory(productCategory);
+                        wishlistItem.setProductName(productName);
+                        wishlistItem.setProductImageUrl(productImage);
+                        wishlistItem.setProductPrice(productPrice);
+                        wishlistItem.setProductDocId(productDocId);
+                        wishlistItem.setAddedOnDate(valueOf(helperObject.getCurrentEpochTime()));
                     });
                 }
 
                 if (("STATE_ADD_CART_FIRESTORE").equals(requestStateMediator.getKey())) {
                     getActivity().runOnUiThread(() -> {
+                        helperObject.showSnack(rootView, "Added To Cart", getResources().getColor(android.R.color.white), "OK", null);
+                    });
+                }
 
+                if (("STATE_ADD_WISHLIST_FIRESTORE").equals(requestStateMediator.getKey())) {
+                    getActivity().runOnUiThread(() -> {
+                        helperObject.showSnack(rootView, "Added To Wishlist", getResources().getColor(android.R.color.white), "OK", null);
                     });
                 }
 
@@ -247,7 +275,7 @@ public final class ProductDetailFragment extends Fragment {
         return observer;
     }
 
-    private void setClickListeners(View fragView) {
+    private void setClickListeners(View rootView) {
         compositeDisposable.add(
                 RxView.clicks(btnAddQty)
                         .map(o -> btnAddQty)
@@ -284,26 +312,46 @@ public final class ProductDetailFragment extends Fragment {
                 RxView.clicks(btnAddToCart)
                         .map(o -> btnAddToCart)
                         .subscribe(
-                                button -> addToCart(fragView),
+                                button -> addToCart(rootView),
+                                throwable -> Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show()
+                        )
+        );
+
+        compositeDisposable.add(
+                RxView.clicks(btnAddToWishlist)
+                        .map(o -> btnAddToWishlist)
+                        .subscribe(
+                                button -> addToWishlist(rootView),
                                 throwable -> Toast.makeText(getContext(), throwable.getMessage(), Toast.LENGTH_LONG).show()
                         )
         );
     }
 
-    private void addToCart(View fragView) {
+    private void addToCart(View rootView) {
         if (helperObject.hasInternet(getContext())) {
             // add to sub coll of user
             tvNoInternet.setVisibility(View.GONE);
-            productCartItem.setProductQty(valueOf(tvQuantity.getText()));
-            productCartViewModel.addCartProductToFirestoreFromRepository(getContext(), productCartItem).observe(getViewLifecycleOwner(), liveDataObserver());
-            helperObject.showSnack(fragView, "Added To Cart", getResources().getColor(android.R.color.white), "OK", null);
+            cartItem.setProductQty(valueOf(tvQuantity.getText()));
+            cartViewModel.addCartProductToFirestoreFromRepository(getContext(), cartItem).observe(getViewLifecycleOwner(), liveDataObserver(rootView));
         } else {
             // add to local db when no network
             tvNoInternet.setVisibility(View.VISIBLE);
             Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
-            productCartItem.setProductQty(valueOf(tvQuantity.getText()));
-            productCartViewModel.insertIntoRoomDbFromRepository(productCartItem);
-            helperObject.showSnack(fragView, "Added To Cart", getResources().getColor(android.R.color.white), "OK", null);
+            cartItem.setProductQty(valueOf(tvQuantity.getText()));
+            cartViewModel.insertIntoRoomDbFromRepository(cartItem);
+            helperObject.showSnack(rootView, "Added To Cart", getResources().getColor(android.R.color.white), "OK", null);
+        }
+    }
+
+    private void addToWishlist(View rootView) {
+        if (helperObject.hasInternet(getContext())) {
+            // add to sub coll of user
+            tvNoInternet.setVisibility(View.GONE);
+            productViewModel.addWishlistProductToFirestoreFromRepository(getContext(), wishlistItem).observe(getViewLifecycleOwner(), liveDataObserver(rootView));
+        } else {
+            // add to local db when no network
+            tvNoInternet.setVisibility(View.VISIBLE);
+            Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
         }
     }
 

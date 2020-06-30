@@ -30,8 +30,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.singularitycoder.instashop.R;
 import com.singularitycoder.instashop.cart.adapter.CartListAdapter;
-import com.singularitycoder.instashop.cart.model.ProductCartItem;
-import com.singularitycoder.instashop.cart.viewmodel.ProductCartViewModel;
+import com.singularitycoder.instashop.cart.model.CartItem;
+import com.singularitycoder.instashop.cart.viewmodel.CartViewModel;
 import com.singularitycoder.instashop.helpers.HelperConstants;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
 import com.singularitycoder.instashop.helpers.HelperSharedPreference;
@@ -84,13 +84,13 @@ public final class CartListFragment extends Fragment {
     private ProgressDialog progressDialog;
 
     @NonNull
-    private final ArrayList<ProductCartItem> productCartList = new ArrayList<>();
+    private final ArrayList<CartItem> productCartList = new ArrayList<>();
 
     @Nullable
     private CartListAdapter cartListAdapter;
 
     @Nullable
-    private ProductCartViewModel productCartViewModel;
+    private CartViewModel cartViewModel;
 
     private int totalPrice, totalQty = 0;
 
@@ -131,7 +131,7 @@ public final class CartListFragment extends Fragment {
         helperSharedPreference = HelperSharedPreference.getInstance(getContext());
         progressDialog = new ProgressDialog(getContext());
         progressDialog = new ProgressDialog(getContext());
-        productCartViewModel = new ViewModelProvider(this).get(ProductCartViewModel.class);
+        cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
     }
 
     private void setUpToolBar() {
@@ -153,10 +153,10 @@ public final class CartListFragment extends Fragment {
 
     private void getCartList() {
         if (helperObject.hasInternet(getContext())) {
-            productCartViewModel.getCartProductsFromFirestoreFromRepository(getContext()).observe(getViewLifecycleOwner(), liveDataObserver());
+            cartViewModel.getCartProductsFromFirestoreFromRepository(getContext()).observe(getViewLifecycleOwner(), liveDataObserver());
         } else {
             // todo no internet image
-            productCartViewModel.getAllFromRoomDbFromRepository().observe(getViewLifecycleOwner(), liveDataObserverForRoomDb());
+            cartViewModel.getAllFromRoomDbFromRepository().observe(getViewLifecycleOwner(), liveDataObserverForRoomDb());
             if (swipeRefreshLayout != null) swipeRefreshLayout.setRefreshing(false);
             Toast.makeText(getContext(), "Network Error", Toast.LENGTH_SHORT).show();
         }
@@ -167,8 +167,8 @@ public final class CartListFragment extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(this::getCartList);
     }
 
-    private Observer<List<ProductCartItem>> liveDataObserverForRoomDb() {
-        Observer<List<ProductCartItem>> observer = null;
+    private Observer<List<CartItem>> liveDataObserverForRoomDb() {
+        Observer<List<CartItem>> observer = null;
         observer = productCartItems -> {
             productCartList.clear();
             productCartList.addAll(productCartItems);
@@ -208,43 +208,43 @@ public final class CartListFragment extends Fragment {
                             List<DocumentSnapshot> docList = queryDocumentSnapshots.getDocuments();
 
                             for (DocumentSnapshot docSnap : docList) {
-                                ProductCartItem productCartItem = docSnap.toObject(ProductCartItem.class);
-                                if (null != productCartItem) {
+                                CartItem cartItem = docSnap.toObject(CartItem.class);
+                                if (null != cartItem) {
 
                                     if (!("").equals(valueOf(docSnap.getString(HelperConstants.KEY_PRODUCT_IMAGE)))) {
-                                        productCartItem.setProductImageUrl(valueOf(docSnap.getString(HelperConstants.KEY_PRODUCT_IMAGE)));
+                                        cartItem.setProductImageUrl(valueOf(docSnap.getString(HelperConstants.KEY_PRODUCT_IMAGE)));
                                     } else {
-                                        productCartItem.setProductImageUrl("Empty");
+                                        cartItem.setProductImageUrl("Empty");
                                     }
 
                                     if (!("").equals(valueOf(docSnap.getString(HelperConstants.KEY_PRODUCT_PRICE)))) {
-                                        productCartItem.setProductPrice(valueOf(docSnap.getString(HelperConstants.KEY_PRODUCT_PRICE)));
+                                        cartItem.setProductPrice(valueOf(docSnap.getString(HelperConstants.KEY_PRODUCT_PRICE)));
                                     } else {
-                                        productCartItem.setProductPrice("Empty");
+                                        cartItem.setProductPrice("Empty");
                                     }
 
                                     if (!("").equals(valueOf(docSnap.getString(HelperConstants.KEY_PRODUCT_NAME)))) {
-                                        productCartItem.setProductName(valueOf(docSnap.getString(HelperConstants.KEY_PRODUCT_NAME)));
+                                        cartItem.setProductName(valueOf(docSnap.getString(HelperConstants.KEY_PRODUCT_NAME)));
                                     } else {
-                                        productCartItem.setProductName("Empty");
+                                        cartItem.setProductName("Empty");
                                     }
 
                                     if (!("").equals(valueOf(docSnap.getString(HelperConstants.KEY_PRODUCT_CATEGORY)))) {
-                                        productCartItem.setProductCategory(valueOf(docSnap.getString(HelperConstants.KEY_PRODUCT_CATEGORY)));
+                                        cartItem.setProductCategory(valueOf(docSnap.getString(HelperConstants.KEY_PRODUCT_CATEGORY)));
                                     } else {
-                                        productCartItem.setProductCategory("Empty");
+                                        cartItem.setProductCategory("Empty");
                                     }
 
                                     if (!("").equals(valueOf(docSnap.getString("productQty")))) {
-                                        productCartItem.setProductQty(valueOf(docSnap.getString("productQty")));
+                                        cartItem.setProductQty(valueOf(docSnap.getString("productQty")));
                                     } else {
-                                        productCartItem.setProductQty("Empty");
+                                        cartItem.setProductQty("Empty");
                                     }
                                 }
 
                                 Log.d(TAG, "firedoc id: " + docSnap.getId());
-                                productCartItem.setProductDocId(docSnap.getId());
-                                productCartList.add(productCartItem);
+                                cartItem.setProductDocId(docSnap.getId());
+                                productCartList.add(cartItem);
                             }
 
                             cartListAdapter.notifyDataSetChanged();
@@ -315,9 +315,9 @@ public final class CartListFragment extends Fragment {
 
             @Override
             public void onRemoveProduct(int position) {
-                ProductCartItem productCartItem = new ProductCartItem();
-                productCartItem.setId(productCartList.get(position).getId());
-                productCartViewModel.deleteFromRoomDbFromRepository(productCartItem);
+                CartItem cartItem = new CartItem();
+                cartItem.setRoomId(productCartList.get(position).getRoomId());
+                cartViewModel.deleteFromRoomDbFromRepository(cartItem);
             }
 
             @Override
@@ -385,10 +385,10 @@ public final class CartListFragment extends Fragment {
 
 
     private void searchUsers(String text) {
-        List<ProductCartItem> filteredUsers = new ArrayList<>();
-        for (ProductCartItem productCartItem : productCartList) {
-            if (productCartItem.getProductName().toLowerCase().trim().contains(text.toLowerCase())) {
-                filteredUsers.add(productCartItem);
+        List<CartItem> filteredUsers = new ArrayList<>();
+        for (CartItem cartItem : productCartList) {
+            if (cartItem.getProductName().toLowerCase().trim().contains(text.toLowerCase())) {
+                filteredUsers.add(cartItem);
             }
         }
         cartListAdapter.filterList(filteredUsers);

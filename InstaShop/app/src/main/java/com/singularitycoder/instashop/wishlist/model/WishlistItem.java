@@ -1,19 +1,17 @@
-package com.singularitycoder.instashop.cart.model;
+package com.singularitycoder.instashop.wishlist.model;
 
-import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.google.firebase.firestore.Exclude;
 
-@Entity(tableName = "product_cart_table")
-public final class ProductCartItem {
+@Entity(tableName = "wishlist_table")
+public final class WishlistItem {
 
     @PrimaryKey(autoGenerate = true)
-    @NonNull
-    @ColumnInfo(name = "ID")
-    private int id;
+    @ColumnInfo(name = "RoomId")
+    private int roomId;
 
     @ColumnInfo(name = "ProductName")
     private String productName;
@@ -27,21 +25,22 @@ public final class ProductCartItem {
     @ColumnInfo(name = "ProductCategory")
     private String productCategory;
 
-    @ColumnInfo(name = "ProductQty")
-    private String productQty;
-
+    @ColumnInfo(name = "ProductDocId")
     private String productDocId;
 
-    public ProductCartItem() {
+    @ColumnInfo(name = "AddedOnDate")
+    private String addedOnDate;
+
+    public WishlistItem() {
     }
 
     @Exclude
-    public final int getId() {
-        return id;
+    public int getRoomId() {
+        return roomId;
     }
 
-    public final void setId(int id) {
-        this.id = id;
+    public void setRoomId(int roomId) {
+        this.roomId = roomId;
     }
 
     public final String getProductName() {
@@ -76,20 +75,19 @@ public final class ProductCartItem {
         this.productCategory = productCategory;
     }
 
-    public final String getProductQty() {
-        return productQty;
-    }
-
-    public final void setProductQty(String productQty) {
-        this.productQty = productQty;
-    }
-
-    @Exclude
     public final String getProductDocId() {
         return productDocId;
     }
 
     public final void setProductDocId(String productDocId) {
         this.productDocId = productDocId;
+    }
+
+    public String getAddedOnDate() {
+        return addedOnDate;
+    }
+
+    public void setAddedOnDate(String addedOnDate) {
+        this.addedOnDate = addedOnDate;
     }
 }

@@ -29,7 +29,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.singularitycoder.instashop.R;
 import com.singularitycoder.instashop.admin.view.AddProductsFragment;
 import com.singularitycoder.instashop.auth.view.MainActivity;
-import com.singularitycoder.instashop.cart.viewmodel.ProductCartViewModel;
+import com.singularitycoder.instashop.cart.viewmodel.CartViewModel;
 import com.singularitycoder.instashop.categories.adapter.CategoriesAdapter;
 import com.singularitycoder.instashop.categories.model.CategoriesItem;
 import com.singularitycoder.instashop.categories.viewmodel.CategoriesViewModel;
@@ -95,7 +95,7 @@ public final class CategoriesFragment extends Fragment implements CustomDialogFr
     private ProgressDialog progressDialog;
 
     @Nullable
-    private ProductCartViewModel productCartViewModel;
+    private CartViewModel cartViewModel;
 
     @Nullable
     private CategoriesViewModel categoriesViewModel;
@@ -127,7 +127,7 @@ public final class CategoriesFragment extends Fragment implements CustomDialogFr
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading...");
         helperObject.glideImageWithErrHandle(getContext(), IMAGE_BANNER, ivBanner, null);
-        productCartViewModel = new ViewModelProvider(this).get(ProductCartViewModel.class);
+        cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
         categoriesViewModel = new ViewModelProvider(this).get(CategoriesViewModel.class);
     }
 
@@ -266,7 +266,7 @@ public final class CategoriesFragment extends Fragment implements CustomDialogFr
                             helperSharedPreference.setMemberType("");
                             helperSharedPreference.setName("");
                             helperSharedPreference.setEmail("");
-                            productCartViewModel.deleteAllFromRoomDbFromRepository();
+                            cartViewModel.deleteAllFromRoomDbFromRepository();
                             if (null == firebaseAuth.getCurrentUser()) goToMainActivity();
                         };
                     });
