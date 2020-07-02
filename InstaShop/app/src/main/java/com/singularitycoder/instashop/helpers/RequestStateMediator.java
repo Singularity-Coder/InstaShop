@@ -3,8 +3,6 @@ package com.singularitycoder.instashop.helpers;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import org.jetbrains.annotations.NotNull;
-
 public final class RequestStateMediator<T, E, V, K> {
 
     @Nullable
@@ -30,7 +28,7 @@ public final class RequestStateMediator<T, E, V, K> {
         return dataObject;
     }
 
-    @NotNull
+    @NonNull
     public final E getStatus() {
         return status;
     }

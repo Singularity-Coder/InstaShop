@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'jacoco'
 
 android {
     compileSdkVersion 30
@@ -24,6 +25,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
+            testCoverageEnabled true
             ext.enableCrashlytics = true
 //            ext.alwaysUpdateBuildId = true
         }

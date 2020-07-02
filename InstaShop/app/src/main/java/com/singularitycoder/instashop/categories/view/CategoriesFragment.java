@@ -175,32 +175,32 @@ public final class CategoriesFragment extends Fragment implements CustomDialogFr
             Bundle movieBundle = new Bundle();
             movieBundle.putString("CATEGORY", "Movies");
             if (position == 0)
-                showFragment(movieBundle, R.id.con_lay_dashboard, new ProductListFragment());
+                showFragment(movieBundle, R.id.con_lay_base_activity_root, new ProductListFragment());
 
             Bundle musicBundle = new Bundle();
             musicBundle.putString("CATEGORY", "Music");
             if (position == 1)
-                showFragment(musicBundle, R.id.con_lay_dashboard, new ProductListFragment());
+                showFragment(musicBundle, R.id.con_lay_base_activity_root, new ProductListFragment());
 
             Bundle cameraBundle = new Bundle();
             cameraBundle.putString("CATEGORY", "Cameras");
             if (position == 2)
-                showFragment(cameraBundle, R.id.con_lay_dashboard, new ProductListFragment());
+                showFragment(cameraBundle, R.id.con_lay_base_activity_root, new ProductListFragment());
 
             Bundle toyBundle = new Bundle();
             toyBundle.putString("CATEGORY", "Toys");
             if (position == 3)
-                showFragment(toyBundle, R.id.con_lay_dashboard, new ProductListFragment());
+                showFragment(toyBundle, R.id.con_lay_base_activity_root, new ProductListFragment());
 
             Bundle mobileBundle = new Bundle();
             mobileBundle.putString("CATEGORY", "Mobiles");
             if (position == 4)
-                showFragment(mobileBundle, R.id.con_lay_dashboard, new ProductListFragment());
+                showFragment(mobileBundle, R.id.con_lay_base_activity_root, new ProductListFragment());
 
             Bundle computerBundle = new Bundle();
             computerBundle.putString("CATEGORY", "Computers");
             if (position == 5)
-                showFragment(computerBundle, R.id.con_lay_dashboard, new ProductListFragment());
+                showFragment(computerBundle, R.id.con_lay_base_activity_root, new ProductListFragment());
         });
         recyclerView.setAdapter(categoriesAdapter);
     }
@@ -354,7 +354,7 @@ public final class CategoriesFragment extends Fragment implements CustomDialogFr
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_products:
-                showFragment(new Bundle(), R.id.con_lay_dashboard, new AddProductsFragment());
+                showFragment(new Bundle(), R.id.con_lay_base_activity_root, new AddProductsFragment());
                 return true;
             case R.id.action_update_email:
                 btnUpdateEmail();

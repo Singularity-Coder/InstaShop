@@ -257,11 +257,14 @@ public final class CartListFragment extends Fragment {
 
 //                                    calculateTotals();
 
-                                    if (productCartList.size() == 0) tvNothing.setVisibility(View.VISIBLE);
+                                    if (productCartList.size() == 0)
+                                        tvNothing.setVisibility(View.VISIBLE);
                                     else tvNothing.setVisibility(View.GONE);
 
-                                    if (null != progressDialog && progressDialog.isShowing()) progressDialog.dismiss();
-                                    if (swipeRefreshLayout != null) swipeRefreshLayout.setRefreshing(false);
+                                    if (null != progressDialog && progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    if (swipeRefreshLayout != null)
+                                        swipeRefreshLayout.setRefreshing(false);
                                     Toast.makeText(getContext(), valueOf(requestStateMediator.getMessage()), Toast.LENGTH_SHORT).show();
                                 });
                             }
@@ -269,8 +272,10 @@ public final class CartListFragment extends Fragment {
                         } else {
                             if (null != getActivity()) {
                                 getActivity().runOnUiThread(() -> {
-                                    if (null != progressDialog && progressDialog.isShowing()) progressDialog.dismiss();
-                                    if (swipeRefreshLayout != null) swipeRefreshLayout.setRefreshing(false);
+                                    if (null != progressDialog && progressDialog.isShowing())
+                                        progressDialog.dismiss();
+                                    if (swipeRefreshLayout != null)
+                                        swipeRefreshLayout.setRefreshing(false);
                                     tvNothing.setVisibility(View.VISIBLE);
                                 });
                             }
@@ -378,6 +383,8 @@ public final class CartListFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_product_search:
+                return true;
+            case R.id.action_help:
                 return true;
         }
         return super.onOptionsItemSelected(item);

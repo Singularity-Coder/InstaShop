@@ -1,6 +1,5 @@
-package com.singularitycoder.instashop.base;
+package com.singularitycoder.instashop.home.view;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -16,11 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.singularitycoder.instashop.R;
 import com.singularitycoder.instashop.cart.view.CartListFragment;
 import com.singularitycoder.instashop.categories.view.CategoriesFragment;
-import com.singularitycoder.instashop.helpers.HelperGeneral;
-import com.singularitycoder.instashop.helpers.HelperSharedPreference;
-import com.singularitycoder.instashop.home.view.HomeFragment;
 import com.singularitycoder.instashop.more.MoreFragment;
-import com.singularitycoder.instashop.notifications.NotificationsFragment;
 import com.singularitycoder.instashop.payments.PaymentsFragment;
 
 import butterknife.BindView;
@@ -37,19 +32,10 @@ public final class BaseFragment extends Fragment implements BottomNavigationView
     BottomNavigationView bottomNavigationView;
 
     @NonNull
-    private final HelperGeneral helperObject = new HelperGeneral();
-
-    @NonNull
     private final String TAG = "BaseFragment";
 
     @NonNull
     private Unbinder unbinder;
-
-    @NonNull
-    private HelperSharedPreference helperSharedPreference;
-
-    @Nullable
-    private ProgressDialog progressDialog;
 
     public BaseFragment() {
     }
@@ -79,9 +65,6 @@ public final class BaseFragment extends Fragment implements BottomNavigationView
     private void initialisations(View view) {
         ButterKnife.bind(this, view);
         unbinder = ButterKnife.bind(this, view);
-        helperSharedPreference = HelperSharedPreference.getInstance(getContext());
-        progressDialog = new ProgressDialog(getContext());
-        progressDialog = new ProgressDialog(getContext());
     }
 
     private void setUpToolBar() {
@@ -110,6 +93,12 @@ public final class BaseFragment extends Fragment implements BottomNavigationView
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
     }
 
     @Override

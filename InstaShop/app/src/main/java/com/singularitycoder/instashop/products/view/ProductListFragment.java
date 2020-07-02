@@ -1,7 +1,6 @@
 package com.singularitycoder.instashop.products.view;
 
 import android.app.ProgressDialog;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,9 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.rpc.Help;
 import com.singularitycoder.instashop.R;
 import com.singularitycoder.instashop.helpers.HelperConstants;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
@@ -295,7 +292,7 @@ public final class ProductListFragment extends Fragment {
 
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.con_lay_dashboard, fragment)
+                    .replace(R.id.con_lay_base_activity_root, fragment)
                     .addToBackStack(null)
                     .commit();
         });

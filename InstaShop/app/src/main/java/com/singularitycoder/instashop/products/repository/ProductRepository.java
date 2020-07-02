@@ -14,6 +14,8 @@ import com.singularitycoder.instashop.helpers.UiState;
 import com.singularitycoder.instashop.products.model.ProductItem;
 import com.singularitycoder.instashop.wishlist.model.WishlistItem;
 
+import javax.net.ssl.SSLEngineResult;
+
 import static java.lang.String.valueOf;
 
 public final class ProductRepository {
@@ -35,9 +37,9 @@ public final class ProductRepository {
         return _instance;
     }
 
-    public final MutableLiveData<RequestStateMediator> getProductsListFromFirestore(@NonNull final String category) {
-        final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
-        final RequestStateMediator requestStateMediator = new RequestStateMediator();
+    public final MutableLiveData<RequestStateMediator<Object, UiState, String, String>> getProductsListFromFirestore(@NonNull final String category) {
+        final MutableLiveData<RequestStateMediator<Object, UiState, String, String>> liveData = new MutableLiveData<>();
+        final RequestStateMediator<Object, UiState, String, String> requestStateMediator = new RequestStateMediator<>();
 
         requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
         liveData.postValue(requestStateMediator);
@@ -59,9 +61,9 @@ public final class ProductRepository {
         return liveData;
     }
 
-    public final MutableLiveData<RequestStateMediator> getProductInfo(@NonNull final String docId) {
-        final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
-        final RequestStateMediator requestStateMediator = new RequestStateMediator();
+    public final MutableLiveData<RequestStateMediator<Object, UiState, String, String>> getProductInfo(@NonNull final String docId) {
+        final MutableLiveData<RequestStateMediator<Object, UiState, String, String>> liveData = new MutableLiveData<>();
+        final RequestStateMediator<Object, UiState, String, String> requestStateMediator = new RequestStateMediator<>();
 
         requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
         liveData.postValue(requestStateMediator);
@@ -130,11 +132,11 @@ public final class ProductRepository {
         return liveData;
     }
 
-    public final MutableLiveData<RequestStateMediator> addWishlistItemsToFirestore(
+    public final MutableLiveData<RequestStateMediator<Object, UiState, String, String>> addWishlistItemsToFirestore(
             @NonNull final Context context, @NonNull final WishlistItem wishlistItem) {
 
-        final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
-        final RequestStateMediator requestStateMediator = new RequestStateMediator();
+        final MutableLiveData<RequestStateMediator<Object, UiState, String, String>> liveData = new MutableLiveData<>();
+        final RequestStateMediator<Object, UiState, String, String> requestStateMediator = new RequestStateMediator<>();
 
         requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
         liveData.postValue(requestStateMediator);

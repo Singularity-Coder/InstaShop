@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
@@ -24,6 +26,9 @@ public final class HomeFragment extends Fragment {
     @Nullable
     @BindView(R.id.con_lay_home_frag_root)
     ConstraintLayout conLayHome;
+    @Nullable
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @NonNull
     private final HelperGeneral helperObject = new HelperGeneral();
@@ -72,12 +77,11 @@ public final class HomeFragment extends Fragment {
     }
 
     private void setUpToolBar() {
-//        AppCompatActivity activity = (AppCompatActivity) getActivity();
-//        if (null != activity) {
-//            activity.setSupportActionBar(toolbar);
-//            activity.setTitle("Cart");
-//            activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        }
-//        toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        if (null != activity) {
+            activity.setSupportActionBar(toolbar);
+            activity.setTitle("Home");
+        }
+        toolbar.setNavigationOnClickListener(v -> getActivity().onBackPressed());
     }
 }

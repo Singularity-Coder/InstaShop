@@ -1,4 +1,4 @@
-package com.singularitycoder.instashop.base;
+package com.singularitycoder.instashop.home.view;
 
 import android.os.Bundle;
 
@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentManager;
 
 import com.singularitycoder.instashop.R;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
-import com.singularitycoder.instashop.home.view.HomeFragment;
 
 public final class BaseActivity extends AppCompatActivity {
 
@@ -19,14 +18,14 @@ public final class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         helperObject.setStatusBarColor(this, R.color.colorPrimaryDark);
-        setContentView(R.layout.activity_dashboard);
+        setContentView(R.layout.activity_base);
         showDashboardFragment();
     }
 
     private void showDashboardFragment() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.con_lay_dashboard, new BaseFragment())
+                .replace(R.id.con_lay_base_activity_root, new BaseFragment())
                 .commit();
     }
 

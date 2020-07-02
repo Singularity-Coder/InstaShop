@@ -25,7 +25,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.jakewharton.rxbinding3.view.RxView;
 import com.singularitycoder.instashop.R;
 import com.singularitycoder.instashop.auth.viewmodel.AuthViewModel;
-import com.singularitycoder.instashop.base.BaseActivity;
+import com.singularitycoder.instashop.home.view.BaseActivity;
 import com.singularitycoder.instashop.helpers.CustomDialogFragment;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
 import com.singularitycoder.instashop.helpers.HelperSharedPreference;
