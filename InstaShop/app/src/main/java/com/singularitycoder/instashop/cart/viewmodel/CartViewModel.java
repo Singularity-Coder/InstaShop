@@ -30,16 +30,16 @@ public final class CartViewModel extends AndroidViewModel {
 
     // ROOM START______________________________________________________________
 
-    public final void insertIntoRoomDbFromRepository(CartItem note) {
-        cartRepository.insertIntoRoomDb(note);
+    public final void insertIntoRoomDbFromRepository(CartItem cartItem) {
+        cartRepository.insertIntoRoomDb(cartItem);
     }
 
-    public final void updateInRoomDbFromRepository(CartItem note) {
-        cartRepository.updateInRoomDb(note);
+    public final void updateInRoomDbFromRepository(CartItem cartItem) {
+        cartRepository.updateInRoomDb(cartItem);
     }
 
-    public final void deleteFromRoomDbFromRepository(CartItem note) {
-        cartRepository.deleteFromRoomDb(note);
+    public final void deleteFromRoomDbFromRepository(CartItem cartItem) {
+        cartRepository.deleteFromRoomDb(cartItem);
     }
 
     public final void deleteAllFromRoomDbFromRepository() {
