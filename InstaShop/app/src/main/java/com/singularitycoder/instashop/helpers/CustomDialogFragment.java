@@ -47,13 +47,15 @@ public final class CustomDialogFragment extends DialogFragment {
         super.onAttach(context);
 
         if (null != getArguments()) {
-//            if (("simpleAlert").equals(getArguments().getString("DIALOG_TYPE"))) {
-//                try {
-//                    simpleAlertDialogListener = (SimpleAlertDialogListener) context;
-//                } catch (ClassCastException e) {
-//                    throw new ClassCastException(getActivity().toString() + " must implement SimpleAlertDialogListener");
-//                }
-//            }
+            if (("simpleAlert").equals(getArguments().getString("DIALOG_TYPE"))) {
+                if (("activity").equals(getArguments().getString("KEY_CONTEXT_TYPE"))) {
+                    try {
+                        simpleAlertDialogListener = (SimpleAlertDialogListener) context;
+                    } catch (ClassCastException e) {
+                        throw new ClassCastException(getActivity().toString() + " must implement SimpleAlertDialogListener");
+                    }
+                }
+            }
 
             if (("resetPasswordDialog").equals(getArguments().getString("DIALOG_TYPE"))) {
                 try {

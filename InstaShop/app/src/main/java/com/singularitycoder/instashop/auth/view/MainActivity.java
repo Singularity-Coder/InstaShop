@@ -4,7 +4,9 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -41,7 +43,9 @@ import io.reactivex.disposables.CompositeDisposable;
 
 import static java.lang.String.valueOf;
 
-public final class MainActivity extends AppCompatActivity implements CustomDialogFragment.ListDialogListener, CustomDialogFragment.SimpleAlertDialogListener {
+public final class MainActivity
+        extends AppCompatActivity
+        implements CustomDialogFragment.ListDialogListener, CustomDialogFragment.SimpleAlertDialogListener {
 
     @Nullable
     @BindView(R.id.iv_background)
@@ -121,6 +125,14 @@ public final class MainActivity extends AppCompatActivity implements CustomDialo
     }
 
     private void setClickListeners() {
+        etPassword.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+            if (EditorInfo.IME_ACTION_DONE == actionId) {
+                btnAuthenticate();
+                return true;
+            }
+            return false;
+        });
+
         compositeDisposable.add(
                 RxView.clicks(btnAuthenticate)
                         .map(o -> btnAuthenticate)
