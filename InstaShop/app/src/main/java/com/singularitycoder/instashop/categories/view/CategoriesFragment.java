@@ -34,6 +34,7 @@ import com.singularitycoder.instashop.categories.adapter.CategoriesAdapter;
 import com.singularitycoder.instashop.categories.model.CategoriesItem;
 import com.singularitycoder.instashop.categories.viewmodel.CategoriesViewModel;
 import com.singularitycoder.instashop.helpers.CustomDialogFragment;
+import com.singularitycoder.instashop.helpers.CustomDialogFragmentConstants;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
 import com.singularitycoder.instashop.helpers.HelperSharedPreference;
 import com.singularitycoder.instashop.helpers.RequestStateMediator;
@@ -315,30 +316,27 @@ public final class CategoriesFragment extends Fragment implements CustomDialogFr
         bundle.putString("DIALOG_TYPE", "updateEmailDialog");
 
         DialogFragment dialogFragment = new CustomDialogFragment();
+        dialogFragment.setTargetFragment(CategoriesFragment.this, CustomDialogFragmentConstants.REQUEST_CODE_DIALOG_FRAGMENT_UPDATE_EMAIL);
         dialogFragment.setArguments(bundle);
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         Fragment previousFragment = getActivity().getSupportFragmentManager().findFragmentByTag("TAG_CustomDialogFragment");
-        if (previousFragment != null) {
-            fragmentTransaction.remove(previousFragment);
-        }
+        if (previousFragment != null) fragmentTransaction.remove(previousFragment);
         fragmentTransaction.addToBackStack(null);
         dialogFragment.show(fragmentTransaction, "TAG_CustomDialogFragment");
     }
 
-    // FIXME: 30/06/20
     private void btnChangePassword() {
         Bundle bundle = new Bundle();
         bundle.putString("DIALOG_TYPE", "changePasswordDialog");
 
         DialogFragment dialogFragment = new CustomDialogFragment();
+        dialogFragment.setTargetFragment(CategoriesFragment.this, CustomDialogFragmentConstants.REQUEST_CODE_DIALOG_FRAGMENT_CHANGE_PASSWORD);
         dialogFragment.setArguments(bundle);
         FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         Fragment previousFragment = getActivity().getSupportFragmentManager().findFragmentByTag("TAG_CustomDialogFragment");
-        if (previousFragment != null) {
-            fragmentTransaction.remove(previousFragment);
-        }
+        if (previousFragment != null) fragmentTransaction.remove(previousFragment);
         fragmentTransaction.addToBackStack(null);
         dialogFragment.show(fragmentTransaction, "TAG_CustomDialogFragment");
     }

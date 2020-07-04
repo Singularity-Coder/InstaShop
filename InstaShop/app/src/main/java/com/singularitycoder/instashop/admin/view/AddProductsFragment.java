@@ -22,14 +22,18 @@ import androidx.annotation.UiThread;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.jakewharton.rxbinding3.view.RxView;
 import com.singularitycoder.instashop.R;
 import com.singularitycoder.instashop.admin.viewmodel.AdminViewModel;
+import com.singularitycoder.instashop.categories.view.CategoriesFragment;
 import com.singularitycoder.instashop.helpers.CustomDialogFragment;
+import com.singularitycoder.instashop.helpers.CustomDialogFragmentConstants;
 import com.singularitycoder.instashop.helpers.HelperGeneral;
 import com.singularitycoder.instashop.helpers.RequestStateMediator;
 import com.singularitycoder.instashop.helpers.UiState;
@@ -233,42 +237,22 @@ public final class AddProductsFragment extends Fragment implements CustomDialogF
 
     @UiThread
     private void btnShowCategoriesDialog() {
-        // todo context problems
+        Bundle bundle = new Bundle();
+        bundle.putString("DIALOG_TYPE", "list");
+        bundle.putString("KEY_TITLE", "Categories");
+        bundle.putString("KEY_CONTEXT_TYPE", "fragment");
+        bundle.putString("KEY_CONTEXT_OBJECT", "AddProductsFragment");
+        bundle.putStringArray("KEY_LIST", new String[]{"Movies", "Music", "Cameras", "Toys", "Mobiles", "Computers"});
 
-//        Bundle bundle = new Bundle();
-//        bundle.putString("DIALOG_TYPE", "list");
-//        bundle.putString("KEY_TITLE", "Categories");
-//        bundle.putStringArray("KEY_LIST", new String[]{"Movies", "Music", "Cameras", "Toys", "Mobiles", "Computers"});
-//
-//        DialogFragment dialogFragment = new CustomDialogFragment();
-//        dialogFragment.setArguments(bundle);
-//        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-//        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-//        Fragment previousFragment = getActivity().getSupportFragmentManager().findFragmentByTag("TAG_CustomDialogFragment");
-//        if (previousFragment != null) {
-//            fragmentTransaction.remove(previousFragment);
-//        }
-//        fragmentTransaction.addToBackStack(null);
-//        dialogFragment.show(fragmentTransaction, "TAG_CustomDialogFragment");
-
-        listDialog();
-    }
-
-    @UiThread
-    public final void listDialog() {
-        final AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getContext());
-        alertBuilder.setTitle("Categories");
-        alertBuilder.setCancelable(false);
-        String[] selectArray = {"Movies", "Music", "Cameras", "Toys", "Mobiles", "Computers"};
-        alertBuilder.setItems(selectArray, (dialog, which) -> {
-            for (int i = 0; i < selectArray.length; i++) {
-                if (which == i) {
-                    tvCategory.setText(selectArray[i]);
-                }
-            }
-        });
-
-        alertBuilder.show();
+        DialogFragment dialogFragment = new CustomDialogFragment();
+        dialogFragment.setTargetFragment(AddProductsFragment.this, CustomDialogFragmentConstants.REQUEST_CODE_DIALOG_FRAGMENT_CATEGORIES_LIST);
+        dialogFragment.setArguments(bundle);
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        Fragment previousFragment = getActivity().getSupportFragmentManager().findFragmentByTag("TAG_CustomDialogFragment");
+        if (previousFragment != null) fragmentTransaction.remove(previousFragment);
+        fragmentTransaction.addToBackStack(null);
+        dialogFragment.show(fragmentTransaction, "TAG_CustomDialogFragment");
     }
 
     private void dumpFields() {

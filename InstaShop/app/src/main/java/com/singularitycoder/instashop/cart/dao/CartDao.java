@@ -24,12 +24,12 @@ public interface CartDao {
     @Delete
     void deleteProduct(CartItem cartItem);
 
-    @Query("SELECT * FROM cart_table WHERE RoomId=:id")
+    @Query("SELECT * FROM table_cart WHERE RoomId=:id")
     CartItem getProduct(int id);
 
-    @Query("SELECT * FROM cart_table ORDER BY productName ASC")
+    @Query("SELECT * FROM table_cart ORDER BY ProductName ASC")
     LiveData<List<CartItem>> getAllProducts();
 
-    @Query("DELETE FROM cart_table")
+    @Query("DELETE FROM table_cart")
     void deleteAllProducts();
 }

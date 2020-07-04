@@ -162,6 +162,8 @@ public final class MainActivity extends AppCompatActivity implements CustomDialo
         Bundle bundle = new Bundle();
         bundle.putString("DIALOG_TYPE", "list");
         bundle.putString("KEY_TITLE", "Who are you?");
+        bundle.putString("KEY_CONTEXT_TYPE", "activity");
+        bundle.putString("KEY_CONTEXT_OBJECT", "MainActivity");
         bundle.putStringArray("KEY_LIST", new String[]{"Admin", "Shopper"});
 
         DialogFragment dialogFragment = new CustomDialogFragment();
@@ -169,9 +171,7 @@ public final class MainActivity extends AppCompatActivity implements CustomDialo
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         Fragment previousFragment = getSupportFragmentManager().findFragmentByTag("TAG_CustomDialogFragment");
-        if (previousFragment != null) {
-            fragmentTransaction.remove(previousFragment);
-        }
+        if (previousFragment != null) fragmentTransaction.remove(previousFragment);
         fragmentTransaction.addToBackStack(null);
         dialogFragment.show(fragmentTransaction, "TAG_CustomDialogFragment");
     }
@@ -235,9 +235,7 @@ public final class MainActivity extends AppCompatActivity implements CustomDialo
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         Fragment previousFragment = getSupportFragmentManager().findFragmentByTag("TAG_CustomDialogFragment");
-        if (previousFragment != null) {
-            fragmentTransaction.remove(previousFragment);
-        }
+        if (previousFragment != null) fragmentTransaction.remove(previousFragment);
         fragmentTransaction.addToBackStack(null);
         dialogFragment.show(fragmentTransaction, "TAG_CustomDialogFragment");
     }
@@ -391,7 +389,6 @@ public final class MainActivity extends AppCompatActivity implements CustomDialo
     @Override
     public void onDialogPositiveClick(String dialogType, DialogFragment dialog, Map<Object, Object> map) {
         if (("DIALOG_TYPE_RESET_PASSWORD").equals(dialogType)) {
-            Log.d(TAG, "onDialogPositiveClick: email: " + (String) map.get("KEY_EMAIL"));
             authViewModel.resetPasswordFromRepository((String) map.get("KEY_EMAIL"), dialog).observe(MainActivity.this, liveDataObserver());
         }
     }

@@ -26,7 +26,7 @@ public abstract class InstaShopRoomDatabase extends RoomDatabase {
 
     @NonNull
     public static synchronized InstaShopRoomDatabase getInstance(Context context) {
-        if (instance == null) {
+        if (null == instance) {
             instance = Room
                     .databaseBuilder(context.getApplicationContext(), InstaShopRoomDatabase.class, "instashop_database")
                     .fallbackToDestructiveMigration()

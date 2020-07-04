@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey;
 
 import com.google.firebase.firestore.Exclude;
 
-@Entity(tableName = "cart_table")
+@Entity(tableName = "table_cart")
 public final class CartItem {
 
     @PrimaryKey(autoGenerate = true)

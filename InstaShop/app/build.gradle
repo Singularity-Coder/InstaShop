@@ -27,6 +27,7 @@ android {
         debug {
             testCoverageEnabled true
             ext.enableCrashlytics = true
+            resValue("string", "PORT_NUMBER", "8087")
 //            ext.alwaysUpdateBuildId = true
         }
     }
@@ -122,4 +123,7 @@ dependencies {
     implementation "androidx.room:room-runtime:2.2.5"
     annotationProcessor "androidx.room:room-compiler:2.2.5"
     androidTestImplementation 'androidx.room:room-testing:2.2.5'
+
+    // Room Debug
+    debugImplementation 'com.amitshekhar.android:debug-db:1.0.1'
 }

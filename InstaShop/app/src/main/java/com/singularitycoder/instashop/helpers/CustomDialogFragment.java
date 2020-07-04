@@ -1,8 +1,10 @@
 package com.singularitycoder.instashop.helpers;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.ViewGroup;
@@ -15,6 +17,11 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+
+import com.singularitycoder.instashop.admin.view.AddProductsFragment;
+import com.singularitycoder.instashop.auth.view.MainActivity;
+import com.singularitycoder.instashop.categories.view.CategoriesFragment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +47,15 @@ public final class CustomDialogFragment extends DialogFragment {
         super.onAttach(context);
 
         if (null != getArguments()) {
-            if (("simpleAlert").equals(getArguments().getString("DIALOG_TYPE"))) {
+//            if (("simpleAlert").equals(getArguments().getString("DIALOG_TYPE"))) {
+//                try {
+//                    simpleAlertDialogListener = (SimpleAlertDialogListener) context;
+//                } catch (ClassCastException e) {
+//                    throw new ClassCastException(getActivity().toString() + " must implement SimpleAlertDialogListener");
+//                }
+//            }
+
+            if (("resetPasswordDialog").equals(getArguments().getString("DIALOG_TYPE"))) {
                 try {
                     simpleAlertDialogListener = (SimpleAlertDialogListener) context;
                 } catch (ClassCastException e) {
@@ -49,10 +64,12 @@ public final class CustomDialogFragment extends DialogFragment {
             }
 
             if (("list").equals(getArguments().getString("DIALOG_TYPE"))) {
-                try {
-                    listDialogListener = (ListDialogListener) context;
-                } catch (ClassCastException e) {
-                    throw new ClassCastException(getActivity().toString() + " must implement ListDialogViewListener");
+                if (("activity").equals(getArguments().getString("KEY_CONTEXT_TYPE"))) {
+                    try {
+                        listDialogListener = (ListDialogListener) context;
+                    } catch (ClassCastException e) {
+                        throw new ClassCastException(getActivity().toString() + " must implement ListDialogViewListener");
+                    }
                 }
             }
         }
@@ -83,7 +100,9 @@ public final class CustomDialogFragment extends DialogFragment {
                 if (null != getArguments().getStringArray("KEY_LIST") && null != getArguments().getString("KEY_TITLE")) {
                     String[] list = getArguments().getStringArray("KEY_LIST");
                     String title = getArguments().getString("KEY_TITLE");
-                    listDialog(builder, list, title);
+                    String contextType = getArguments().getString("KEY_CONTEXT_TYPE");
+                    String  contextObject = getArguments().getString("KEY_CONTEXT_OBJECT");
+                    listDialog(builder, list, title, contextType, contextObject);
                 }
             }
         }
@@ -93,6 +112,8 @@ public final class CustomDialogFragment extends DialogFragment {
 
     @UiThread
     public final void simpleAlertDialog(AlertDialog.Builder builder) {
+        SimpleAlertDialogListener simpleAlertDialogListener = (CategoriesFragment) getTargetFragment();
+
         builder.setTitle("Delete Message");
         builder.setMessage("Are you sure you want to delete getContext() message?");
         builder.setIcon(android.R.drawable.ic_dialog_alert);
@@ -111,7 +132,6 @@ public final class CustomDialogFragment extends DialogFragment {
 
     @UiThread
     public final void resetPasswordDialog(AlertDialog.Builder builder) {
-
         final LinearLayout linearLayout = new LinearLayout(getContext());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -148,6 +168,8 @@ public final class CustomDialogFragment extends DialogFragment {
 
     @UiThread
     private void updateEmail(AlertDialog.Builder builder) {
+        SimpleAlertDialogListener simpleAlertDialogListener = (CategoriesFragment) getTargetFragment();
+
         final LinearLayout linearLayout = new LinearLayout(getContext());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -184,6 +206,8 @@ public final class CustomDialogFragment extends DialogFragment {
 
     @UiThread
     private void changePassword(AlertDialog.Builder builder) {
+        SimpleAlertDialogListener simpleAlertDialogListener = (CategoriesFragment) getTargetFragment();
+
         final LinearLayout linearLayout = new LinearLayout(getContext());
         linearLayout.setOrientation(LinearLayout.VERTICAL);
         LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -219,19 +243,26 @@ public final class CustomDialogFragment extends DialogFragment {
     }
 
     @UiThread
-    public void listDialog(AlertDialog.Builder builder, String[] list, String title) {
+    public void listDialog(AlertDialog.Builder builder, String[] list, String title, String contextType, String contextObject) {
+
+        if (("fragment").equals(contextType) && ("AddProductsFragment").equals(contextObject)) {
+            listDialogListener = (AddProductsFragment) getTargetFragment();
+        }
+
         builder.setTitle(title);
         builder.setCancelable(false);
         String[] selectArray = list;
         builder.setItems(selectArray, (dialog, which) -> {
             for (int i = 0; i < list.length; i++) {
                 if (which == i) {
-                    if (null != listDialogListener) {
-                        listDialogListener.onListDialogItemClicked(selectArray[i]);
-                    }
+                    if (null != listDialogListener) listDialogListener.onListDialogItemClicked(selectArray[i]);
                 }
             }
         });
+    }
+
+    public final void setSimpleAlertDialogListener(SimpleAlertDialogListener simpleAlertDialogListener) {
+        this.simpleAlertDialogListener = simpleAlertDialogListener;
     }
 
     public interface SimpleAlertDialogListener {
