@@ -394,24 +394,24 @@ public final class MainActivity
     }
 
     @Override
-    public void onListDialogItemClicked(String listItemText) {
+    public void onListDialogItemClick(String listItemText) {
         tvMemberType.setText(listItemText);
     }
 
     @Override
-    public void onDialogPositiveClick(String dialogType, DialogFragment dialog, Map<Object, Object> map) {
+    public void onAlertDialogPositiveClick(String dialogType, DialogFragment dialog, Map<Object, Object> map) {
         if (("DIALOG_TYPE_RESET_PASSWORD").equals(dialogType)) {
             authViewModel.resetPasswordFromRepository((String) map.get("KEY_EMAIL"), dialog).observe(MainActivity.this, liveDataObserver());
         }
     }
 
     @Override
-    public void onDialogNegativeClick(String dialogType, DialogFragment dialog) {
+    public void onAlertDialogNegativeClick(String dialogType, DialogFragment dialog) {
         dialog.dismiss();
     }
 
     @Override
-    public void onDialogNeutralClick(String dialogType, DialogFragment dialog) {
+    public void onAlertDialogNeutralClick(String dialogType, DialogFragment dialog) {
 
     }
 }

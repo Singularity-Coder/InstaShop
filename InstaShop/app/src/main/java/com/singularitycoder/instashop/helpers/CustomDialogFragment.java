@@ -1,10 +1,8 @@
 package com.singularitycoder.instashop.helpers;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.ViewGroup;
@@ -17,10 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 
 import com.singularitycoder.instashop.admin.view.AddProductsFragment;
-import com.singularitycoder.instashop.auth.view.MainActivity;
 import com.singularitycoder.instashop.categories.view.CategoriesFragment;
 
 import java.util.HashMap;
@@ -122,13 +118,13 @@ public final class CustomDialogFragment extends DialogFragment {
         builder.setCancelable(true);
         builder
                 .setPositiveButton("OK", (dialog1, id) -> {
-                    simpleAlertDialogListener.onDialogPositiveClick("DIALOG_TYPE_SIMPLE_ALERT", CustomDialogFragment.this, null);
+                    simpleAlertDialogListener.onAlertDialogPositiveClick("DIALOG_TYPE_SIMPLE_ALERT", CustomDialogFragment.this, null);
                 })
                 .setNegativeButton("CANCEL", (dialog12, id) -> {
-                    simpleAlertDialogListener.onDialogNegativeClick("DIALOG_TYPE_SIMPLE_ALERT", CustomDialogFragment.this);
+                    simpleAlertDialogListener.onAlertDialogNegativeClick("DIALOG_TYPE_SIMPLE_ALERT", CustomDialogFragment.this);
                 })
                 .setNeutralButton("LATER", (dialogInterface, id) -> {
-                    simpleAlertDialogListener.onDialogNeutralClick("DIALOG_TYPE_SIMPLE_ALERT", CustomDialogFragment.this);
+                    simpleAlertDialogListener.onAlertDialogNeutralClick("DIALOG_TYPE_SIMPLE_ALERT", CustomDialogFragment.this);
                 });
     }
 
@@ -157,7 +153,7 @@ public final class CustomDialogFragment extends DialogFragment {
                 if (!TextUtils.isEmpty(valueOf(etSendToEmail.getText()))) {
                     Map<Object, Object> map = new HashMap<>();
                     map.put("KEY_EMAIL", valueOf(etSendToEmail.getText()));
-                    simpleAlertDialogListener.onDialogPositiveClick("DIALOG_TYPE_RESET_PASSWORD", CustomDialogFragment.this, map);
+                    simpleAlertDialogListener.onAlertDialogPositiveClick("DIALOG_TYPE_RESET_PASSWORD", CustomDialogFragment.this, map);
                 } else {
                     Toast.makeText(getContext(), "Email is Required!", Toast.LENGTH_SHORT).show();
                 }
@@ -165,7 +161,7 @@ public final class CustomDialogFragment extends DialogFragment {
                 Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
             }
         });
-        builder.setNegativeButton("CANCEL", (dialog12, id) -> simpleAlertDialogListener.onDialogNegativeClick("DIALOG_TYPE_RESET_PASSWORD", CustomDialogFragment.this));
+        builder.setNegativeButton("CANCEL", (dialog12, id) -> simpleAlertDialogListener.onAlertDialogNegativeClick("DIALOG_TYPE_RESET_PASSWORD", CustomDialogFragment.this));
     }
 
     @UiThread
@@ -195,7 +191,7 @@ public final class CustomDialogFragment extends DialogFragment {
                 if (!TextUtils.isEmpty(valueOf(etUpdateEmail.getText()))) {
                     Map<Object, Object> map = new HashMap<>();
                     map.put("KEY_EMAIL", valueOf(etUpdateEmail.getText()));
-                    simpleAlertDialogListener.onDialogPositiveClick("DIALOG_TYPE_UPDATE_EMAIL", CustomDialogFragment.this, map);
+                    simpleAlertDialogListener.onAlertDialogPositiveClick("DIALOG_TYPE_UPDATE_EMAIL", CustomDialogFragment.this, map);
                 } else {
                     Toast.makeText(getContext(), "Email is Required!", Toast.LENGTH_SHORT).show();
                 }
@@ -203,7 +199,7 @@ public final class CustomDialogFragment extends DialogFragment {
                 Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
             }
         });
-        builder.setNegativeButton("CANCEL", (dialog12, id) -> simpleAlertDialogListener.onDialogNegativeClick("DIALOG_TYPE_UPDATE_EMAIL", CustomDialogFragment.this));
+        builder.setNegativeButton("CANCEL", (dialog12, id) -> simpleAlertDialogListener.onAlertDialogNegativeClick("DIALOG_TYPE_UPDATE_EMAIL", CustomDialogFragment.this));
     }
 
     @UiThread
@@ -233,7 +229,7 @@ public final class CustomDialogFragment extends DialogFragment {
                 if (!TextUtils.isEmpty(valueOf(etNewPassword.getText()))) {
                     Map<Object, Object> map = new HashMap<>();
                     map.put("KEY_PASSWORD", valueOf(etNewPassword.getText()));
-                    simpleAlertDialogListener.onDialogPositiveClick("DIALOG_TYPE_CHANGE_PASSWORD", CustomDialogFragment.this, map);
+                    simpleAlertDialogListener.onAlertDialogPositiveClick("DIALOG_TYPE_CHANGE_PASSWORD", CustomDialogFragment.this, map);
                 } else {
                     Toast.makeText(getContext(), "Password is Required!", Toast.LENGTH_SHORT).show();
                 }
@@ -241,7 +237,7 @@ public final class CustomDialogFragment extends DialogFragment {
                 Toast.makeText(getContext(), "No Internet", Toast.LENGTH_SHORT).show();
             }
         });
-        builder.setNegativeButton("CANCEL", (dialog12, id) -> simpleAlertDialogListener.onDialogNegativeClick("DIALOG_TYPE_UPDATE_EMAIL", CustomDialogFragment.this));
+        builder.setNegativeButton("CANCEL", (dialog12, id) -> simpleAlertDialogListener.onAlertDialogNegativeClick("DIALOG_TYPE_UPDATE_EMAIL", CustomDialogFragment.this));
     }
 
     @UiThread
@@ -257,7 +253,7 @@ public final class CustomDialogFragment extends DialogFragment {
         builder.setItems(selectArray, (dialog, which) -> {
             for (int i = 0; i < list.length; i++) {
                 if (which == i) {
-                    if (null != listDialogListener) listDialogListener.onListDialogItemClicked(selectArray[i]);
+                    if (null != listDialogListener) listDialogListener.onListDialogItemClick(selectArray[i]);
                 }
             }
         });
@@ -268,14 +264,14 @@ public final class CustomDialogFragment extends DialogFragment {
     }
 
     public interface SimpleAlertDialogListener {
-        void onDialogPositiveClick(String dialogType, DialogFragment dialog, Map<Object, Object> map);
+        void onAlertDialogPositiveClick(String dialogType, DialogFragment dialog, Map<Object, Object> map);
 
-        void onDialogNegativeClick(String dialogType, DialogFragment dialog);
+        void onAlertDialogNegativeClick(String dialogType, DialogFragment dialog);
 
-        void onDialogNeutralClick(String dialogType, DialogFragment dialog);
+        void onAlertDialogNeutralClick(String dialogType, DialogFragment dialog);
     }
 
     public interface ListDialogListener {
-        void onListDialogItemClicked(String listItemText);
+        void onListDialogItemClick(String listItemText);
     }
 }

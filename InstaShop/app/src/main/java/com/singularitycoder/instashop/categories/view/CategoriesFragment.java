@@ -397,7 +397,7 @@ public final class CategoriesFragment extends Fragment implements CustomDialogFr
     }
 
     @Override
-    public void onDialogPositiveClick(String dialogType, DialogFragment dialog, Map<Object, Object> map) {
+    public void onAlertDialogPositiveClick(String dialogType, DialogFragment dialog, Map<Object, Object> map) {
         if (("DIALOG_TYPE_UPDATE_EMAIL").equals(dialogType)) {
             if (helperObject.hasInternet(getContext())) {
                 categoriesViewModel.updateEmailFromRepository(dialog, (String) map.get("KEY_EMAIL")).observe(getViewLifecycleOwner(), liveDataObserver());
@@ -416,12 +416,12 @@ public final class CategoriesFragment extends Fragment implements CustomDialogFr
     }
 
     @Override
-    public void onDialogNegativeClick(String dialogType, DialogFragment dialog) {
+    public void onAlertDialogNegativeClick(String dialogType, DialogFragment dialog) {
 
     }
 
     @Override
-    public void onDialogNeutralClick(String dialogType, DialogFragment dialog) {
+    public void onAlertDialogNeutralClick(String dialogType, DialogFragment dialog) {
 
     }
 }

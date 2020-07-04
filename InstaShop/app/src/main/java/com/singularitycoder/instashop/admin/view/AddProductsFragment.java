@@ -353,7 +353,7 @@ public final class AddProductsFragment extends Fragment implements CustomDialogF
     }
 
     @Override
-    public void onListDialogItemClicked(String listItemText) {
+    public void onListDialogItemClick(String listItemText) {
         tvCategory.setText(listItemText);
     }
 }
