@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
@@ -79,7 +78,7 @@ public final class MainActivity
     private final String TAG = "MainActivity";
 
     @NonNull
-    private final String IMAGE_BACKGROUND = "https://cdn.pixabay.com/photo/2017/11/06/13/50/family-2923690_960_720.jpg";
+    private final String URL_IMAGE_BACKGROUND = "https://cdn.pixabay.com/photo/2017/11/06/13/50/family-2923690_960_720.jpg";
 
     @NonNull
     private final HelperGeneral helperObject = new HelperGeneral();
@@ -110,7 +109,7 @@ public final class MainActivity
     private void initialisations() {
         ButterKnife.bind(this);
         unbinder = ButterKnife.bind(this);
-        helperObject.glideImage(this, IMAGE_BACKGROUND, ivBackground);
+        helperObject.glideImage(this, URL_IMAGE_BACKGROUND, ivBackground);
         progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setCancelable(false);
         progressDialog.setMessage("Loading...");
@@ -297,8 +296,8 @@ public final class MainActivity
         MainActivity.this.finish();
     }
 
-    private Observer<RequestStateMediator> liveDataObserver() {
-        Observer<RequestStateMediator> observer = null;
+    private Observer<RequestStateMediator<Object, UiState, String, String>> liveDataObserver() {
+        Observer<RequestStateMediator<Object, UiState, String, String>> observer = null;
         observer = requestStateMediator -> {
             if (UiState.LOADING == requestStateMediator.getStatus()) {
                 runOnUiThread(() -> {

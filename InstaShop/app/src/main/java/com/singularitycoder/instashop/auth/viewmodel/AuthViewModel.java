@@ -9,13 +9,14 @@ import androidx.lifecycle.ViewModel;
 
 import com.singularitycoder.instashop.auth.repository.AuthRepository;
 import com.singularitycoder.instashop.helpers.RequestStateMediator;
+import com.singularitycoder.instashop.helpers.UiState;
 
 public final class AuthViewModel extends ViewModel {
 
     @NonNull
     private AuthRepository authRepository = AuthRepository.getInstance();
 
-    public final LiveData<RequestStateMediator> signInFromRepository(
+    public final LiveData<RequestStateMediator<Object, UiState, String, String>> signInFromRepository(
             @NonNull final Activity activity,
             @NonNull final String email,
             @NonNull final String password
@@ -23,7 +24,7 @@ public final class AuthViewModel extends ViewModel {
         return authRepository.signIn(activity, email, password);
     }
 
-    public final LiveData<RequestStateMediator> signUpFromRepository(
+    public final LiveData<RequestStateMediator<Object, UiState, String, String>> signUpFromRepository(
             @NonNull final Activity activity,
             @NonNull final String memberType,
             @NonNull final String name,
@@ -35,16 +36,16 @@ public final class AuthViewModel extends ViewModel {
         return authRepository.signUp(activity, memberType, name, email, password, epochTime, date);
     }
 
-    public final LiveData<RequestStateMediator> resetPasswordFromRepository(
+    public final LiveData<RequestStateMediator<Object, UiState, String, String>> resetPasswordFromRepository(
             @NonNull final String email, @NonNull final DialogFragment dialog) throws IllegalArgumentException {
         return authRepository.resetPassword(email, dialog);
     }
 
-    public final LiveData<RequestStateMediator> getFcmTokenFromRepository() throws IllegalArgumentException {
+    public final LiveData<RequestStateMediator<Object, UiState, String, String>> getFcmTokenFromRepository() throws IllegalArgumentException {
         return authRepository.getFcmDeviceToken();
     }
 
-    public final LiveData<RequestStateMediator> subscribeToFcmTopicFromRepository(@NonNull final String topic) throws IllegalArgumentException {
+    public final LiveData<RequestStateMediator<Object, UiState, String, String>> subscribeToFcmTopicFromRepository(@NonNull final String topic) throws IllegalArgumentException {
         return authRepository.subscribeToFcmTopic(topic);
     }
 }

@@ -27,10 +27,10 @@ public final class AuthRepository {
     private static AuthRepository _instance;
 
     @NonNull
-    private final MutableLiveData<RequestStateMediator> liveDataSignUp = new MutableLiveData<>();
+    private final MutableLiveData<RequestStateMediator<Object, UiState, String, String>> liveDataSignUp = new MutableLiveData<>();
 
     @NonNull
-    private final RequestStateMediator requestStateMediator = new RequestStateMediator();
+    private final RequestStateMediator<Object, UiState, String, String> requestStateMediator = new RequestStateMediator<>();
 
     public AuthRepository() {
     }
@@ -43,13 +43,13 @@ public final class AuthRepository {
         return _instance;
     }
 
-    public final LiveData<RequestStateMediator> signIn(
+    public final LiveData<RequestStateMediator<Object, UiState, String, String>> signIn(
             @NonNull final Activity activity,
             @NonNull final String email,
             @NonNull final String password) {
 
-        final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
-        final RequestStateMediator requestStateMediator = new RequestStateMediator();
+        final MutableLiveData<RequestStateMediator<Object, UiState, String, String>> liveData = new MutableLiveData<>();
+        final RequestStateMediator<Object, UiState, String, String> requestStateMediator = new RequestStateMediator<>();
 
         requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
         liveData.postValue(requestStateMediator);
@@ -70,7 +70,7 @@ public final class AuthRepository {
         return liveData;
     }
 
-    public final LiveData<RequestStateMediator> signUp(
+    public final LiveData<RequestStateMediator<Object, UiState, String, String>> signUp(
             @NonNull final Activity activity,
             @NonNull final String memberType,
             @NonNull final String name,
@@ -146,13 +146,13 @@ public final class AuthRepository {
                 });
     }
 
-    public final MutableLiveData<RequestStateMediator> resetPassword(
+    public final MutableLiveData<RequestStateMediator<Object, UiState, String, String>> resetPassword(
             @NonNull final String email, @NonNull final DialogFragment dialog) {
 
         // todo wrong email error message is not working - possible firebase issue
 
-        final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
-        final RequestStateMediator requestStateMediator = new RequestStateMediator();
+        final MutableLiveData<RequestStateMediator<Object, UiState, String, String>> liveData = new MutableLiveData<>();
+        final RequestStateMediator<Object, UiState, String, String> requestStateMediator = new RequestStateMediator<>();
 
         requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
         liveData.postValue(requestStateMediator);
@@ -173,10 +173,10 @@ public final class AuthRepository {
         return liveData;
     }
 
-    public final MutableLiveData<RequestStateMediator> getFcmDeviceToken() {
+    public final MutableLiveData<RequestStateMediator<Object, UiState, String, String>> getFcmDeviceToken() {
 
-        final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
-        final RequestStateMediator requestStateMediator = new RequestStateMediator();
+        final MutableLiveData<RequestStateMediator<Object, UiState, String, String>> liveData = new MutableLiveData<>();
+        final RequestStateMediator<Object, UiState, String, String> requestStateMediator = new RequestStateMediator<>();
 
         requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
         liveData.postValue(requestStateMediator);
@@ -198,10 +198,10 @@ public final class AuthRepository {
         return liveData;
     }
 
-    public final MutableLiveData<RequestStateMediator> subscribeToFcmTopic(@NonNull final String topic) {
+    public final MutableLiveData<RequestStateMediator<Object, UiState, String, String>> subscribeToFcmTopic(@NonNull final String topic) {
 
-        final MutableLiveData<RequestStateMediator> liveData = new MutableLiveData<>();
-        final RequestStateMediator requestStateMediator = new RequestStateMediator();
+        final MutableLiveData<RequestStateMediator<Object, UiState, String, String>> liveData = new MutableLiveData<>();
+        final RequestStateMediator<Object, UiState, String, String> requestStateMediator = new RequestStateMediator<>();
 
         requestStateMediator.set(null, UiState.LOADING, "Please wait...", null);
 
