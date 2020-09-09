@@ -39,16 +39,15 @@ android {
         viewBinding true
         dataBinding true
     }
-
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
 
     // Local Unit Testing
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
 
     // Mockito for Local Unit Testing
@@ -95,12 +94,12 @@ dependencies {
     implementation 'com.karumi:dexter:6.0.1'
 
     // Firebase
-    implementation 'com.google.firebase:firebase-firestore:21.4.3'
-    implementation "com.google.firebase:firebase-auth:19.3.1"
+    implementation 'com.google.firebase:firebase-firestore:21.5.0'
+    implementation "com.google.firebase:firebase-auth:19.3.2"
     implementation 'com.google.firebase:firebase-storage:19.1.1'
-    implementation 'com.google.firebase:firebase-crashlytics:17.1.0'
-    implementation 'com.google.firebase:firebase-analytics:17.4.3'
-    implementation 'com.google.firebase:firebase-messaging:20.2.1'
+    implementation 'com.google.firebase:firebase-crashlytics:17.1.1'
+    implementation 'com.google.firebase:firebase-analytics:17.4.4'
+    implementation 'com.google.firebase:firebase-messaging:20.2.4'
 
     // Leak Canary - shows memory leaks
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.2'
@@ -127,7 +126,4 @@ dependencies {
     implementation "androidx.room:room-runtime:2.2.5"
     annotationProcessor "androidx.room:room-compiler:2.2.5"
     androidTestImplementation 'androidx.room:room-testing:2.2.5'
-
-    // Room Debug
-    debugImplementation 'com.amitshekhar.android:debug-db:1.0.1'
 }

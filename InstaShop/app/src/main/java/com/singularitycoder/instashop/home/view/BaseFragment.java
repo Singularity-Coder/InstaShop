@@ -34,7 +34,7 @@ public final class BaseFragment extends Fragment implements BottomNavigationView
     @NonNull
     private final String TAG = "BaseFragment";
 
-    @NonNull
+    @Nullable
     private Unbinder unbinder;
 
     public BaseFragment() {

@@ -27,7 +27,7 @@ public final class HelperSharedPreference {
     @NonNull
     private static final String KEY_FCM_TOKEN = "fcmToken";
 
-    @NonNull
+    @Nullable
     private static HelperSharedPreference _instance;
 
     @Nullable

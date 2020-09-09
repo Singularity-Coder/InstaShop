@@ -112,7 +112,7 @@ public final class CategoriesFragment extends Fragment implements CustomDialogFr
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_dashboard, container, false);
+        View view = inflater.inflate(R.layout.fragment_categories, container, false);
         initialisations(view);
         setUpToolBar();
         setUpCollapsingToolbar();
